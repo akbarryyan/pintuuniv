@@ -68,40 +68,40 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-100 via-blue-50 to-violet-100 relative overflow-hidden">
-      {/* Decorative Background Elements */}
-      <div className="absolute top-20 left-10 w-16 h-16 bg-emerald-400 rotate-12 border-4 border-slate-800 opacity-30 animate-bounce"></div>
-      <div className="absolute top-40 right-20 w-12 h-12 bg-violet-400 rounded-full border-4 border-slate-800 opacity-40 animate-pulse"></div>
-      <div className="absolute bottom-32 left-20 w-20 h-20 bg-blue-400 rotate-45 border-4 border-slate-800 opacity-25 animate-spin"></div>
-      <div className="absolute bottom-20 right-10 w-14 h-14 bg-orange-400 border-4 border-slate-800 opacity-35 animate-ping"></div>
+    <div className="min-h-screen bg-gradient-to-br from-emerald-100 via-blue-50 to-purple-100 relative overflow-hidden">
+      {/* Decorative Background Elements - Hidden on mobile for better performance */}
+      <div className="hidden sm:block absolute top-20 left-10 w-12 h-12 md:w-16 md:h-16 bg-emerald-400 rotate-12 border-3 md:border-4 border-slate-800 opacity-30 animate-bounce"></div>
+      <div className="hidden sm:block absolute top-40 right-20 w-8 h-8 md:w-12 md:h-12 bg-purple-400 rounded-full border-3 md:border-4 border-slate-800 opacity-40 animate-pulse"></div>
+      <div className="hidden sm:block absolute bottom-32 left-20 w-16 h-16 md:w-20 md:h-20 bg-blue-400 rotate-45 border-3 md:border-4 border-slate-800 opacity-25 animate-spin"></div>
+      <div className="hidden sm:block absolute bottom-20 right-10 w-10 h-10 md:w-14 md:h-14 bg-orange-400 border-3 md:border-4 border-slate-800 opacity-35 animate-ping"></div>
 
-      <div className="relative z-10 flex items-center justify-center min-h-screen p-4 py-8">
-        <div className="w-full max-w-lg">
+      <div className="relative z-10 flex items-center justify-center min-h-screen p-3 sm:p-4 py-6 sm:py-8">
+        <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg">
           {/* Header */}
-          <div className="text-center mb-8">
-            <Link href="/" className="inline-block mb-6">
-              <div className="bg-emerald-500 text-white px-6 py-3 border-4 border-slate-800 shadow-brutal transform rotate-2 hover:rotate-3 transition-transform">
-                <span className="text-2xl font-black">📚 PINTU UNIV</span>
+          <div className="text-center mb-6 sm:mb-8">
+            <Link href="/" className="inline-block mb-4 sm:mb-6">
+              <div className="bg-emerald-500 text-white px-4 sm:px-6 py-2 sm:py-3 border-3 sm:border-4 border-slate-800 shadow-brutal transform rotate-2 hover:rotate-3 transition-transform">
+                <span className="text-lg sm:text-2xl font-black">📚 PINTU UNIV</span>
               </div>
             </Link>
 
-            <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-4 uppercase">
-              DAFTAR GRATIS
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mb-3 sm:mb-4 uppercase">
+              DAFTAR AKUN
             </h1>
 
-            <div className="bg-emerald-400 text-slate-900 px-4 py-2 border-3 border-slate-800 inline-block shadow-brutal transform -rotate-1">
-              <p className="font-black text-sm uppercase">
-                🎯 MULAI PERJALANAN UTBK KAMU!
+            <div className="bg-emerald-400 text-slate-900 px-3 sm:px-4 py-2 border-3 border-slate-800 inline-block shadow-brutal transform -rotate-1">
+              <p className="font-black text-xs sm:text-sm uppercase">
+                🚀 GABUNG DENGAN RIBUAN SISWA LAINNYA
               </p>
             </div>
           </div>
 
           {/* Register Form */}
-          <div className="bg-white border-4 border-slate-800 p-6 md:p-8 shadow-brutal transform hover:rotate-1 transition-all duration-300">
-            <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Full Name Field */}
+          <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 md:p-8 shadow-brutal transform hover:rotate-1 transition-all duration-300">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+              {/* Full Name */}
               <div>
-                <label className="block text-slate-900 font-black text-sm mb-2 uppercase">
+                <label className="block text-slate-900 font-black text-xs sm:text-sm mb-2 uppercase">
                   👤 Nama Lengkap
                 </label>
                 <input
@@ -110,47 +110,48 @@ export default function RegisterPage() {
                   value={formData.fullName}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border-3 border-slate-800 bg-emerald-50 text-slate-900 font-bold placeholder-slate-500 focus:outline-none focus:bg-emerald-100 focus:border-emerald-500 transition-colors"
-                  placeholder="Nama lengkap sesuai KTP"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border-3 border-slate-800 bg-emerald-50 text-slate-900 font-bold placeholder-slate-500 focus:outline-none focus:bg-emerald-100 focus:border-emerald-500 transition-colors text-sm sm:text-base"
+                  placeholder="Nama Lengkap Kamu"
                 />
               </div>
 
-              {/* Email Field */}
-              <div>
-                <label className="block text-slate-900 font-black text-sm mb-2 uppercase">
-                  📧 Email Address
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border-3 border-slate-800 bg-blue-50 text-slate-900 font-bold placeholder-slate-500 focus:outline-none focus:bg-blue-100 focus:border-blue-500 transition-colors"
-                  placeholder="contoh@email.com"
-                />
-              </div>
-
-              {/* Phone Field */}
-              <div>
-                <label className="block text-slate-900 font-black text-sm mb-2 uppercase">
-                  📱 Nomor WhatsApp
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border-3 border-slate-800 bg-violet-50 text-slate-900 font-bold placeholder-slate-500 focus:outline-none focus:bg-violet-100 focus:border-violet-500 transition-colors"
-                  placeholder="08xxxxxxxxxx"
-                />
-              </div>
-
-              {/* School & Grade */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Email & Phone Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <label className="block text-slate-900 font-black text-sm mb-2 uppercase">
+                  <label className="block text-slate-900 font-black text-xs sm:text-sm mb-2 uppercase">
+                    📧 Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border-3 border-slate-800 bg-blue-50 text-slate-900 font-bold placeholder-slate-500 focus:outline-none focus:bg-blue-100 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                    placeholder="email@contoh.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-900 font-black text-xs sm:text-sm mb-2 uppercase">
+                    📱 No. HP
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border-3 border-slate-800 bg-purple-50 text-slate-900 font-bold placeholder-slate-500 focus:outline-none focus:bg-purple-100 focus:border-purple-500 transition-colors text-sm sm:text-base"
+                    placeholder="08123456789"
+                  />
+                </div>
+              </div>
+
+              {/* School & Grade Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <label className="block text-slate-900 font-black text-xs sm:text-sm mb-2 uppercase">
                     🏫 Asal Sekolah
                   </label>
                   <input
@@ -159,117 +160,117 @@ export default function RegisterPage() {
                     value={formData.school}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-3 border-slate-800 bg-orange-50 text-slate-900 font-bold placeholder-slate-500 focus:outline-none focus:bg-orange-100 focus:border-orange-500 transition-colors"
-                    placeholder="SMA Negeri 1"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border-3 border-slate-800 bg-orange-50 text-slate-900 font-bold placeholder-slate-500 focus:outline-none focus:bg-orange-100 focus:border-orange-500 transition-colors text-sm sm:text-base"
+                    placeholder="SMA Negeri 1 Jakarta"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-900 font-black text-sm mb-2 uppercase">
-                    📖 Kelas
+                  <label className="block text-slate-900 font-black text-xs sm:text-sm mb-2 uppercase">
+                    📚 Kelas
                   </label>
                   <select
                     name="grade"
                     value={formData.grade}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-3 border-slate-800 bg-orange-50 text-slate-900 font-bold focus:outline-none focus:bg-orange-100 focus:border-orange-500 transition-colors"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border-3 border-slate-800 bg-yellow-50 text-slate-900 font-bold focus:outline-none focus:bg-yellow-100 focus:border-yellow-500 transition-colors text-sm sm:text-base"
                   >
                     <option value="">Pilih Kelas</option>
                     <option value="10">Kelas 10</option>
                     <option value="11">Kelas 11</option>
                     <option value="12">Kelas 12</option>
-                    <option value="alumni">Alumni</option>
+                    <option value="Gap Year">Gap Year</option>
                   </select>
                 </div>
               </div>
 
-              {/* Password Field */}
-              <div>
-                <label className="block text-slate-900 font-black text-sm mb-2 uppercase">
-                  🔒 Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 pr-12 border-3 border-slate-800 bg-red-50 text-slate-900 font-bold placeholder-slate-500 focus:outline-none focus:bg-red-100 focus:border-red-500 transition-colors"
-                    placeholder="Minimal 8 karakter"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-600 hover:text-slate-900 font-black"
-                  >
-                    {showPassword ? "🙈" : "👁️"}
-                  </button>
+              {/* Password Fields */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <label className="block text-slate-900 font-black text-xs sm:text-sm mb-2 uppercase">
+                    🔒 Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-10 sm:pr-12 border-3 border-slate-800 bg-rose-50 text-slate-900 font-bold placeholder-slate-500 focus:outline-none focus:bg-rose-100 focus:border-rose-500 transition-colors text-sm sm:text-base"
+                      placeholder="Min. 6 karakter"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-slate-600 hover:text-slate-900 font-black text-sm"
+                    >
+                      {showPassword ? "🙈" : "👁️"}
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              {/* Confirm Password Field */}
-              <div>
-                <label className="block text-slate-900 font-black text-sm mb-2 uppercase">
-                  🔐 Konfirmasi Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                    className={`w-full px-4 py-3 pr-12 border-3 border-slate-800 font-bold placeholder-slate-500 focus:outline-none transition-colors ${
-                      passwordMatch
-                        ? "bg-red-50 focus:bg-red-100 focus:border-red-500"
-                        : "bg-red-200 border-red-600"
-                    }`}
-                    placeholder="Ulangi password"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-600 hover:text-slate-900 font-black"
-                  >
-                    {showConfirmPassword ? "🙈" : "👁️"}
-                  </button>
+                <div>
+                  <label className="block text-slate-900 font-black text-xs sm:text-sm mb-2 uppercase">
+                    🔐 Konfirmasi Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      required
+                      className={`w-full px-3 sm:px-4 py-2 sm:py-3 pr-10 sm:pr-12 border-3 border-slate-800 text-slate-900 font-bold placeholder-slate-500 focus:outline-none transition-colors text-sm sm:text-base ${
+                        !passwordMatch
+                          ? "bg-red-50 border-red-500 focus:bg-red-100"
+                          : "bg-green-50 focus:bg-green-100 focus:border-green-500"
+                      }`}
+                      placeholder="Ulangi password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-slate-600 hover:text-slate-900 font-black text-sm"
+                    >
+                      {showConfirmPassword ? "🙈" : "👁️"}
+                    </button>
+                  </div>
+                  {!passwordMatch && (
+                    <p className="text-red-600 font-bold text-xs mt-1">
+                      ❌ Password tidak cocok
+                    </p>
+                  )}
                 </div>
-                {!passwordMatch && (
-                  <p className="text-red-600 font-bold text-sm mt-1">
-                    ⚠️ Password tidak sama!
-                  </p>
-                )}
               </div>
 
               {/* Terms Agreement */}
-              <div className="bg-slate-100 border-3 border-slate-800 p-4">
-                <label className="flex items-start gap-3">
+              <div className="bg-slate-100 border-3 border-slate-800 p-3 sm:p-4">
+                <label className="flex items-start space-x-2 sm:space-x-3">
                   <input
                     type="checkbox"
                     name="agreeTerms"
                     checked={formData.agreeTerms}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-4 h-4 border-2 border-slate-800"
+                    className="mt-1 w-4 h-4 border-2 border-slate-800 flex-shrink-0"
                   />
-                  <span className="text-slate-900 font-bold text-sm leading-relaxed">
+                  <span className="text-slate-900 font-bold text-xs sm:text-sm leading-tight">
                     Saya setuju dengan{" "}
                     <Link
                       href="/terms"
-                      className="text-blue-600 hover:text-blue-800"
+                      className="text-blue-600 hover:text-blue-800 underline font-black"
                     >
                       Syarat & Ketentuan
                     </Link>{" "}
                     dan{" "}
                     <Link
                       href="/privacy"
-                      className="text-blue-600 hover:text-blue-800"
+                      className="text-purple-600 hover:text-purple-800 underline font-black"
                     >
                       Kebijakan Privasi
-                    </Link>{" "}
-                    Pintu Univ
+                    </Link>
                   </span>
                 </label>
               </div>
@@ -278,18 +279,18 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={isLoading || !passwordMatch}
-                className="group w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-6 py-4 font-black text-lg uppercase border-4 border-slate-800 transform hover:-rotate-1 hover:-translate-y-2 hover:scale-105 transition-all duration-300 shadow-brutal disabled:opacity-50 disabled:cursor-not-allowed"
+                className="group w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 sm:px-6 py-3 sm:py-4 font-black text-sm sm:text-lg uppercase border-3 sm:border-4 border-slate-800 transform hover:-rotate-1 hover:-translate-y-2 hover:scale-105 transition-all duration-300 shadow-brutal disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
-                <span className="flex items-center justify-center gap-3">
+                <span className="flex items-center justify-center gap-2 sm:gap-3">
                   {isLoading ? (
                     <>
                       <span className="animate-spin">⏳</span>
-                      SEDANG MENDAFTAR...
+                      <span className="text-xs sm:text-base">MENDAFTAR...</span>
                     </>
                   ) : (
                     <>
-                      🎯 DAFTAR SEKARANG
-                      <span className="group-hover:animate-bounce">🚀</span>
+                      <span className="text-xs sm:text-base">🚀 DAFTAR SEKARANG</span>
+                      <span className="group-hover:animate-bounce">🎯</span>
                     </>
                   )}
                 </span>
@@ -297,29 +298,40 @@ export default function RegisterPage() {
             </form>
 
             {/* Login Link */}
-            <div className="mt-6 text-center">
-              <div className="bg-blue-100 border-3 border-blue-400 p-4 shadow-lg">
-                <p className="text-slate-900 font-bold text-sm mb-2">
+            <div className="mt-6 sm:mt-8 text-center">
+              <div className="bg-blue-100 border-3 border-slate-800 p-3 sm:p-4 transform -rotate-1">
+                <p className="text-slate-900 font-bold text-xs sm:text-sm mb-2">
                   Sudah punya akun?
                 </p>
                 <Link
                   href="/login"
-                  className="bg-blue-500 text-white px-4 py-2 font-black text-sm uppercase border-3 border-slate-800 transform hover:rotate-1 hover:-translate-y-1 transition-all duration-200 shadow-lg inline-block"
+                  className="inline-block bg-blue-500 text-white px-4 sm:px-6 py-2 sm:py-3 font-black text-xs sm:text-sm uppercase border-3 border-slate-800 transform hover:rotate-2 hover:-translate-y-1 transition-all duration-200 shadow-brutal"
                 >
-                  🔐 MASUK SEKARANG
+                  🔑 LOGIN DI SINI
                 </Link>
               </div>
             </div>
           </div>
 
-          {/* Back to Home */}
-          <div className="mt-6 text-center">
-            <Link
-              href="/"
-              className="text-slate-600 font-bold text-sm hover:text-slate-900 transition-colors"
-            >
-              ← Kembali ke Beranda
-            </Link>
+          {/* Social Registration */}
+          <div className="mt-6 sm:mt-8">
+            <div className="text-center mb-4">
+              <span className="bg-slate-900 text-white px-3 sm:px-4 py-1 sm:py-2 border-3 border-slate-800 inline-block font-black text-xs sm:text-sm uppercase shadow-brutal transform rotate-1">
+                Atau daftar dengan
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <button className="bg-red-500 text-white px-3 sm:px-4 py-2 sm:py-3 font-black text-xs sm:text-sm uppercase border-3 border-slate-800 transform hover:-rotate-1 hover:-translate-y-1 transition-all duration-200 shadow-brutal">
+                📧 GOOGLE
+              </button>
+              <button className="bg-blue-600 text-white px-3 sm:px-4 py-2 sm:py-3 font-black text-xs sm:text-sm uppercase border-3 border-slate-800 transform hover:rotate-1 hover:-translate-y-1 transition-all duration-200 shadow-brutal">
+                📘 FACEBOOK
+              </button>
+              <button className="bg-gray-900 text-white px-3 sm:px-4 py-2 sm:py-3 font-black text-xs sm:text-sm uppercase border-3 border-slate-800 transform hover:-rotate-1 hover:-translate-y-1 transition-all duration-200 shadow-brutal">
+                🍎 APPLE
+              </button>
+            </div>
           </div>
         </div>
       </div>

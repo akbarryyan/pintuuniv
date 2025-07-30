@@ -241,7 +241,7 @@ export default function PrivacyPage() {
         <div className="text-center">
           <Link
             href="/register"
-            className="bg-purple-500 text-white px-6 py-3 font-black text-lg uppercase border-4 border-slate-800 transform hover:rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-brutal inline-block"
+            className="bg-purple-500 text-white px-4 sm:px-6 py-2 sm:py-3 font-black text-sm sm:text-lg uppercase border-3 sm:border-4 border-slate-800 transform hover:rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-brutal inline-block"
           >
             🚀 LANJUT DAFTAR
           </Link>
