@@ -1,4 +1,354 @@
+"use client";
+
 import Image from "next/image";
+import { useState, useEffect } from "react";
+
+// Simulasi data soal tryout
+const tryoutQuestions = [
+  {
+    id: 1,
+    question: "Manakah dari berikut ini yang merupakan ibu kota Indonesia?",
+    options: ["Bandung", "Jakarta", "Surabaya", "Medan"],
+    correctAnswer: 1,
+    explanation:
+      "Jakarta adalah ibu kota Indonesia sejak kemerdekaan tahun 1945.",
+  },
+  {
+    id: 2,
+    question: "Berapa hasil dari 25 × 4?",
+    options: ["90", "100", "110", "120"],
+    correctAnswer: 1,
+    explanation: "25 × 4 = 100. Ini adalah perkalian dasar matematika.",
+  },
+  {
+    id: 3,
+    question: "Siapa presiden pertama Indonesia?",
+    options: ["Soeharto", "Ir. Soekarno", "B.J. Habibie", "Megawati"],
+    correctAnswer: 1,
+    explanation:
+      "Ir. Soekarno adalah presiden pertama Republik Indonesia yang menjabat dari 1945-1967.",
+  },
+  {
+    id: 4,
+    question: "Manakah rumus luas lingkaran?",
+    options: ["π × r", "π × r²", "2 × π × r", "π × d"],
+    correctAnswer: 1,
+    explanation:
+      "Luas lingkaran = π × r², dimana r adalah jari-jari lingkaran.",
+  },
+  {
+    id: 5,
+    question: "Dalam sistem periodik, simbol untuk emas adalah:",
+    options: ["Au", "Ag", "Fe", "Cu"],
+    correctAnswer: 0,
+    explanation:
+      "Au (Aurum) adalah simbol kimia untuk emas dalam tabel periodik.",
+  },
+];
+
+function TryoutSimulation() {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [isAnswered, setIsAnswered] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+  const [score, setScore] = useState(0);
+  const [gameFinished, setGameFinished] = useState(false);
+
+  // Timer countdown
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    if (isActive && timeLeft > 0 && !isAnswered) {
+      interval = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
+            handleTimeUp();
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    } else if (timeLeft === 0) {
+      handleTimeUp();
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isActive, timeLeft, isAnswered]);
+
+  const startTryout = () => {
+    setIsActive(true);
+    setCurrentQuestion(0);
+    setTimeLeft(60);
+    setSelectedAnswer(null);
+    setIsAnswered(false);
+    setShowResult(false);
+    setScore(0);
+    setGameFinished(false);
+  };
+
+  const handleTimeUp = () => {
+    if (!isAnswered) {
+      setIsAnswered(true);
+      setShowResult(true);
+      setIsCorrect(false);
+    }
+  };
+
+  const handleAnswerSelect = (answerIndex: number) => {
+    if (isAnswered) return;
+
+    setSelectedAnswer(answerIndex);
+    setIsAnswered(true);
+    setShowResult(true);
+
+    const correct =
+      answerIndex === tryoutQuestions[currentQuestion].correctAnswer;
+    setIsCorrect(correct);
+
+    if (correct) {
+      setScore(score + 1);
+    }
+  };
+
+  const nextQuestion = () => {
+    if (currentQuestion < tryoutQuestions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setSelectedAnswer(null);
+      setIsAnswered(false);
+      setShowResult(false);
+      setTimeLeft(60);
+    } else {
+      setGameFinished(true);
+      setIsActive(false);
+    }
+  };
+
+  const resetTryout = () => {
+    setCurrentQuestion(0);
+    setSelectedAnswer(null);
+    setTimeLeft(60);
+    setIsAnswered(false);
+    setShowResult(false);
+    setIsCorrect(false);
+    setIsActive(false);
+    setScore(0);
+    setGameFinished(false);
+  };
+
+  if (!isActive && !gameFinished) {
+    return (
+      <section className="py-16 md:py-20 bg-slate-900 relative overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 md:mb-12">
+            <div className="bg-orange-400 text-slate-900 px-3 md:px-6 py-2 md:py-3 border-3 md:border-6 border-white transform rotate-1 inline-block mb-4 md:mb-6 shadow-lg">
+              <span className="text-sm md:text-lg font-black uppercase tracking-wider">
+                COBA SEKARANG!
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white mb-4 md:mb-6 uppercase leading-none">
+              SIMULASI TRYOUT
+              <br />
+              <span className="bg-emerald-500 text-white px-2 md:px-3 py-1 md:py-2 border-3 md:border-6 border-orange-400 transform -rotate-1 inline-block shadow-lg">
+                INTERAKTIF
+              </span>
+            </h2>
+            <div className="bg-blue-400 text-slate-900 p-3 md:p-4 border-3 md:border-6 border-white transform -rotate-1 max-w-2xl mx-auto shadow-lg mb-6 md:mb-8">
+              <p className="text-sm md:text-base font-black uppercase">
+                RASAKAN PENGALAMAN TRYOUT ASLI! 60 DETIK PER SOAL
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white border-3 md:border-6 border-orange-400 p-6 md:p-8 transform hover:rotate-1 transition-all duration-200 shadow-lg text-center">
+            <div className="mb-6 md:mb-8">
+              <div className="w-16 h-16 md:w-20 md:h-20 bg-orange-400 border-3 border-slate-800 mx-auto mb-4 flex items-center justify-center font-black text-2xl md:text-3xl shadow-lg">
+                🎯
+              </div>
+              <h3 className="text-xl md:text-2xl font-black text-slate-900 mb-3 uppercase">
+                SIAP UNTUK CHALLENGE?
+              </h3>
+              <p className="text-slate-800 font-bold text-sm md:text-base mb-4">
+                • 5 soal pilihan ganda
+                <br />
+                • 60 detik per soal
+                <br />
+                • Feedback langsung
+                <br />• Pembahasan detail
+              </p>
+            </div>
+
+            <button
+              onClick={startTryout}
+              className="bg-emerald-500 text-white px-6 md:px-8 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-slate-800 transform hover:-rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg"
+            >
+              🚀 MULAI TRYOUT SEKARANG!
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (gameFinished) {
+    const percentage = Math.round((score / tryoutQuestions.length) * 100);
+    return (
+      <section className="py-16 md:py-20 bg-slate-900 relative overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white border-3 md:border-6 border-orange-400 p-6 md:p-8 transform hover:rotate-1 transition-all duration-200 shadow-lg text-center">
+            <div className="mb-6 md:mb-8">
+              <div className="w-16 h-16 md:w-20 md:h-20 bg-emerald-400 border-3 border-slate-800 mx-auto mb-4 flex items-center justify-center font-black text-2xl md:text-3xl shadow-lg">
+                {percentage >= 80 ? "🏆" : percentage >= 60 ? "👍" : "💪"}
+              </div>
+              <h3 className="text-xl md:text-2xl font-black text-slate-900 mb-3 uppercase">
+                TRYOUT SELESAI!
+              </h3>
+              <div className="bg-orange-400 text-slate-900 p-3 md:p-4 border-3 border-slate-800 inline-block mb-4 font-black uppercase text-lg md:text-xl">
+                SKOR: {score}/{tryoutQuestions.length} ({percentage}%)
+              </div>
+              <p className="text-slate-800 font-bold text-sm md:text-base">
+                {percentage >= 80
+                  ? "🎉 LUAR BIASA! Kamu siap untuk UTBK!"
+                  : percentage >= 60
+                  ? "👏 BAGUS! Terus berlatih untuk hasil yang lebih baik!"
+                  : "💪 SEMANGAT! Latihan lagi untuk meningkatkan skor!"}
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={resetTryout}
+                className="bg-blue-500 text-white px-6 md:px-8 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-slate-800 transform hover:-rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg"
+              >
+                🔄 COBA LAGI
+              </button>
+              <button className="bg-emerald-500 text-white px-6 md:px-8 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-slate-800 transform hover:rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg">
+                📚 MULAI BELAJAR SERIUS
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const question = tryoutQuestions[currentQuestion];
+
+  return (
+    <section className="py-16 md:py-20 bg-slate-900 relative overflow-hidden">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="text-center mb-6 md:mb-8">
+          <div className="bg-orange-400 text-slate-900 px-3 md:px-4 py-1 md:py-2 border-3 border-white inline-block mb-4 font-black uppercase text-sm md:text-base">
+            SOAL {currentQuestion + 1} dari {tryoutQuestions.length}
+          </div>
+
+          {/* Timer */}
+          <div className="bg-red-500 text-white px-4 md:px-6 py-2 md:py-3 border-3 md:border-6 border-white inline-block mb-4 md:mb-6 font-black text-lg md:text-xl shadow-lg">
+            ⏰ {timeLeft} DETIK
+          </div>
+        </div>
+
+        {/* Question */}
+        <div className="bg-white border-3 md:border-6 border-orange-400 p-6 md:p-8 mb-6 md:mb-8 shadow-lg">
+          <h3 className="text-lg md:text-xl font-black text-slate-900 mb-6 leading-tight">
+            {question.question}
+          </h3>
+
+          {/* Options */}
+          <div className="space-y-3 md:space-y-4">
+            {question.options.map((option, index) => {
+              let buttonClass =
+                "w-full text-left p-3 md:p-4 border-3 border-slate-800 font-bold text-sm md:text-base transition-all duration-200 shadow-lg ";
+
+              if (!isAnswered) {
+                buttonClass +=
+                  "bg-blue-100 hover:bg-blue-200 text-slate-900 transform hover:-translate-y-1";
+              } else {
+                if (index === question.correctAnswer) {
+                  buttonClass += "bg-emerald-400 text-white";
+                } else if (
+                  index === selectedAnswer &&
+                  selectedAnswer !== question.correctAnswer
+                ) {
+                  buttonClass += "bg-red-400 text-white";
+                } else {
+                  buttonClass += "bg-gray-200 text-slate-600";
+                }
+              }
+
+              return (
+                <button
+                  key={index}
+                  onClick={() => handleAnswerSelect(index)}
+                  className={buttonClass}
+                  disabled={isAnswered}
+                >
+                  <span className="font-black mr-2 md:mr-3">
+                    {String.fromCharCode(65 + index)}.
+                  </span>
+                  {option}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Result */}
+        {showResult && (
+          <div className="bg-white border-3 md:border-6 border-slate-800 p-6 md:p-8 mb-6 md:mb-8 shadow-lg">
+            <div
+              className={`text-center mb-4 md:mb-6 ${
+                isCorrect ? "text-emerald-600" : "text-red-600"
+              }`}
+            >
+              <div className="text-2xl md:text-3xl font-black mb-2">
+                {isCorrect ? "✅ BENAR!" : "❌ SALAH!"}
+              </div>
+              <div className="text-lg md:text-xl font-bold">
+                {isCorrect
+                  ? "Jawaban kamu tepat!"
+                  : "Jawaban yang benar adalah " +
+                    String.fromCharCode(65 + question.correctAnswer)}
+              </div>
+            </div>
+
+            <div className="bg-blue-50 border-2 border-blue-400 p-4 md:p-6 mb-4 md:mb-6">
+              <h4 className="font-black text-slate-900 text-sm md:text-base mb-2 uppercase">
+                💡 PEMBAHASAN:
+              </h4>
+              <p className="text-slate-800 font-bold text-sm md:text-base">
+                {question.explanation}
+              </p>
+            </div>
+
+            <div className="text-center">
+              <button
+                onClick={nextQuestion}
+                className="bg-emerald-500 text-white px-6 md:px-8 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-slate-800 transform hover:-rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg"
+              >
+                {currentQuestion < tryoutQuestions.length - 1
+                  ? "➡️ SOAL BERIKUTNYA"
+                  : "🏁 LIHAT HASIL"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Score Progress */}
+        <div className="text-center">
+          <div className="bg-white text-slate-900 px-4 md:px-6 py-2 md:py-3 border-3 border-orange-400 inline-block font-black text-sm md:text-base">
+            📊 SKOR SAAT INI: {score}/{currentQuestion + (isAnswered ? 1 : 0)}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function Home() {
   return (
@@ -543,6 +893,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Interactive Tryout Simulation Section */}
+      <TryoutSimulation />
 
       {/* Pricing Section */}
       <section
