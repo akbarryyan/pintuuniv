@@ -265,6 +265,12 @@ export default function DashboardPage() {
                   Tryouts
                 </Link>
                 <Link
+                  href="/leaderboard"
+                  className="text-white font-bold text-sm hover:text-orange-300"
+                >
+                  Leaderboard
+                </Link>
+                <Link
                   href="/lessons"
                   className="text-white font-bold text-sm hover:text-orange-300"
                 >
