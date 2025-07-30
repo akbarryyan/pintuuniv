@@ -336,10 +336,218 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Statistics Section */}
+      <section className="py-16 md:py-20 bg-slate-900 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 md:mb-12">
+            <div className="bg-orange-400 text-slate-900 px-3 md:px-6 py-2 md:py-3 border-3 md:border-6 border-white transform rotate-2 inline-block mb-4 md:mb-6 shadow-lg">
+              <span className="text-sm md:text-lg font-black uppercase tracking-wider">
+                PENCAPAIAN KAMI
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white mb-4 md:mb-6 uppercase leading-none">
+              HASIL NYATA
+              <br />
+              <span className="bg-emerald-500 text-white px-2 md:px-3 py-1 md:py-2 border-3 md:border-6 border-orange-400 transform -rotate-1 inline-block shadow-lg">
+                YANG MEMBANGGAKAN
+              </span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="bg-orange-400 text-slate-900 p-4 md:p-6 border-3 md:border-6 border-white transform hover:rotate-3 transition-all duration-200 shadow-lg">
+              <div className="text-2xl md:text-4xl font-black mb-2">98%</div>
+              <div className="font-bold text-xs md:text-sm uppercase">
+                Tingkat Kepuasan
+              </div>
+            </div>
+            <div className="bg-blue-400 text-slate-900 p-4 md:p-6 border-3 md:border-6 border-white transform hover:-rotate-3 transition-all duration-200 shadow-lg">
+              <div className="text-2xl md:text-4xl font-black mb-2">89%</div>
+              <div className="font-bold text-xs md:text-sm uppercase">
+                Lolos SNBT
+              </div>
+            </div>
+            <div className="bg-emerald-400 text-slate-900 p-4 md:p-6 border-3 md:border-6 border-white transform hover:rotate-2 transition-all duration-200 shadow-lg">
+              <div className="text-2xl md:text-4xl font-black mb-2">15K+</div>
+              <div className="font-bold text-xs md:text-sm uppercase">
+                Alumni Sukses
+              </div>
+            </div>
+            <div className="bg-violet-400 text-slate-900 p-4 md:p-6 border-3 md:border-6 border-white transform hover:-rotate-2 transition-all duration-200 shadow-lg">
+              <div className="text-2xl md:text-4xl font-black mb-2">500+</div>
+              <div className="font-bold text-xs md:text-sm uppercase">
+                PTN Partner
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonial Section */}
+      <section className="py-16 md:py-20 bg-white relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 md:mb-12">
+            <div className="bg-slate-900 text-orange-300 px-3 md:px-6 py-2 md:py-3 border-3 md:border-6 border-emerald-500 transform -rotate-2 inline-block mb-4 md:mb-6 shadow-lg">
+              <span className="text-sm md:text-lg font-black uppercase tracking-wider">
+                KATA MEREKA
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-slate-900 mb-4 md:mb-6 uppercase leading-none">
+              TESTIMONI
+              <br />
+              <span className="bg-rose-500 text-white px-2 md:px-3 py-1 md:py-2 border-3 md:border-6 border-slate-800 transform rotate-1 inline-block shadow-lg">
+                ALUMNI SUKSES
+              </span>
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            <div className="bg-orange-400 border-3 md:border-6 border-slate-800 p-4 md:p-6 transform hover:-rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg">
+              <div className="flex items-center mb-3 md:mb-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-orange-100 border-3 border-slate-800 rounded-full flex items-center justify-center mr-3 font-black text-lg">
+                  👩
+                </div>
+                <div>
+                  <h4 className="font-black text-slate-900 text-sm md:text-base">
+                    SARAH PUTRI
+                  </h4>
+                  <p className="text-slate-800 font-bold text-xs md:text-sm">
+                    UI - Fakultas Kedokteran
+                  </p>
+                </div>
+              </div>
+              <p className="text-slate-900 font-bold text-xs md:text-sm leading-tight">
+                "PintuUniv benar-benar game changer! Soal-soalnya mirip banget
+                sama UTBK asli. Analisis AI-nya membantu banget ngasih tau
+                kelemahan aku di mana."
+              </p>
+              <div className="flex mt-3">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className="text-yellow-500 text-lg">
+                    ⭐
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-blue-400 border-3 md:border-6 border-slate-800 p-4 md:p-6 transform hover:rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg">
+              <div className="flex items-center mb-3 md:mb-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-100 border-3 border-slate-800 rounded-full flex items-center justify-center mr-3 font-black text-lg">
+                  👨
+                </div>
+                <div>
+                  <h4 className="font-black text-slate-900 text-sm md:text-base">
+                    BUDI SANTOSO
+                  </h4>
+                  <p className="text-slate-800 font-bold text-xs md:text-sm">
+                    ITB - Teknik Informatika
+                  </p>
+                </div>
+              </div>
+              <p className="text-slate-900 font-bold text-xs md:text-sm leading-tight">
+                "Mentor personalnya luar biasa! Selalu siap bantu 24/7. Berkat
+                PintuUniv, aku bisa lolos ITB dengan skor yang memuaskan."
+              </p>
+              <div className="flex mt-3">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className="text-yellow-500 text-lg">
+                    ⭐
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-emerald-400 border-3 md:border-6 border-slate-800 p-4 md:p-6 transform hover:-rotate-2 hover:-translate-y-2 transition-all duration-200 shadow-lg">
+              <div className="flex items-center mb-3 md:mb-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-emerald-100 border-3 border-slate-800 rounded-full flex items-center justify-center mr-3 font-black text-lg">
+                  👩
+                </div>
+                <div>
+                  <h4 className="font-black text-slate-900 text-sm md:text-base">
+                    MAYA SARI
+                  </h4>
+                  <p className="text-slate-800 font-bold text-xs md:text-sm">
+                    UGM - Fakultas Hukum
+                  </p>
+                </div>
+              </div>
+              <p className="text-slate-900 font-bold text-xs md:text-sm leading-tight">
+                "Fitur simulasi ujiannya keren banget! Bikin aku udah terbiasa
+                sama tekanan waktu sebelum UTBK. Hasilnya? Alhamdulillah
+                keterima di UGM!"
+              </p>
+              <div className="flex mt-3">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className="text-yellow-500 text-lg">
+                    ⭐
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* University Partners Section */}
+      <section className="py-16 md:py-20 bg-orange-100 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 md:mb-12">
+            <div className="bg-slate-900 text-orange-300 px-3 md:px-6 py-2 md:py-3 border-3 md:border-6 border-violet-500 transform rotate-1 inline-block mb-4 md:mb-6 shadow-lg">
+              <span className="text-sm md:text-lg font-black uppercase tracking-wider">
+                MITRA UNIVERSITAS
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-slate-900 mb-4 md:mb-6 uppercase leading-none">
+              PTN TERBAIK
+              <br />
+              <span className="bg-blue-500 text-white px-2 md:px-3 py-1 md:py-2 border-3 md:border-6 border-slate-800 transform -rotate-1 inline-block shadow-lg">
+                MENUNGGU KAMU
+              </span>
+            </h2>
+            <div className="bg-emerald-400 text-slate-900 p-3 md:p-4 border-3 md:border-6 border-slate-800 transform rotate-2 max-w-4xl mx-auto shadow-lg">
+              <p className="text-sm md:text-base font-black uppercase">
+                SISWA PINTUUNIV BERHASIL MASUK KE PTN TOP INDONESIA!
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
+            {[
+              "UI",
+              "ITB",
+              "UGM",
+              "IPB",
+              "ITS",
+              "UNAIR",
+              "UNDIP",
+              "UNPAD",
+              "USU",
+              "UNHAS",
+              "UNSRI",
+              "UNAND",
+            ].map((univ, index) => (
+              <div
+                key={index}
+                className={`bg-white border-3 border-slate-800 p-3 md:p-4 transform hover:rotate-${
+                  index % 2 ? "2" : "-2"
+                } hover:-translate-y-1 transition-all duration-200 shadow-lg text-center`}
+              >
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-orange-400 to-blue-400 border-2 border-slate-800 mx-auto mb-2 flex items-center justify-center font-black text-xs md:text-sm text-white">
+                  🎓
+                </div>
+                <h4 className="font-black text-slate-900 text-xs md:text-sm">
+                  {univ}
+                </h4>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Section */}
       <section
         id="pricing"
-        className="py-16 md:py-20 bg-orange-100 relative overflow-hidden"
+        className="py-16 md:py-20 bg-orange-50 relative overflow-hidden"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
@@ -611,6 +819,120 @@ export default function Home() {
                 KLAIM TRIAL GRATIS →
               </button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 md:py-20 bg-slate-900 relative">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 md:mb-12">
+            <div className="bg-orange-400 text-slate-900 px-3 md:px-6 py-2 md:py-3 border-3 md:border-6 border-white transform -rotate-1 inline-block mb-4 md:mb-6 shadow-lg">
+              <span className="text-sm md:text-lg font-black uppercase tracking-wider">
+                PERTANYAAN UMUM
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white mb-4 md:mb-6 uppercase leading-none">
+              FAQ
+              <br />
+              <span className="bg-emerald-500 text-white px-2 md:px-3 py-1 md:py-2 border-3 md:border-6 border-orange-400 transform rotate-2 inline-block shadow-lg">
+                SEPUTAR PINTUUNIV
+              </span>
+            </h2>
+          </div>
+
+          <div className="space-y-4 md:space-y-6">
+            <div className="bg-white border-3 md:border-6 border-orange-400 p-4 md:p-6 transform hover:rotate-1 transition-all duration-200 shadow-lg">
+              <h3 className="font-black text-slate-900 text-sm md:text-base mb-2 md:mb-3 uppercase">
+                🤔 APAKAH SOAL-SOAL DI PINTUUNIV SESUAI DENGAN UTBK ASLI?
+              </h3>
+              <p className="text-slate-800 font-bold text-xs md:text-sm leading-relaxed">
+                Ya! Semua soal disusun oleh tim ahli yang berpengalaman dalam
+                UTBK dan disesuaikan dengan kisi-kisi terbaru. Soal-soal kami
+                juga rutin diupdate mengikuti perkembangan UTBK.
+              </p>
+            </div>
+
+            <div className="bg-white border-3 md:border-6 border-blue-400 p-4 md:p-6 transform hover:-rotate-1 transition-all duration-200 shadow-lg">
+              <h3 className="font-black text-slate-900 text-sm md:text-base mb-2 md:mb-3 uppercase">
+                💰 BAGAIMANA SISTEM PEMBAYARANNYA?
+              </h3>
+              <p className="text-slate-800 font-bold text-xs md:text-sm leading-relaxed">
+                Kami menerima berbagai metode pembayaran: Transfer bank,
+                e-wallet (GoPay, Dana, OVO), dan kartu kredit. Pembayaran dapat
+                dilakukan bulanan atau tahunan dengan diskon menarik.
+              </p>
+            </div>
+
+            <div className="bg-white border-3 md:border-6 border-emerald-400 p-4 md:p-6 transform hover:rotate-1 transition-all duration-200 shadow-lg">
+              <h3 className="font-black text-slate-900 text-sm md:text-base mb-2 md:mb-3 uppercase">
+                📱 APAKAH BISA DIAKSES MELALUI HP?
+              </h3>
+              <p className="text-slate-800 font-bold text-xs md:text-sm leading-relaxed">
+                Tentu saja! PintuUniv dapat diakses melalui website yang
+                mobile-friendly dan aplikasi mobile khusus. Kamu bisa belajar
+                kapan saja, di mana saja.
+              </p>
+            </div>
+
+            <div className="bg-white border-3 md:border-6 border-violet-400 p-4 md:p-6 transform hover:-rotate-1 transition-all duration-200 shadow-lg">
+              <h3 className="font-black text-slate-900 text-sm md:text-base mb-2 md:mb-3 uppercase">
+                🎯 BAGAIMANA CARA KERJA AI ANALYSIS?
+              </h3>
+              <p className="text-slate-800 font-bold text-xs md:text-sm leading-relaxed">
+                AI kami menganalisis pola jawaban, kecepatan mengerjakan, dan
+                tingkat kesulitan soal yang sering salah. Kemudian memberikan
+                rekomendasi materi yang perlu dipelajari lebih intensif.
+              </p>
+            </div>
+
+            <div className="bg-white border-3 md:border-6 border-rose-400 p-4 md:p-6 transform hover:rotate-1 transition-all duration-200 shadow-lg">
+              <h3 className="font-black text-slate-900 text-sm md:text-base mb-2 md:mb-3 uppercase">
+                🏆 APA GARANSI YANG DIBERIKAN?
+              </h3>
+              <p className="text-slate-800 font-bold text-xs md:text-sm leading-relaxed">
+                Untuk paket Premium, kami memberikan garansi nilai minimal. Jika
+                tidak tercapai, kami akan memberikan bimbingan tambahan gratis
+                hingga target tercapai.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 md:py-20 bg-gradient-to-br from-orange-400 to-orange-500 relative overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="bg-slate-900 text-orange-300 px-4 md:px-6 py-2 md:py-3 border-3 md:border-6 border-white transform rotate-2 inline-block mb-4 md:mb-6 shadow-lg">
+            <span className="text-sm md:text-lg font-black uppercase tracking-wider">
+              SIAP MULAI?
+            </span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white mb-4 md:mb-6 uppercase leading-none">
+            WUJUDKAN IMPIAN
+            <br />
+            <span className="bg-white text-slate-900 px-2 md:px-3 py-1 md:py-2 border-3 md:border-6 border-slate-800 transform -rotate-1 inline-block shadow-lg">
+              KULIAH DI PTN
+            </span>
+          </h2>
+          <p className="text-white font-bold text-sm md:text-base mb-6 md:mb-8 max-w-2xl mx-auto">
+            Bergabunglah dengan ribuan siswa yang telah merasakan manfaat
+            belajar di PintuUniv. Jangan sia-siakan kesempatan emas ini!
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-6 md:mb-8">
+            <button className="bg-white text-slate-900 px-6 md:px-8 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-slate-800 transform hover:-rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg">
+              🚀 DAFTAR SEKARANG
+            </button>
+            <button className="bg-slate-900 text-orange-400 px-6 md:px-8 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-white transform hover:rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg">
+              📞 HUBUNGI KAMI
+            </button>
+          </div>
+
+          <div className="bg-white text-slate-900 p-3 md:p-4 border-3 md:border-6 border-slate-800 transform -rotate-1 inline-block shadow-lg">
+            <p className="font-black text-xs md:text-sm uppercase">
+              ⏰ PROMO TERBATAS! DAFTAR HARI INI DAPAT DISKON 50%
+            </p>
           </div>
         </div>
       </section>

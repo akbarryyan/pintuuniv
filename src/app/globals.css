@@ -51,6 +51,10 @@ body {
   }
 }
 
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
