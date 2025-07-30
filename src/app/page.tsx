@@ -709,6 +709,12 @@ export default function Home() {
               >
                 📊 Dashboard
               </Link>
+              <Link
+                href="/profile"
+                className="bg-purple-500 text-white px-3 py-2 md:px-4 md:py-2 font-bold uppercase border-3 border-slate-800 hover:bg-purple-400 transform hover:-translate-y-1 transition-all duration-200 shadow-lg text-xs md:text-sm"
+              >
+                👤 Profile
+              </Link>
             </div>
           </div>
         </div>
