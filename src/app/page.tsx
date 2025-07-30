@@ -142,84 +142,84 @@ function TryoutSimulation() {
 
   if (!isActive && !gameFinished) {
     return (
-      <section className="py-16 md:py-20 bg-gradient-to-br from-orange-100 to-orange-200 relative overflow-hidden">
-        {/* Decorative Elements */}
-        <div className="absolute top-10 left-10 w-16 h-16 bg-emerald-400 rotate-12 border-4 border-slate-800 opacity-60"></div>
-        <div className="absolute top-20 right-20 w-12 h-12 bg-blue-400 rounded-full border-4 border-slate-800 opacity-60"></div>
-        <div className="absolute bottom-20 left-20 w-20 h-20 bg-violet-400 rotate-45 border-4 border-slate-800 opacity-60"></div>
-        <div className="absolute bottom-10 right-10 w-14 h-14 bg-rose-400 border-4 border-slate-800 opacity-60"></div>
+      <section className="py-8 md:py-16 lg:py-20 bg-gradient-to-br from-orange-100 to-orange-200 relative overflow-hidden">
+        {/* Decorative Elements - Hidden on mobile for better performance */}
+        <div className="hidden sm:block absolute top-10 left-10 w-12 h-12 md:w-16 md:h-16 bg-emerald-400 rotate-12 border-3 md:border-4 border-slate-800 opacity-60"></div>
+        <div className="hidden sm:block absolute top-20 right-20 w-8 h-8 md:w-12 md:h-12 bg-blue-400 rounded-full border-3 md:border-4 border-slate-800 opacity-60"></div>
+        <div className="hidden sm:block absolute bottom-20 left-20 w-16 h-16 md:w-20 md:h-20 bg-violet-400 rotate-45 border-3 md:border-4 border-slate-800 opacity-60"></div>
+        <div className="hidden sm:block absolute bottom-10 right-10 w-10 h-10 md:w-14 md:h-14 bg-rose-400 border-3 md:border-4 border-slate-800 opacity-60"></div>
 
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-8 md:mb-12">
-            <div className="bg-orange-500 text-white px-4 md:px-8 py-3 md:py-4 border-4 md:border-6 border-slate-800 transform rotate-2 inline-block mb-6 md:mb-8 shadow-brutal">
-              <span className="text-lg md:text-2xl font-black uppercase tracking-wider">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-6 md:mb-8 lg:mb-12">
+            <div className="bg-orange-500 text-white px-3 sm:px-4 md:px-8 py-2 sm:py-3 md:py-4 border-3 md:border-4 lg:border-6 border-slate-800 transform rotate-2 inline-block mb-4 sm:mb-6 md:mb-8 shadow-brutal">
+              <span className="text-sm sm:text-base md:text-lg lg:text-2xl font-black uppercase tracking-wider">
                 🎯 COBA GRATIS SEKARANG!
               </span>
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-slate-900 mb-6 md:mb-8 uppercase leading-none">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black text-slate-900 mb-4 sm:mb-6 md:mb-8 uppercase leading-tight">
               SIMULASI TRYOUT
               <br />
-              <span className="bg-emerald-500 text-white px-3 md:px-4 py-2 md:py-3 border-4 md:border-6 border-slate-800 transform -rotate-2 inline-block shadow-brutal">
+              <span className="bg-emerald-500 text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 md:py-3 border-3 md:border-4 lg:border-6 border-slate-800 transform -rotate-2 inline-block shadow-brutal">
                 INTERAKTIF
               </span>
             </h2>
-            <div className="bg-blue-400 text-slate-900 p-4 md:p-6 border-4 md:border-6 border-slate-800 transform rotate-1 max-w-3xl mx-auto shadow-brutal mb-8 md:mb-10">
-              <p className="text-base md:text-lg font-black uppercase">
+            <div className="bg-blue-400 text-slate-900 p-3 sm:p-4 md:p-6 border-3 md:border-4 lg:border-6 border-slate-800 transform rotate-1 max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-3xl mx-auto shadow-brutal mb-6 md:mb-8 lg:mb-10">
+              <p className="text-xs sm:text-sm md:text-base lg:text-lg font-black uppercase">
                 🚀 RASAKAN PENGALAMAN TRYOUT ASLI! 60 DETIK PER SOAL
               </p>
             </div>
           </div>
 
-          <div className="bg-white border-4 md:border-6 border-slate-800 p-8 md:p-12 transform hover:rotate-1 hover:-translate-y-2 transition-all duration-300 shadow-brutal">
-            <div className="mb-8 md:mb-10">
-              <div className="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-orange-400 to-orange-500 border-4 border-slate-800 mx-auto mb-6 flex items-center justify-center font-black text-3xl md:text-4xl shadow-brutal transform rotate-3">
+          <div className="bg-white border-3 md:border-4 lg:border-6 border-slate-800 p-4 sm:p-6 md:p-8 lg:p-12 transform hover:rotate-1 hover:-translate-y-2 transition-all duration-300 shadow-brutal">
+            <div className="mb-6 md:mb-8 lg:mb-10">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gradient-to-br from-orange-400 to-orange-500 border-3 md:border-4 border-slate-800 mx-auto mb-4 sm:mb-6 flex items-center justify-center font-black text-2xl sm:text-3xl md:text-4xl shadow-brutal transform rotate-3">
                 🎯
               </div>
-              <h3 className="text-2xl md:text-3xl font-black text-slate-900 mb-6 uppercase">
+              <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black text-slate-900 mb-4 sm:mb-6 uppercase text-center">
                 SIAP UNTUK CHALLENGE?
               </h3>
 
-              {/* Features Grid */}
-              <div className="grid md:grid-cols-2 gap-4 md:gap-6 mb-8">
-                <div className="bg-orange-100 border-3 border-slate-800 p-4 transform rotate-1 shadow-lg">
+              {/* Features Grid - Stack on mobile */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6 mb-6 md:mb-8">
+                <div className="bg-orange-100 border-3 border-slate-800 p-3 sm:p-4 transform rotate-1 shadow-lg">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 bg-orange-400 border-2 border-slate-800 flex items-center justify-center mr-3 font-black text-sm">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-orange-400 border-2 border-slate-800 flex items-center justify-center mr-2 sm:mr-3 font-black text-xs sm:text-sm">
                       📝
                     </div>
-                    <span className="text-slate-900 font-black text-sm md:text-base">
+                    <span className="text-slate-900 font-black text-xs sm:text-sm md:text-base">
                       5 SOAL PILIHAN GANDA
                     </span>
                   </div>
                 </div>
 
-                <div className="bg-blue-100 border-3 border-slate-800 p-4 transform -rotate-1 shadow-lg">
+                <div className="bg-blue-100 border-3 border-slate-800 p-3 sm:p-4 transform -rotate-1 shadow-lg">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 bg-blue-400 border-2 border-slate-800 flex items-center justify-center mr-3 font-black text-sm">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-400 border-2 border-slate-800 flex items-center justify-center mr-2 sm:mr-3 font-black text-xs sm:text-sm">
                       ⏰
                     </div>
-                    <span className="text-slate-900 font-black text-sm md:text-base">
+                    <span className="text-slate-900 font-black text-xs sm:text-sm md:text-base">
                       60 DETIK PER SOAL
                     </span>
                   </div>
                 </div>
 
-                <div className="bg-emerald-100 border-3 border-slate-800 p-4 transform rotate-1 shadow-lg">
+                <div className="bg-emerald-100 border-3 border-slate-800 p-3 sm:p-4 transform rotate-1 shadow-lg">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 bg-emerald-400 border-2 border-slate-800 flex items-center justify-center mr-3 font-black text-sm">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-emerald-400 border-2 border-slate-800 flex items-center justify-center mr-2 sm:mr-3 font-black text-xs sm:text-sm">
                       ⚡
                     </div>
-                    <span className="text-slate-900 font-black text-sm md:text-base">
+                    <span className="text-slate-900 font-black text-xs sm:text-sm md:text-base">
                       FEEDBACK LANGSUNG
                     </span>
                   </div>
                 </div>
 
-                <div className="bg-violet-100 border-3 border-slate-800 p-4 transform -rotate-1 shadow-lg">
+                <div className="bg-violet-100 border-3 border-slate-800 p-3 sm:p-4 transform -rotate-1 shadow-lg">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 bg-violet-400 border-2 border-slate-800 flex items-center justify-center mr-3 font-black text-sm">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-violet-400 border-2 border-slate-800 flex items-center justify-center mr-2 sm:mr-3 font-black text-xs sm:text-sm">
                       💡
                     </div>
-                    <span className="text-slate-900 font-black text-sm md:text-base">
+                    <span className="text-slate-900 font-black text-xs sm:text-sm md:text-base">
                       PEMBAHASAN DETAIL
                     </span>
                   </div>
@@ -229,16 +229,16 @@ function TryoutSimulation() {
 
             <button
               onClick={startTryout}
-              className="group bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-8 md:px-12 py-4 md:py-6 font-black text-lg md:text-xl uppercase border-4 md:border-6 border-slate-800 transform hover:-rotate-2 hover:-translate-y-3 hover:scale-105 transition-all duration-300 shadow-brutal w-full"
+              className="group bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 sm:px-6 md:px-8 lg:px-12 py-3 sm:py-4 md:py-6 font-black text-sm sm:text-base md:text-lg lg:text-xl uppercase border-3 md:border-4 lg:border-6 border-slate-800 transform hover:-rotate-2 hover:-translate-y-3 hover:scale-105 transition-all duration-300 shadow-brutal w-full"
             >
-              <span className="flex items-center justify-center gap-3">
+              <span className="flex items-center justify-center gap-2 sm:gap-3">
                 🚀 MULAI TRYOUT SEKARANG!
                 <span className="group-hover:animate-bounce">⚡</span>
               </span>
             </button>
 
-            <div className="mt-6 text-center">
-              <p className="text-slate-600 font-bold text-sm">
+            <div className="mt-4 sm:mt-6 text-center">
+              <p className="text-slate-600 font-bold text-xs sm:text-sm">
                 💯 GRATIS • TANPA DAFTAR • LANGSUNG MAIN
               </p>
             </div>
@@ -251,27 +251,27 @@ function TryoutSimulation() {
   if (gameFinished) {
     const percentage = Math.round((score / tryoutQuestions.length) * 100);
     return (
-      <section className="py-16 md:py-20 bg-gradient-to-br from-emerald-100 via-blue-50 to-violet-100 relative overflow-hidden">
-        {/* Celebration Elements */}
-        <div className="absolute top-10 left-10 w-12 h-12 bg-yellow-400 rotate-12 border-4 border-slate-800 opacity-70 animate-bounce"></div>
-        <div className="absolute top-20 right-16 w-8 h-8 bg-pink-400 rounded-full border-4 border-slate-800 opacity-60 animate-pulse"></div>
-        <div className="absolute bottom-20 left-20 w-16 h-16 bg-emerald-400 rotate-45 border-4 border-slate-800 opacity-50 animate-spin"></div>
-        <div className="absolute bottom-10 right-10 w-10 h-10 bg-blue-400 border-4 border-slate-800 opacity-60 animate-ping"></div>
+      <section className="py-8 md:py-16 lg:py-20 bg-gradient-to-br from-emerald-100 via-blue-50 to-violet-100 relative overflow-hidden">
+        {/* Celebration Elements - Hidden on mobile for better performance */}
+        <div className="hidden sm:block absolute top-10 left-10 w-8 h-8 md:w-12 md:h-12 bg-yellow-400 rotate-12 border-3 md:border-4 border-slate-800 opacity-70 animate-bounce"></div>
+        <div className="hidden sm:block absolute top-20 right-16 w-6 h-6 md:w-8 md:h-8 bg-pink-400 rounded-full border-3 md:border-4 border-slate-800 opacity-60 animate-pulse"></div>
+        <div className="hidden sm:block absolute bottom-20 left-20 w-12 h-12 md:w-16 md:h-16 bg-emerald-400 rotate-45 border-3 md:border-4 border-slate-800 opacity-50 animate-spin"></div>
+        <div className="hidden sm:block absolute bottom-10 right-10 w-8 h-8 md:w-10 md:h-10 bg-blue-400 border-3 md:border-4 border-slate-800 opacity-60 animate-ping"></div>
         <div
-          className="absolute top-1/2 left-1/4 w-6 h-6 bg-orange-400 border-4 border-slate-800 opacity-40 animate-bounce"
+          className="hidden md:block absolute top-1/2 left-1/4 w-4 h-4 md:w-6 md:h-6 bg-orange-400 border-3 md:border-4 border-slate-800 opacity-40 animate-bounce"
           style={{ animationDelay: "1s" }}
         ></div>
         <div
-          className="absolute top-1/3 right-1/3 w-14 h-14 bg-violet-400 rotate-12 border-4 border-slate-800 opacity-50 animate-pulse"
+          className="hidden md:block absolute top-1/3 right-1/3 w-10 h-10 md:w-14 md:h-14 bg-violet-400 rotate-12 border-3 md:border-4 border-slate-800 opacity-50 animate-pulse"
           style={{ animationDelay: "2s" }}
         ></div>
 
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="bg-white border-6 border-slate-800 p-10 md:p-16 transform hover:rotate-1 transition-all duration-300 shadow-brutal text-center">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
+          <div className="bg-white border-4 md:border-6 border-slate-800 p-6 sm:p-8 md:p-12 lg:p-16 transform hover:rotate-1 transition-all duration-300 shadow-brutal text-center">
             {/* Trophy/Icon Section */}
-            <div className="mb-8">
+            <div className="mb-6 md:mb-8">
               <div
-                className={`w-24 h-24 md:w-32 md:h-32 mx-auto mb-6 flex items-center justify-center font-black text-5xl md:text-6xl border-6 border-slate-800 shadow-brutal transform rotate-3 ${
+                className={`w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 mx-auto mb-4 sm:mb-6 flex items-center justify-center font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl border-4 md:border-6 border-slate-800 shadow-brutal transform rotate-3 ${
                   percentage >= 80
                     ? "bg-gradient-to-br from-yellow-400 to-yellow-500"
                     : percentage >= 60
@@ -282,15 +282,15 @@ function TryoutSimulation() {
                 {percentage >= 80 ? "🏆" : percentage >= 60 ? "👍" : "💪"}
               </div>
 
-              <div className="bg-slate-900 text-white px-6 py-3 border-4 border-slate-800 inline-block mb-4 font-black uppercase text-xl md:text-2xl shadow-brutal transform -rotate-2">
+              <div className="bg-slate-900 text-white px-3 sm:px-4 md:px-6 py-2 sm:py-3 border-3 md:border-4 border-slate-800 inline-block mb-3 sm:mb-4 font-black uppercase text-sm sm:text-base md:text-xl lg:text-2xl shadow-brutal transform -rotate-2">
                 TRYOUT SELESAI!
               </div>
             </div>
 
             {/* Score Display */}
-            <div className="mb-8">
+            <div className="mb-6 md:mb-8">
               <div
-                className={`p-6 border-6 border-slate-800 inline-block mb-6 font-black uppercase text-3xl md:text-4xl shadow-brutal transform rotate-1 ${
+                className={`p-4 sm:p-5 md:p-6 border-4 md:border-6 border-slate-800 inline-block mb-4 sm:mb-6 font-black uppercase text-xl sm:text-2xl md:text-3xl lg:text-4xl shadow-brutal transform rotate-1 ${
                   percentage >= 80
                     ? "bg-emerald-400 text-white"
                     : percentage >= 60
@@ -302,7 +302,7 @@ function TryoutSimulation() {
               </div>
 
               <div
-                className={`p-4 border-4 border-slate-800 inline-block font-black uppercase text-xl md:text-2xl shadow-lg transform -rotate-1 ${
+                className={`p-3 sm:p-4 border-3 md:border-4 border-slate-800 inline-block font-black uppercase text-base sm:text-lg md:text-xl lg:text-2xl shadow-lg transform -rotate-1 ${
                   percentage >= 80
                     ? "bg-yellow-400 text-slate-900"
                     : percentage >= 60
@@ -315,9 +315,9 @@ function TryoutSimulation() {
             </div>
 
             {/* Feedback Message */}
-            <div className="mb-8">
+            <div className="mb-6 md:mb-8">
               <div
-                className={`p-6 border-4 border-slate-800 max-w-2xl mx-auto shadow-brutal ${
+                className={`p-4 sm:p-5 md:p-6 border-3 md:border-4 border-slate-800 max-w-xs sm:max-w-lg md:max-w-2xl mx-auto shadow-brutal ${
                   percentage >= 80
                     ? "bg-emerald-100 border-emerald-400"
                     : percentage >= 60
@@ -325,7 +325,7 @@ function TryoutSimulation() {
                     : "bg-orange-100 border-orange-400"
                 }`}
               >
-                <p className="text-slate-900 font-black text-lg md:text-xl leading-relaxed">
+                <p className="text-slate-900 font-black text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed">
                   {percentage >= 80
                     ? "🎉 LUAR BIASA SEKALI! Kamu benar-benar siap untuk menghadapi UTBK! Pertahankan level ini!"
                     : percentage >= 60
@@ -336,46 +336,52 @@ function TryoutSimulation() {
             </div>
 
             {/* Detailed Score Breakdown */}
-            <div className="grid md:grid-cols-3 gap-4 mb-8">
-              <div className="bg-emerald-100 border-3 border-emerald-400 p-4 shadow-lg transform rotate-1">
-                <div className="text-2xl mb-2">✅</div>
-                <div className="font-black text-slate-900">BENAR</div>
-                <div className="text-xl font-black text-emerald-600">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 md:mb-8">
+              <div className="bg-emerald-100 border-3 border-emerald-400 p-3 sm:p-4 shadow-lg transform rotate-1">
+                <div className="text-xl sm:text-2xl mb-1 sm:mb-2">✅</div>
+                <div className="font-black text-slate-900 text-sm sm:text-base">
+                  BENAR
+                </div>
+                <div className="text-lg sm:text-xl font-black text-emerald-600">
                   {score}
                 </div>
               </div>
 
-              <div className="bg-red-100 border-3 border-red-400 p-4 shadow-lg transform -rotate-1">
-                <div className="text-2xl mb-2">❌</div>
-                <div className="font-black text-slate-900">SALAH</div>
-                <div className="text-xl font-black text-red-600">
+              <div className="bg-red-100 border-3 border-red-400 p-3 sm:p-4 shadow-lg transform -rotate-1">
+                <div className="text-xl sm:text-2xl mb-1 sm:mb-2">❌</div>
+                <div className="font-black text-slate-900 text-sm sm:text-base">
+                  SALAH
+                </div>
+                <div className="text-lg sm:text-xl font-black text-red-600">
                   {tryoutQuestions.length - score}
                 </div>
               </div>
 
-              <div className="bg-blue-100 border-3 border-blue-400 p-4 shadow-lg transform rotate-1">
-                <div className="text-2xl mb-2">📊</div>
-                <div className="font-black text-slate-900">AKURASI</div>
-                <div className="text-xl font-black text-blue-600">
+              <div className="bg-blue-100 border-3 border-blue-400 p-3 sm:p-4 shadow-lg transform rotate-1">
+                <div className="text-xl sm:text-2xl mb-1 sm:mb-2">📊</div>
+                <div className="font-black text-slate-900 text-sm sm:text-base">
+                  AKURASI
+                </div>
+                <div className="text-lg sm:text-xl font-black text-blue-600">
                   {percentage}%
                 </div>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <button
                 onClick={resetTryout}
-                className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-4 font-black text-lg uppercase border-4 border-slate-800 transform hover:-rotate-2 hover:-translate-y-3 hover:scale-105 transition-all duration-300 shadow-brutal"
+                className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 sm:px-6 md:px-8 py-3 sm:py-4 font-black text-sm sm:text-base md:text-lg uppercase border-3 md:border-4 border-slate-800 transform hover:-rotate-2 hover:-translate-y-3 hover:scale-105 transition-all duration-300 shadow-brutal"
               >
-                <span className="flex items-center justify-center gap-3">
+                <span className="flex items-center justify-center gap-2 sm:gap-3">
                   🔄 COBA LAGI
                   <span className="group-hover:animate-spin">⚡</span>
                 </span>
               </button>
 
-              <button className="group bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-8 py-4 font-black text-lg uppercase border-4 border-slate-800 transform hover:rotate-2 hover:-translate-y-3 hover:scale-105 transition-all duration-300 shadow-brutal">
-                <span className="flex items-center justify-center gap-3">
+              <button className="group bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 sm:px-6 md:px-8 py-3 sm:py-4 font-black text-sm sm:text-base md:text-lg uppercase border-3 md:border-4 border-slate-800 transform hover:rotate-2 hover:-translate-y-3 hover:scale-105 transition-all duration-300 shadow-brutal">
+                <span className="flex items-center justify-center gap-2 sm:gap-3">
                   📚 MULAI BELAJAR SERIUS
                   <span className="group-hover:animate-bounce">🚀</span>
                 </span>
@@ -383,9 +389,9 @@ function TryoutSimulation() {
             </div>
 
             {/* Call to Action */}
-            <div className="mt-8">
-              <div className="bg-gradient-to-r from-violet-400 to-violet-500 text-white p-4 border-4 border-slate-800 shadow-brutal transform hover:rotate-1 transition-all duration-200">
-                <p className="font-black text-sm md:text-base">
+            <div className="mt-6 sm:mt-8">
+              <div className="bg-gradient-to-r from-violet-400 to-violet-500 text-white p-3 sm:p-4 border-3 md:border-4 border-slate-800 shadow-brutal transform hover:rotate-1 transition-all duration-200">
+                <p className="font-black text-xs sm:text-sm md:text-base">
                   💡 MAU SCORE LEBIH TINGGI? GABUNG PROGRAM INTENSIF KAMI!
                 </p>
               </div>
@@ -399,38 +405,38 @@ function TryoutSimulation() {
   const question = tryoutQuestions[currentQuestion];
 
   return (
-    <section className="py-16 md:py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute top-20 left-10 w-8 h-8 bg-orange-400 rotate-45 border-2 border-white opacity-20 animate-pulse"></div>
-      <div className="absolute top-40 right-20 w-6 h-6 bg-emerald-400 rounded-full border-2 border-white opacity-30 animate-bounce"></div>
-      <div className="absolute bottom-32 left-16 w-10 h-10 bg-blue-400 border-2 border-white opacity-25 animate-spin"></div>
+    <section className="py-8 md:py-16 lg:py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+      {/* Animated Background Elements - Hidden on mobile */}
+      <div className="hidden sm:block absolute top-20 left-10 w-6 h-6 md:w-8 md:h-8 bg-orange-400 rotate-45 border-2 border-white opacity-20 animate-pulse"></div>
+      <div className="hidden sm:block absolute top-40 right-20 w-4 h-4 md:w-6 md:h-6 bg-emerald-400 rounded-full border-2 border-white opacity-30 animate-bounce"></div>
+      <div className="hidden sm:block absolute bottom-32 left-16 w-8 h-8 md:w-10 md:h-10 bg-blue-400 border-2 border-white opacity-25 animate-spin"></div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-5xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
         {/* Enhanced Header */}
-        <div className="text-center mb-8">
-          <div className="flex justify-center items-center gap-4 mb-6">
-            <div className="bg-orange-500 text-white px-4 py-2 border-3 border-white font-black uppercase text-sm transform rotate-2 shadow-brutal">
+        <div className="text-center mb-6 md:mb-8">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
+            <div className="bg-orange-500 text-white px-3 sm:px-4 py-2 border-3 border-white font-black uppercase text-xs sm:text-sm transform rotate-2 shadow-brutal">
               SOAL {currentQuestion + 1}/{tryoutQuestions.length}
             </div>
-            <div className="bg-emerald-500 text-white px-4 py-2 border-3 border-white font-black uppercase text-sm transform -rotate-2 shadow-brutal">
+            <div className="bg-emerald-500 text-white px-3 sm:px-4 py-2 border-3 border-white font-black uppercase text-xs sm:text-sm transform -rotate-2 shadow-brutal">
               SKOR: {score}
             </div>
           </div>
 
           {/* Enhanced Timer */}
           <div
-            className={`inline-block mb-6 transform hover:scale-105 transition-all duration-300 ${
+            className={`inline-block mb-4 sm:mb-6 transform hover:scale-105 transition-all duration-300 ${
               timeLeft <= 10 ? "animate-pulse" : ""
             }`}
           >
             <div
-              className={`px-6 py-4 border-4 border-white font-black text-2xl shadow-brutal ${
+              className={`px-4 sm:px-6 py-3 sm:py-4 border-3 sm:border-4 border-white font-black text-lg sm:text-xl md:text-2xl shadow-brutal ${
                 timeLeft <= 10
                   ? "bg-red-600 text-white"
                   : "bg-gradient-to-r from-orange-400 to-orange-500 text-white"
               }`}
             >
-              <span className="flex items-center gap-3">
+              <span className="flex items-center gap-2 sm:gap-3">
                 ⏰ {timeLeft} DETIK
                 {timeLeft <= 10 && <span className="animate-bounce">🚨</span>}
               </span>
@@ -439,21 +445,21 @@ function TryoutSimulation() {
         </div>
 
         {/* Enhanced Question Card */}
-        <div className="bg-white border-4 border-slate-800 p-8 mb-8 shadow-brutal transform hover:rotate-1 transition-all duration-300">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-500 border-3 border-slate-800 flex items-center justify-center font-black text-xl shadow-lg transform rotate-3">
+        <div className="bg-white border-3 md:border-4 border-slate-800 p-4 sm:p-6 md:p-8 mb-6 md:mb-8 shadow-brutal transform hover:rotate-1 transition-all duration-300">
+          <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-400 to-blue-500 border-2 sm:border-3 border-slate-800 flex items-center justify-center font-black text-sm sm:text-lg md:text-xl shadow-lg transform rotate-3 flex-shrink-0">
               ❓
             </div>
-            <h3 className="text-xl md:text-2xl font-black text-slate-900 leading-tight flex-1">
+            <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-slate-900 leading-tight flex-1">
               {question.question}
             </h3>
           </div>
 
           {/* Enhanced Options */}
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {question.options.map((option, index) => {
               let buttonClass =
-                "group w-full text-left p-5 border-4 border-slate-800 font-bold text-base transition-all duration-300 shadow-lg ";
+                "group w-full text-left p-3 sm:p-4 md:p-5 border-3 md:border-4 border-slate-800 font-bold text-sm sm:text-base transition-all duration-300 shadow-lg ";
 
               if (!isAnswered) {
                 buttonClass +=
@@ -480,13 +486,13 @@ function TryoutSimulation() {
                   className={buttonClass}
                   disabled={isAnswered}
                 >
-                  <div className="flex items-center">
-                    <span className="w-8 h-8 bg-slate-800 text-white border-2 border-white flex items-center justify-center font-black mr-4 group-hover:rotate-12 transition-transform">
+                  <div className="flex items-start sm:items-center">
+                    <span className="w-6 h-6 sm:w-8 sm:h-8 bg-slate-800 text-white border-2 border-white flex items-center justify-center font-black mr-3 sm:mr-4 group-hover:rotate-12 transition-transform flex-shrink-0 text-xs sm:text-sm">
                       {String.fromCharCode(65 + index)}
                     </span>
-                    <span className="flex-1">{option}</span>
+                    <span className="flex-1 leading-relaxed">{option}</span>
                     {!isAnswered && (
-                      <span className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="opacity-0 group-hover:opacity-100 transition-opacity hidden sm:inline">
                         👆
                       </span>
                     )}
@@ -499,19 +505,19 @@ function TryoutSimulation() {
 
         {/* Enhanced Result */}
         {showResult && (
-          <div className="bg-white border-4 border-slate-800 p-8 mb-8 shadow-brutal transform hover:-rotate-1 transition-all duration-300">
-            <div className="text-center mb-6">
+          <div className="bg-white border-3 md:border-4 border-slate-800 p-4 sm:p-6 md:p-8 mb-6 md:mb-8 shadow-brutal transform hover:-rotate-1 transition-all duration-300">
+            <div className="text-center mb-4 sm:mb-6">
               <div
-                className={`inline-block p-4 border-4 border-slate-800 shadow-brutal mb-4 ${
+                className={`inline-block p-3 sm:p-4 border-3 md:border-4 border-slate-800 shadow-brutal mb-3 sm:mb-4 ${
                   isCorrect
                     ? "bg-emerald-400 text-white"
                     : "bg-red-400 text-white"
                 }`}
               >
-                <div className="text-3xl font-black mb-2">
+                <div className="text-xl sm:text-2xl md:text-3xl font-black mb-1 sm:mb-2">
                   {isCorrect ? "✅ JAWABAN BENAR!" : "❌ JAWABAN SALAH!"}
                 </div>
-                <div className="text-lg font-bold">
+                <div className="text-sm sm:text-base md:text-lg font-bold">
                   {isCorrect
                     ? "Mantap! Kamu memang jago! 🎉"
                     : `Jawaban yang benar adalah ${String.fromCharCode(
@@ -521,16 +527,16 @@ function TryoutSimulation() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-4 border-blue-400 p-6 mb-6 shadow-lg">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-blue-400 border-3 border-slate-800 flex items-center justify-center font-black text-lg">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-3 md:border-4 border-blue-400 p-4 sm:p-6 mb-4 sm:mb-6 shadow-lg">
+              <div className="flex items-start gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-400 border-2 sm:border-3 border-slate-800 flex items-center justify-center font-black text-sm sm:text-lg flex-shrink-0">
                   💡
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-black text-slate-900 text-lg mb-3 uppercase">
+                  <h4 className="font-black text-slate-900 text-sm sm:text-base md:text-lg mb-2 sm:mb-3 uppercase">
                     PEMBAHASAN:
                   </h4>
-                  <p className="text-slate-800 font-medium leading-relaxed">
+                  <p className="text-slate-800 font-medium text-sm sm:text-base leading-relaxed">
                     {question.explanation}
                   </p>
                 </div>
@@ -540,9 +546,9 @@ function TryoutSimulation() {
             <div className="text-center">
               <button
                 onClick={nextQuestion}
-                className="group bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-8 py-4 font-black text-lg uppercase border-4 border-slate-800 transform hover:-rotate-2 hover:-translate-y-3 hover:scale-105 transition-all duration-300 shadow-brutal"
+                className="group bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 sm:px-6 md:px-8 py-3 sm:py-4 font-black text-sm sm:text-base md:text-lg uppercase border-3 md:border-4 border-slate-800 transform hover:-rotate-2 hover:-translate-y-3 hover:scale-105 transition-all duration-300 shadow-brutal w-full sm:w-auto"
               >
-                <span className="flex items-center justify-center gap-3">
+                <span className="flex items-center justify-center gap-2 sm:gap-3">
                   {currentQuestion < tryoutQuestions.length - 1
                     ? "➡️ SOAL BERIKUTNYA"
                     : "🏁 LIHAT HASIL AKHIR"}
@@ -555,10 +561,12 @@ function TryoutSimulation() {
 
         {/* Enhanced Progress Bar */}
         <div className="text-center">
-          <div className="bg-white border-4 border-slate-800 p-4 inline-block shadow-brutal transform hover:rotate-1 transition-all duration-200">
-            <div className="flex items-center gap-4">
-              <span className="font-black text-slate-900">📊 PROGRESS:</span>
-              <div className="w-32 h-3 bg-gray-200 border-2 border-slate-800">
+          <div className="bg-white border-3 md:border-4 border-slate-800 p-3 sm:p-4 inline-block shadow-brutal transform hover:rotate-1 transition-all duration-200">
+            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+              <span className="font-black text-slate-900 text-xs sm:text-sm">
+                📊 PROGRESS:
+              </span>
+              <div className="w-24 sm:w-32 h-2 sm:h-3 bg-gray-200 border-2 border-slate-800">
                 <div
                   className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
                   style={{
@@ -570,7 +578,7 @@ function TryoutSimulation() {
                   }}
                 ></div>
               </div>
-              <span className="font-black text-slate-900">
+              <span className="font-black text-slate-900 text-xs sm:text-sm">
                 {currentQuestion + (isAnswered ? 1 : 0)}/
                 {tryoutQuestions.length}
               </span>
