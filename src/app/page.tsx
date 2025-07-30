@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 // Simulasi data soal tryout
@@ -690,12 +691,18 @@ export default function Home() {
             </div>
 
             <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
-              <button className="bg-white text-slate-900 px-3 py-2 md:px-4 md:py-2 font-bold uppercase border-3 border-slate-800 hover:bg-orange-100 transform hover:-translate-y-1 transition-all duration-200 text-xs md:text-sm shadow-md">
-                Masuk
-              </button>
-              <button className="bg-orange-500 text-white px-3 py-2 md:px-4 md:py-2 font-bold uppercase border-3 border-slate-800 hover:bg-orange-400 transform hover:-translate-y-1 transition-all duration-200 shadow-lg text-xs md:text-sm">
-                Daftar
-              </button>
+              <Link
+                href="/login"
+                className="bg-white text-slate-900 px-3 py-2 md:px-4 md:py-2 font-bold uppercase border-3 border-slate-800 hover:bg-orange-100 transform hover:-translate-y-1 transition-all duration-200 text-xs md:text-sm shadow-md"
+              >
+                🔐 Masuk
+              </Link>
+              <Link
+                href="/register"
+                className="bg-orange-500 text-white px-3 py-2 md:px-4 md:py-2 font-bold uppercase border-3 border-slate-800 hover:bg-orange-400 transform hover:-translate-y-1 transition-all duration-200 shadow-lg text-xs md:text-sm"
+              >
+                📝 Daftar
+              </Link>
             </div>
           </div>
         </div>
@@ -745,11 +752,23 @@ export default function Home() {
                 </span>
               </button>
 
-              <button className="group bg-blue-400 text-slate-900 px-4 md:px-6 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-slate-800 transform hover:rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg w-full sm:w-auto">
+              <Link
+                href="/register"
+                className="group bg-orange-500 text-white px-4 md:px-6 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-slate-800 transform hover:rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg w-full sm:w-auto text-center"
+              >
                 <span className="flex items-center justify-center gap-2">
-                  👀 LIHAT DEMO
+                  🚀 DAFTAR SEKARANG
                 </span>
-              </button>
+              </Link>
+
+              <Link
+                href="/login"
+                className="group bg-blue-400 text-slate-900 px-4 md:px-6 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-slate-800 transform hover:rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg w-full sm:w-auto text-center"
+              >
+                <span className="flex items-center justify-center gap-2">
+                  � MASUK AKUN
+                </span>
+              </Link>
             </div>
 
             {/* Stats */}
