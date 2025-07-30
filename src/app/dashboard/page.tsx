@@ -80,6 +80,161 @@ export default function DashboardPage() {
     },
   ]);
 
+  // Available Tryouts Data
+  const [availableTryouts] = useState([
+    {
+      id: 1,
+      title: "Tryout UTBK Saintek Premium",
+      subject: "Matematika, Fisika, Kimia, Biologi",
+      duration: "180 menit",
+      questions: 120,
+      price: 49000,
+      type: "premium",
+      difficulty: "Sulit",
+      participants: 15420,
+      rating: 4.8,
+      deadline: "5 Agustus 2025",
+    },
+    {
+      id: 2,
+      title: "Tryout UTBK Soshum Gratis",
+      subject: "Sejarah, Geografi, Sosiologi, Ekonomi",
+      duration: "180 menit",
+      questions: 120,
+      price: 0,
+      type: "free",
+      difficulty: "Sedang",
+      participants: 28547,
+      rating: 4.6,
+      deadline: "10 Agustus 2025",
+    },
+    {
+      id: 3,
+      title: "Tryout Simulasi UTBK Nasional",
+      subject: "TPS + TKA Saintek/Soshum",
+      duration: "195 menit",
+      questions: 150,
+      price: 99000,
+      type: "premium",
+      difficulty: "Sangat Sulit",
+      participants: 8924,
+      rating: 4.9,
+      deadline: "15 Agustus 2025",
+    },
+    {
+      id: 4,
+      title: "Tryout TPS (Tes Potensi Skolastik)",
+      subject: "Penalaran Umum, Kuantitatif, Bahasa",
+      duration: "110 menit",
+      questions: 88,
+      price: 0,
+      type: "free",
+      difficulty: "Sedang",
+      participants: 42156,
+      rating: 4.5,
+      deadline: "20 Agustus 2025",
+    },
+    {
+      id: 5,
+      title: "Tryout UTBK Intensif Pro",
+      subject: "Semua Mata Pelajaran + Analisis AI",
+      duration: "200 menit",
+      questions: 160,
+      price: 149000,
+      type: "premium",
+      difficulty: "Sangat Sulit",
+      participants: 5847,
+      rating: 5.0,
+      deadline: "25 Agustus 2025",
+    },
+  ]);
+
+  // User's Tryout History
+  const [userTryouts] = useState([
+    {
+      id: 1,
+      title: "Tryout UTBK Matematika Dasar",
+      date: "29 Juli 2025",
+      time: "14:30",
+      score: 85,
+      maxScore: 100,
+      duration: "90 menit",
+      status: "completed",
+      rank: 245,
+      totalParticipants: 3520,
+      subject: "Matematika",
+      type: "free",
+    },
+    {
+      id: 2,
+      title: "Tryout UTBK Bahasa Inggris",
+      date: "27 Juli 2025",
+      time: "16:00",
+      score: 78,
+      maxScore: 100,
+      duration: "60 menit",
+      status: "completed",
+      rank: 892,
+      totalParticipants: 4120,
+      subject: "Bahasa Inggris",
+      type: "premium",
+    },
+    {
+      id: 3,
+      title: "Tryout UTBK Fisika Premium",
+      date: "25 Juli 2025",
+      time: "10:00",
+      score: 92,
+      maxScore: 100,
+      duration: "75 menit",
+      status: "completed",
+      rank: 89,
+      totalParticipants: 2847,
+      subject: "Fisika",
+      type: "premium",
+    },
+  ]);
+
+  // Upcoming User Tryouts
+  const [upcomingTryouts] = useState([
+    {
+      id: 1,
+      title: "Tryout UTBK Kimia Advanced",
+      date: "2 Agustus 2025",
+      time: "09:00 - 11:00",
+      duration: "120 menit",
+      questions: 80,
+      subject: "Kimia",
+      type: "premium",
+      status: "registered",
+      reminder: "1 hari lagi",
+    },
+    {
+      id: 2,
+      title: "Tryout Simulasi UTBK Nasional #6",
+      date: "5 Agustus 2025",
+      time: "08:00 - 11:15",
+      duration: "195 menit",
+      questions: 150,
+      subject: "TPS + TKA",
+      type: "premium",
+      status: "registered",
+      reminder: "4 hari lagi",
+    },
+    {
+      id: 3,
+      title: "Tryout UTBK Biologi Gratis",
+      date: "8 Agustus 2025",
+      time: "15:00 - 16:30",
+      duration: "90 menit",
+      questions: 60,
+      subject: "Biologi",
+      type: "free",
+      status: "available",
+      reminder: "7 hari lagi",
+    },
+  ]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-emerald-50">
       {/* Header Navigation */}
@@ -417,6 +572,252 @@ export default function DashboardPage() {
                   Achievement
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Available Tryouts Section */}
+        <div className="mt-6 sm:mt-8">
+          <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 shadow-brutal">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase">
+                🎯 Tryout Tersedia
+              </h2>
+              <Link
+                href="/tryouts"
+                className="bg-orange-500 text-white px-3 sm:px-4 py-1 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-orange-600 transition-colors"
+              >
+                Lihat Semua
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+              {availableTryouts.slice(0, 4).map((tryout) => (
+                <div
+                  key={tryout.id}
+                  className="border-2 border-slate-800 p-3 sm:p-4 bg-gradient-to-br from-slate-50 to-slate-100 hover:from-orange-50 hover:to-orange-100 transition-all duration-200 transform hover:-translate-y-1"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="font-black text-sm sm:text-base text-slate-900">
+                          {tryout.title}
+                        </h3>
+                        <div
+                          className={`px-2 py-1 border-2 border-slate-800 font-black text-xs ${
+                            tryout.type === "free"
+                              ? "bg-emerald-400 text-slate-900"
+                              : "bg-orange-400 text-slate-900"
+                          }`}
+                        >
+                          {tryout.type === "free" ? "GRATIS" : "PREMIUM"}
+                        </div>
+                      </div>
+                      <p className="text-xs sm:text-sm text-slate-600 font-bold mb-2">
+                        📚 {tryout.subject}
+                      </p>
+                      <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-600 mb-3">
+                        <div>⏱️ {tryout.duration}</div>
+                        <div>📝 {tryout.questions} soal</div>
+                        <div>
+                          👥 {tryout.participants.toLocaleString()} peserta
+                        </div>
+                        <div>⭐ {tryout.rating}/5.0</div>
+                      </div>
+                    </div>
+                    <div className="text-right ml-3">
+                      <div className="font-black text-sm sm:text-base text-slate-900 mb-1">
+                        {tryout.price === 0
+                          ? "GRATIS"
+                          : `Rp ${tryout.price.toLocaleString()}`}
+                      </div>
+                      <div
+                        className={`text-xs font-bold px-2 py-1 border border-slate-800 ${
+                          tryout.difficulty === "Sangat Sulit"
+                            ? "bg-red-100 text-red-800"
+                            : tryout.difficulty === "Sulit"
+                            ? "bg-orange-100 text-orange-800"
+                            : "bg-blue-100 text-blue-800"
+                        }`}
+                      >
+                        {tryout.difficulty}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-bold text-slate-600">
+                      📅 Deadline: {tryout.deadline}
+                    </p>
+                    <button
+                      className={`px-3 py-2 font-black text-xs border-2 border-slate-800 transition-colors ${
+                        tryout.type === "free"
+                          ? "bg-emerald-500 text-white hover:bg-emerald-600"
+                          : "bg-orange-500 text-white hover:bg-orange-600"
+                      }`}
+                    >
+                      {tryout.type === "free" ? "MULAI GRATIS" : "BELI & MULAI"}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Tryout History & Upcoming */}
+        <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+          {/* Tryout History */}
+          <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 shadow-brutal">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase">
+                📊 Riwayat Tryout
+              </h2>
+              <Link
+                href="/history"
+                className="bg-blue-500 text-white px-3 sm:px-4 py-1 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-blue-600 transition-colors"
+              >
+                Lihat Semua
+              </Link>
+            </div>
+
+            <div className="space-y-3 sm:space-y-4">
+              {userTryouts.map((tryout) => (
+                <div
+                  key={tryout.id}
+                  className="border-2 border-slate-800 p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-emerald-50 hover:from-blue-100 hover:to-emerald-100 transition-all duration-200"
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1">
+                      <h3 className="font-black text-sm text-slate-900 mb-1">
+                        {tryout.title}
+                      </h3>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-bold text-slate-600">
+                          📅 {tryout.date} • ⏰ {tryout.time}
+                        </span>
+                        <div
+                          className={`px-2 py-1 border border-slate-800 font-black text-xs ${
+                            tryout.type === "free"
+                              ? "bg-emerald-400 text-slate-900"
+                              : "bg-orange-400 text-slate-900"
+                          }`}
+                        >
+                          {tryout.type === "free" ? "GRATIS" : "PREMIUM"}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div
+                        className={`px-2 py-1 border-2 border-slate-800 font-black text-sm ${
+                          tryout.score >= 85
+                            ? "bg-emerald-500 text-white"
+                            : tryout.score >= 70
+                            ? "bg-blue-500 text-white"
+                            : "bg-orange-500 text-white"
+                        }`}
+                      >
+                        {tryout.score}/{tryout.maxScore}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-600 mb-2">
+                    <div>📚 {tryout.subject}</div>
+                    <div>⏱️ {tryout.duration}</div>
+                    <div>🏆 Peringkat #{tryout.rank}</div>
+                    <div>
+                      👥 {tryout.totalParticipants.toLocaleString()} peserta
+                    </div>
+                  </div>
+
+                  <button className="w-full bg-slate-900 text-white px-3 py-2 font-black text-xs border-2 border-slate-800 hover:bg-slate-800 transition-colors">
+                    📈 LIHAT DETAIL HASIL
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Upcoming Tryouts */}
+          <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 shadow-brutal">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase">
+                🗓️ Tryout Mendatang
+              </h2>
+              <Link
+                href="/upcoming"
+                className="bg-purple-500 text-white px-3 sm:px-4 py-1 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-purple-600 transition-colors"
+              >
+                Lihat Semua
+              </Link>
+            </div>
+
+            <div className="space-y-3 sm:space-y-4">
+              {upcomingTryouts.map((tryout) => (
+                <div
+                  key={tryout.id}
+                  className="border-2 border-slate-800 p-3 sm:p-4 bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 transition-all duration-200"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <h3 className="font-black text-sm text-slate-900 mb-1">
+                        {tryout.title}
+                      </h3>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-bold text-slate-600">
+                          📅 {tryout.date}
+                        </span>
+                        <div
+                          className={`px-2 py-1 border border-slate-800 font-black text-xs ${
+                            tryout.type === "free"
+                              ? "bg-emerald-400 text-slate-900"
+                              : "bg-orange-400 text-slate-900"
+                          }`}
+                        >
+                          {tryout.type === "free" ? "GRATIS" : "PREMIUM"}
+                        </div>
+                      </div>
+                      <p className="text-xs font-bold text-slate-600 mb-2">
+                        ⏰ {tryout.time} • ⏱️ {tryout.duration}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <div
+                        className={`px-2 py-1 border-2 border-slate-800 font-black text-xs ${
+                          tryout.status === "registered"
+                            ? "bg-emerald-400 text-slate-900"
+                            : "bg-blue-400 text-slate-900"
+                        }`}
+                      >
+                        {tryout.status === "registered"
+                          ? "TERDAFTAR"
+                          : "TERSEDIA"}
+                      </div>
+                      <p className="text-xs font-bold text-purple-600 mt-1">
+                        {tryout.reminder}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-600 mb-3">
+                    <div>📚 {tryout.subject}</div>
+                    <div>📝 {tryout.questions} soal</div>
+                  </div>
+
+                  <button
+                    className={`w-full px-3 py-2 font-black text-xs border-2 border-slate-800 transition-colors ${
+                      tryout.status === "registered"
+                        ? "bg-emerald-500 text-white hover:bg-emerald-600"
+                        : "bg-purple-500 text-white hover:bg-purple-600"
+                    }`}
+                  >
+                    {tryout.status === "registered"
+                      ? "✅ SUDAH TERDAFTAR"
+                      : "📝 DAFTAR SEKARANG"}
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         </div>
