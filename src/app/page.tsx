@@ -703,6 +703,12 @@ export default function Home() {
               >
                 📝 Daftar
               </Link>
+              <Link
+                href="/dashboard"
+                className="bg-blue-500 text-white px-3 py-2 md:px-4 md:py-2 font-bold uppercase border-3 border-slate-800 hover:bg-blue-400 transform hover:-translate-y-1 transition-all duration-200 shadow-lg text-xs md:text-sm"
+              >
+                📊 Dashboard
+              </Link>
             </div>
           </div>
         </div>

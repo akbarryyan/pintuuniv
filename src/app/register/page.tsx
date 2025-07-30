@@ -40,7 +40,8 @@ export default function RegisterPage() {
     setTimeout(() => {
       console.log("Register data:", formData);
       setIsLoading(false);
-      // Redirect logic here
+      // Redirect to dashboard after successful registration
+      window.location.href = "/dashboard";
     }, 2000);
   };
 
@@ -81,7 +82,9 @@ export default function RegisterPage() {
           <div className="text-center mb-6 sm:mb-8">
             <Link href="/" className="inline-block mb-4 sm:mb-6">
               <div className="bg-emerald-500 text-white px-4 sm:px-6 py-2 sm:py-3 border-3 sm:border-4 border-slate-800 shadow-brutal transform rotate-2 hover:rotate-3 transition-transform">
-                <span className="text-lg sm:text-2xl font-black">📚 PINTU UNIV</span>
+                <span className="text-lg sm:text-2xl font-black">
+                  📚 PINTU UNIV
+                </span>
               </div>
             </Link>
 
@@ -231,7 +234,9 @@ export default function RegisterPage() {
                     />
                     <button
                       type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
                       className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-slate-600 hover:text-slate-900 font-black text-sm"
                     >
                       {showConfirmPassword ? "🙈" : "👁️"}
@@ -289,7 +294,9 @@ export default function RegisterPage() {
                     </>
                   ) : (
                     <>
-                      <span className="text-xs sm:text-base">🚀 DAFTAR SEKARANG</span>
+                      <span className="text-xs sm:text-base">
+                        🚀 DAFTAR SEKARANG
+                      </span>
                       <span className="group-hover:animate-bounce">🎯</span>
                     </>
                   )}

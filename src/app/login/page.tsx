@@ -20,7 +20,8 @@ export default function LoginPage() {
     setTimeout(() => {
       console.log("Login data:", formData);
       setIsLoading(false);
-      // Redirect logic here
+      // Redirect to dashboard after successful login
+      window.location.href = "/dashboard";
     }, 2000);
   };
 
