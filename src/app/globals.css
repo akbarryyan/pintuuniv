@@ -322,6 +322,54 @@ html {
   color: white;
 }
 
+/* Custom shadow for neobrutalism style - more subtle */
+.shadow-brutal {
+  box-shadow: 4px 4px 0px 0px rgba(71, 85, 105, 0.8);
+}
+
+@media (min-width: 768px) {
+  .shadow-brutal {
+    box-shadow: 6px 6px 0px 0px rgba(71, 85, 105, 0.8);
+  }
+}
+
+/* Responsive border utilities */
+.border-3 {
+  border-width: 3px;
+}
+
+@media (min-width: 768px) {
+  .md\:border-6 {
+    border-width: 6px;
+  }
+
+  .md\:border-8 {
+    border-width: 8px;
+  }
+}
+
+/* Mobile-first responsive improvements */
+@media (max-width: 640px) {
+  .text-responsive-xl {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+/* Improved mobile interaction - disable hover effects on touch devices */
+@media (hover: none) {
+  .group:hover .group-hover\:scale-105,
+  .hover\:-translate-y-1:hover,
+  .hover\:-translate-y-2:hover,
+  .hover\:-translate-y-4:hover,
+  .hover\:rotate-1:hover,
+  .hover\:-rotate-1:hover,
+  .hover\:rotate-2:hover,
+  .hover\:-rotate-2:hover {
+    transform: none;
+  }
+}
+
 /* Enhanced button hover effects */
 .btn-gradient-hover {
   position: relative;
