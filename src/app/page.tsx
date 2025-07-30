@@ -142,52 +142,106 @@ function TryoutSimulation() {
 
   if (!isActive && !gameFinished) {
     return (
-      <section className="py-16 md:py-20 bg-slate-900 relative overflow-hidden">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 md:py-20 bg-gradient-to-br from-orange-100 to-orange-200 relative overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute top-10 left-10 w-16 h-16 bg-emerald-400 rotate-12 border-4 border-slate-800 opacity-60"></div>
+        <div className="absolute top-20 right-20 w-12 h-12 bg-blue-400 rounded-full border-4 border-slate-800 opacity-60"></div>
+        <div className="absolute bottom-20 left-20 w-20 h-20 bg-violet-400 rotate-45 border-4 border-slate-800 opacity-60"></div>
+        <div className="absolute bottom-10 right-10 w-14 h-14 bg-rose-400 border-4 border-slate-800 opacity-60"></div>
+
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-8 md:mb-12">
-            <div className="bg-orange-400 text-slate-900 px-3 md:px-6 py-2 md:py-3 border-3 md:border-6 border-white transform rotate-1 inline-block mb-4 md:mb-6 shadow-lg">
-              <span className="text-sm md:text-lg font-black uppercase tracking-wider">
-                COBA SEKARANG!
+            <div className="bg-orange-500 text-white px-4 md:px-8 py-3 md:py-4 border-4 md:border-6 border-slate-800 transform rotate-2 inline-block mb-6 md:mb-8 shadow-brutal">
+              <span className="text-lg md:text-2xl font-black uppercase tracking-wider">
+                🎯 COBA GRATIS SEKARANG!
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white mb-4 md:mb-6 uppercase leading-none">
+            <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-slate-900 mb-6 md:mb-8 uppercase leading-none">
               SIMULASI TRYOUT
               <br />
-              <span className="bg-emerald-500 text-white px-2 md:px-3 py-1 md:py-2 border-3 md:border-6 border-orange-400 transform -rotate-1 inline-block shadow-lg">
+              <span className="bg-emerald-500 text-white px-3 md:px-4 py-2 md:py-3 border-4 md:border-6 border-slate-800 transform -rotate-2 inline-block shadow-brutal">
                 INTERAKTIF
               </span>
             </h2>
-            <div className="bg-blue-400 text-slate-900 p-3 md:p-4 border-3 md:border-6 border-white transform -rotate-1 max-w-2xl mx-auto shadow-lg mb-6 md:mb-8">
-              <p className="text-sm md:text-base font-black uppercase">
-                RASAKAN PENGALAMAN TRYOUT ASLI! 60 DETIK PER SOAL
+            <div className="bg-blue-400 text-slate-900 p-4 md:p-6 border-4 md:border-6 border-slate-800 transform rotate-1 max-w-3xl mx-auto shadow-brutal mb-8 md:mb-10">
+              <p className="text-base md:text-lg font-black uppercase">
+                🚀 RASAKAN PENGALAMAN TRYOUT ASLI! 60 DETIK PER SOAL
               </p>
             </div>
           </div>
 
-          <div className="bg-white border-3 md:border-6 border-orange-400 p-6 md:p-8 transform hover:rotate-1 transition-all duration-200 shadow-lg text-center">
-            <div className="mb-6 md:mb-8">
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-orange-400 border-3 border-slate-800 mx-auto mb-4 flex items-center justify-center font-black text-2xl md:text-3xl shadow-lg">
+          <div className="bg-white border-4 md:border-6 border-slate-800 p-8 md:p-12 transform hover:rotate-1 hover:-translate-y-2 transition-all duration-300 shadow-brutal">
+            <div className="mb-8 md:mb-10">
+              <div className="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-orange-400 to-orange-500 border-4 border-slate-800 mx-auto mb-6 flex items-center justify-center font-black text-3xl md:text-4xl shadow-brutal transform rotate-3">
                 🎯
               </div>
-              <h3 className="text-xl md:text-2xl font-black text-slate-900 mb-3 uppercase">
+              <h3 className="text-2xl md:text-3xl font-black text-slate-900 mb-6 uppercase">
                 SIAP UNTUK CHALLENGE?
               </h3>
-              <p className="text-slate-800 font-bold text-sm md:text-base mb-4">
-                • 5 soal pilihan ganda
-                <br />
-                • 60 detik per soal
-                <br />
-                • Feedback langsung
-                <br />• Pembahasan detail
-              </p>
+
+              {/* Features Grid */}
+              <div className="grid md:grid-cols-2 gap-4 md:gap-6 mb-8">
+                <div className="bg-orange-100 border-3 border-slate-800 p-4 transform rotate-1 shadow-lg">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 bg-orange-400 border-2 border-slate-800 flex items-center justify-center mr-3 font-black text-sm">
+                      📝
+                    </div>
+                    <span className="text-slate-900 font-black text-sm md:text-base">
+                      5 SOAL PILIHAN GANDA
+                    </span>
+                  </div>
+                </div>
+
+                <div className="bg-blue-100 border-3 border-slate-800 p-4 transform -rotate-1 shadow-lg">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 bg-blue-400 border-2 border-slate-800 flex items-center justify-center mr-3 font-black text-sm">
+                      ⏰
+                    </div>
+                    <span className="text-slate-900 font-black text-sm md:text-base">
+                      60 DETIK PER SOAL
+                    </span>
+                  </div>
+                </div>
+
+                <div className="bg-emerald-100 border-3 border-slate-800 p-4 transform rotate-1 shadow-lg">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 bg-emerald-400 border-2 border-slate-800 flex items-center justify-center mr-3 font-black text-sm">
+                      ⚡
+                    </div>
+                    <span className="text-slate-900 font-black text-sm md:text-base">
+                      FEEDBACK LANGSUNG
+                    </span>
+                  </div>
+                </div>
+
+                <div className="bg-violet-100 border-3 border-slate-800 p-4 transform -rotate-1 shadow-lg">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 bg-violet-400 border-2 border-slate-800 flex items-center justify-center mr-3 font-black text-sm">
+                      💡
+                    </div>
+                    <span className="text-slate-900 font-black text-sm md:text-base">
+                      PEMBAHASAN DETAIL
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <button
               onClick={startTryout}
-              className="bg-emerald-500 text-white px-6 md:px-8 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-slate-800 transform hover:-rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg"
+              className="group bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-8 md:px-12 py-4 md:py-6 font-black text-lg md:text-xl uppercase border-4 md:border-6 border-slate-800 transform hover:-rotate-2 hover:-translate-y-3 hover:scale-105 transition-all duration-300 shadow-brutal w-full"
             >
-              🚀 MULAI TRYOUT SEKARANG!
+              <span className="flex items-center justify-center gap-3">
+                🚀 MULAI TRYOUT SEKARANG!
+                <span className="group-hover:animate-bounce">⚡</span>
+              </span>
             </button>
+
+            <div className="mt-6 text-center">
+              <p className="text-slate-600 font-bold text-sm">
+                💯 GRATIS • TANPA DAFTAR • LANGSUNG MAIN
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -197,38 +251,144 @@ function TryoutSimulation() {
   if (gameFinished) {
     const percentage = Math.round((score / tryoutQuestions.length) * 100);
     return (
-      <section className="py-16 md:py-20 bg-slate-900 relative overflow-hidden">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white border-3 md:border-6 border-orange-400 p-6 md:p-8 transform hover:rotate-1 transition-all duration-200 shadow-lg text-center">
-            <div className="mb-6 md:mb-8">
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-emerald-400 border-3 border-slate-800 mx-auto mb-4 flex items-center justify-center font-black text-2xl md:text-3xl shadow-lg">
+      <section className="py-16 md:py-20 bg-gradient-to-br from-emerald-100 via-blue-50 to-violet-100 relative overflow-hidden">
+        {/* Celebration Elements */}
+        <div className="absolute top-10 left-10 w-12 h-12 bg-yellow-400 rotate-12 border-4 border-slate-800 opacity-70 animate-bounce"></div>
+        <div className="absolute top-20 right-16 w-8 h-8 bg-pink-400 rounded-full border-4 border-slate-800 opacity-60 animate-pulse"></div>
+        <div className="absolute bottom-20 left-20 w-16 h-16 bg-emerald-400 rotate-45 border-4 border-slate-800 opacity-50 animate-spin"></div>
+        <div className="absolute bottom-10 right-10 w-10 h-10 bg-blue-400 border-4 border-slate-800 opacity-60 animate-ping"></div>
+        <div
+          className="absolute top-1/2 left-1/4 w-6 h-6 bg-orange-400 border-4 border-slate-800 opacity-40 animate-bounce"
+          style={{ animationDelay: "1s" }}
+        ></div>
+        <div
+          className="absolute top-1/3 right-1/3 w-14 h-14 bg-violet-400 rotate-12 border-4 border-slate-800 opacity-50 animate-pulse"
+          style={{ animationDelay: "2s" }}
+        ></div>
+
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="bg-white border-6 border-slate-800 p-10 md:p-16 transform hover:rotate-1 transition-all duration-300 shadow-brutal text-center">
+            {/* Trophy/Icon Section */}
+            <div className="mb-8">
+              <div
+                className={`w-24 h-24 md:w-32 md:h-32 mx-auto mb-6 flex items-center justify-center font-black text-5xl md:text-6xl border-6 border-slate-800 shadow-brutal transform rotate-3 ${
+                  percentage >= 80
+                    ? "bg-gradient-to-br from-yellow-400 to-yellow-500"
+                    : percentage >= 60
+                    ? "bg-gradient-to-br from-blue-400 to-blue-500"
+                    : "bg-gradient-to-br from-orange-400 to-orange-500"
+                }`}
+              >
                 {percentage >= 80 ? "🏆" : percentage >= 60 ? "👍" : "💪"}
               </div>
-              <h3 className="text-xl md:text-2xl font-black text-slate-900 mb-3 uppercase">
+
+              <div className="bg-slate-900 text-white px-6 py-3 border-4 border-slate-800 inline-block mb-4 font-black uppercase text-xl md:text-2xl shadow-brutal transform -rotate-2">
                 TRYOUT SELESAI!
-              </h3>
-              <div className="bg-orange-400 text-slate-900 p-3 md:p-4 border-3 border-slate-800 inline-block mb-4 font-black uppercase text-lg md:text-xl">
-                SKOR: {score}/{tryoutQuestions.length} ({percentage}%)
               </div>
-              <p className="text-slate-800 font-bold text-sm md:text-base">
-                {percentage >= 80
-                  ? "🎉 LUAR BIASA! Kamu siap untuk UTBK!"
-                  : percentage >= 60
-                  ? "👏 BAGUS! Terus berlatih untuk hasil yang lebih baik!"
-                  : "💪 SEMANGAT! Latihan lagi untuk meningkatkan skor!"}
-              </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            {/* Score Display */}
+            <div className="mb-8">
+              <div
+                className={`p-6 border-6 border-slate-800 inline-block mb-6 font-black uppercase text-3xl md:text-4xl shadow-brutal transform rotate-1 ${
+                  percentage >= 80
+                    ? "bg-emerald-400 text-white"
+                    : percentage >= 60
+                    ? "bg-blue-400 text-white"
+                    : "bg-orange-400 text-slate-900"
+                }`}
+              >
+                SKOR: {score}/{tryoutQuestions.length}
+              </div>
+
+              <div
+                className={`p-4 border-4 border-slate-800 inline-block font-black uppercase text-xl md:text-2xl shadow-lg transform -rotate-1 ${
+                  percentage >= 80
+                    ? "bg-yellow-400 text-slate-900"
+                    : percentage >= 60
+                    ? "bg-green-400 text-slate-900"
+                    : "bg-red-400 text-white"
+                }`}
+              >
+                PERSENTASE: {percentage}%
+              </div>
+            </div>
+
+            {/* Feedback Message */}
+            <div className="mb-8">
+              <div
+                className={`p-6 border-4 border-slate-800 max-w-2xl mx-auto shadow-brutal ${
+                  percentage >= 80
+                    ? "bg-emerald-100 border-emerald-400"
+                    : percentage >= 60
+                    ? "bg-blue-100 border-blue-400"
+                    : "bg-orange-100 border-orange-400"
+                }`}
+              >
+                <p className="text-slate-900 font-black text-lg md:text-xl leading-relaxed">
+                  {percentage >= 80
+                    ? "🎉 LUAR BIASA SEKALI! Kamu benar-benar siap untuk menghadapi UTBK! Pertahankan level ini!"
+                    : percentage >= 60
+                    ? "👏 BAGUS BANGET! Kamu sudah di jalur yang tepat! Terus berlatih untuk hasil yang lebih maksimal!"
+                    : "💪 SEMANGAT TERUS! Ini adalah awal yang baik! Dengan latihan rutin, kamu pasti bisa lebih baik lagi!"}
+                </p>
+              </div>
+            </div>
+
+            {/* Detailed Score Breakdown */}
+            <div className="grid md:grid-cols-3 gap-4 mb-8">
+              <div className="bg-emerald-100 border-3 border-emerald-400 p-4 shadow-lg transform rotate-1">
+                <div className="text-2xl mb-2">✅</div>
+                <div className="font-black text-slate-900">BENAR</div>
+                <div className="text-xl font-black text-emerald-600">
+                  {score}
+                </div>
+              </div>
+
+              <div className="bg-red-100 border-3 border-red-400 p-4 shadow-lg transform -rotate-1">
+                <div className="text-2xl mb-2">❌</div>
+                <div className="font-black text-slate-900">SALAH</div>
+                <div className="text-xl font-black text-red-600">
+                  {tryoutQuestions.length - score}
+                </div>
+              </div>
+
+              <div className="bg-blue-100 border-3 border-blue-400 p-4 shadow-lg transform rotate-1">
+                <div className="text-2xl mb-2">📊</div>
+                <div className="font-black text-slate-900">AKURASI</div>
+                <div className="text-xl font-black text-blue-600">
+                  {percentage}%
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={resetTryout}
-                className="bg-blue-500 text-white px-6 md:px-8 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-slate-800 transform hover:-rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg"
+                className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-4 font-black text-lg uppercase border-4 border-slate-800 transform hover:-rotate-2 hover:-translate-y-3 hover:scale-105 transition-all duration-300 shadow-brutal"
               >
-                🔄 COBA LAGI
+                <span className="flex items-center justify-center gap-3">
+                  🔄 COBA LAGI
+                  <span className="group-hover:animate-spin">⚡</span>
+                </span>
               </button>
-              <button className="bg-emerald-500 text-white px-6 md:px-8 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-slate-800 transform hover:rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg">
-                📚 MULAI BELAJAR SERIUS
+
+              <button className="group bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-8 py-4 font-black text-lg uppercase border-4 border-slate-800 transform hover:rotate-2 hover:-translate-y-3 hover:scale-105 transition-all duration-300 shadow-brutal">
+                <span className="flex items-center justify-center gap-3">
+                  📚 MULAI BELAJAR SERIUS
+                  <span className="group-hover:animate-bounce">🚀</span>
+                </span>
               </button>
+            </div>
+
+            {/* Call to Action */}
+            <div className="mt-8">
+              <div className="bg-gradient-to-r from-violet-400 to-violet-500 text-white p-4 border-4 border-slate-800 shadow-brutal transform hover:rotate-1 transition-all duration-200">
+                <p className="font-black text-sm md:text-base">
+                  💡 MAU SCORE LEBIH TINGGI? GABUNG PROGRAM INTENSIF KAMI!
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -239,43 +399,75 @@ function TryoutSimulation() {
   const question = tryoutQuestions[currentQuestion];
 
   return (
-    <section className="py-16 md:py-20 bg-slate-900 relative overflow-hidden">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-6 md:mb-8">
-          <div className="bg-orange-400 text-slate-900 px-3 md:px-4 py-1 md:py-2 border-3 border-white inline-block mb-4 font-black uppercase text-sm md:text-base">
-            SOAL {currentQuestion + 1} dari {tryoutQuestions.length}
+    <section className="py-16 md:py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute top-20 left-10 w-8 h-8 bg-orange-400 rotate-45 border-2 border-white opacity-20 animate-pulse"></div>
+      <div className="absolute top-40 right-20 w-6 h-6 bg-emerald-400 rounded-full border-2 border-white opacity-30 animate-bounce"></div>
+      <div className="absolute bottom-32 left-16 w-10 h-10 bg-blue-400 border-2 border-white opacity-25 animate-spin"></div>
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Enhanced Header */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center items-center gap-4 mb-6">
+            <div className="bg-orange-500 text-white px-4 py-2 border-3 border-white font-black uppercase text-sm transform rotate-2 shadow-brutal">
+              SOAL {currentQuestion + 1}/{tryoutQuestions.length}
+            </div>
+            <div className="bg-emerald-500 text-white px-4 py-2 border-3 border-white font-black uppercase text-sm transform -rotate-2 shadow-brutal">
+              SKOR: {score}
+            </div>
           </div>
 
-          {/* Timer */}
-          <div className="bg-red-500 text-white px-4 md:px-6 py-2 md:py-3 border-3 md:border-6 border-white inline-block mb-4 md:mb-6 font-black text-lg md:text-xl shadow-lg">
-            ⏰ {timeLeft} DETIK
+          {/* Enhanced Timer */}
+          <div
+            className={`inline-block mb-6 transform hover:scale-105 transition-all duration-300 ${
+              timeLeft <= 10 ? "animate-pulse" : ""
+            }`}
+          >
+            <div
+              className={`px-6 py-4 border-4 border-white font-black text-2xl shadow-brutal ${
+                timeLeft <= 10
+                  ? "bg-red-600 text-white"
+                  : "bg-gradient-to-r from-orange-400 to-orange-500 text-white"
+              }`}
+            >
+              <span className="flex items-center gap-3">
+                ⏰ {timeLeft} DETIK
+                {timeLeft <= 10 && <span className="animate-bounce">🚨</span>}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Question */}
-        <div className="bg-white border-3 md:border-6 border-orange-400 p-6 md:p-8 mb-6 md:mb-8 shadow-lg">
-          <h3 className="text-lg md:text-xl font-black text-slate-900 mb-6 leading-tight">
-            {question.question}
-          </h3>
+        {/* Enhanced Question Card */}
+        <div className="bg-white border-4 border-slate-800 p-8 mb-8 shadow-brutal transform hover:rotate-1 transition-all duration-300">
+          <div className="flex items-start gap-4 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-500 border-3 border-slate-800 flex items-center justify-center font-black text-xl shadow-lg transform rotate-3">
+              ❓
+            </div>
+            <h3 className="text-xl md:text-2xl font-black text-slate-900 leading-tight flex-1">
+              {question.question}
+            </h3>
+          </div>
 
-          {/* Options */}
-          <div className="space-y-3 md:space-y-4">
+          {/* Enhanced Options */}
+          <div className="space-y-4">
             {question.options.map((option, index) => {
               let buttonClass =
-                "w-full text-left p-3 md:p-4 border-3 border-slate-800 font-bold text-sm md:text-base transition-all duration-200 shadow-lg ";
+                "group w-full text-left p-5 border-4 border-slate-800 font-bold text-base transition-all duration-300 shadow-lg ";
 
               if (!isAnswered) {
                 buttonClass +=
-                  "bg-blue-100 hover:bg-blue-200 text-slate-900 transform hover:-translate-y-1";
+                  "bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 text-slate-900 transform hover:-translate-y-2 hover:rotate-1 hover:scale-102";
               } else {
                 if (index === question.correctAnswer) {
-                  buttonClass += "bg-emerald-400 text-white";
+                  buttonClass +=
+                    "bg-gradient-to-r from-emerald-400 to-emerald-500 text-white transform scale-105";
                 } else if (
                   index === selectedAnswer &&
                   selectedAnswer !== question.correctAnswer
                 ) {
-                  buttonClass += "bg-red-400 text-white";
+                  buttonClass +=
+                    "bg-gradient-to-r from-red-400 to-red-500 text-white";
                 } else {
                   buttonClass += "bg-gray-200 text-slate-600";
                 }
@@ -288,61 +480,101 @@ function TryoutSimulation() {
                   className={buttonClass}
                   disabled={isAnswered}
                 >
-                  <span className="font-black mr-2 md:mr-3">
-                    {String.fromCharCode(65 + index)}.
-                  </span>
-                  {option}
+                  <div className="flex items-center">
+                    <span className="w-8 h-8 bg-slate-800 text-white border-2 border-white flex items-center justify-center font-black mr-4 group-hover:rotate-12 transition-transform">
+                      {String.fromCharCode(65 + index)}
+                    </span>
+                    <span className="flex-1">{option}</span>
+                    {!isAnswered && (
+                      <span className="opacity-0 group-hover:opacity-100 transition-opacity">
+                        👆
+                      </span>
+                    )}
+                  </div>
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Result */}
+        {/* Enhanced Result */}
         {showResult && (
-          <div className="bg-white border-3 md:border-6 border-slate-800 p-6 md:p-8 mb-6 md:mb-8 shadow-lg">
-            <div
-              className={`text-center mb-4 md:mb-6 ${
-                isCorrect ? "text-emerald-600" : "text-red-600"
-              }`}
-            >
-              <div className="text-2xl md:text-3xl font-black mb-2">
-                {isCorrect ? "✅ BENAR!" : "❌ SALAH!"}
-              </div>
-              <div className="text-lg md:text-xl font-bold">
-                {isCorrect
-                  ? "Jawaban kamu tepat!"
-                  : "Jawaban yang benar adalah " +
-                    String.fromCharCode(65 + question.correctAnswer)}
+          <div className="bg-white border-4 border-slate-800 p-8 mb-8 shadow-brutal transform hover:-rotate-1 transition-all duration-300">
+            <div className="text-center mb-6">
+              <div
+                className={`inline-block p-4 border-4 border-slate-800 shadow-brutal mb-4 ${
+                  isCorrect
+                    ? "bg-emerald-400 text-white"
+                    : "bg-red-400 text-white"
+                }`}
+              >
+                <div className="text-3xl font-black mb-2">
+                  {isCorrect ? "✅ JAWABAN BENAR!" : "❌ JAWABAN SALAH!"}
+                </div>
+                <div className="text-lg font-bold">
+                  {isCorrect
+                    ? "Mantap! Kamu memang jago! 🎉"
+                    : `Jawaban yang benar adalah ${String.fromCharCode(
+                        65 + question.correctAnswer
+                      )} 📚`}
+                </div>
               </div>
             </div>
 
-            <div className="bg-blue-50 border-2 border-blue-400 p-4 md:p-6 mb-4 md:mb-6">
-              <h4 className="font-black text-slate-900 text-sm md:text-base mb-2 uppercase">
-                💡 PEMBAHASAN:
-              </h4>
-              <p className="text-slate-800 font-bold text-sm md:text-base">
-                {question.explanation}
-              </p>
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-4 border-blue-400 p-6 mb-6 shadow-lg">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 bg-blue-400 border-3 border-slate-800 flex items-center justify-center font-black text-lg">
+                  💡
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-black text-slate-900 text-lg mb-3 uppercase">
+                    PEMBAHASAN:
+                  </h4>
+                  <p className="text-slate-800 font-medium leading-relaxed">
+                    {question.explanation}
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div className="text-center">
               <button
                 onClick={nextQuestion}
-                className="bg-emerald-500 text-white px-6 md:px-8 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-slate-800 transform hover:-rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg"
+                className="group bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-8 py-4 font-black text-lg uppercase border-4 border-slate-800 transform hover:-rotate-2 hover:-translate-y-3 hover:scale-105 transition-all duration-300 shadow-brutal"
               >
-                {currentQuestion < tryoutQuestions.length - 1
-                  ? "➡️ SOAL BERIKUTNYA"
-                  : "🏁 LIHAT HASIL"}
+                <span className="flex items-center justify-center gap-3">
+                  {currentQuestion < tryoutQuestions.length - 1
+                    ? "➡️ SOAL BERIKUTNYA"
+                    : "🏁 LIHAT HASIL AKHIR"}
+                  <span className="group-hover:animate-bounce">🚀</span>
+                </span>
               </button>
             </div>
           </div>
         )}
 
-        {/* Score Progress */}
+        {/* Enhanced Progress Bar */}
         <div className="text-center">
-          <div className="bg-white text-slate-900 px-4 md:px-6 py-2 md:py-3 border-3 border-orange-400 inline-block font-black text-sm md:text-base">
-            📊 SKOR SAAT INI: {score}/{currentQuestion + (isAnswered ? 1 : 0)}
+          <div className="bg-white border-4 border-slate-800 p-4 inline-block shadow-brutal transform hover:rotate-1 transition-all duration-200">
+            <div className="flex items-center gap-4">
+              <span className="font-black text-slate-900">📊 PROGRESS:</span>
+              <div className="w-32 h-3 bg-gray-200 border-2 border-slate-800">
+                <div
+                  className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
+                  style={{
+                    width: `${
+                      ((currentQuestion + (isAnswered ? 1 : 0)) /
+                        tryoutQuestions.length) *
+                      100
+                    }%`,
+                  }}
+                ></div>
+              </div>
+              <span className="font-black text-slate-900">
+                {currentQuestion + (isAnswered ? 1 : 0)}/
+                {tryoutQuestions.length}
+              </span>
+            </div>
           </div>
         </div>
       </div>

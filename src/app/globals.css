@@ -25,6 +25,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Brutal Shadow Effect */
+.shadow-brutal {
+  box-shadow: 8px 8px 0px 0px #1e293b;
+}
+
 /* Modern Animations */
 @keyframes blob {
   0% {
