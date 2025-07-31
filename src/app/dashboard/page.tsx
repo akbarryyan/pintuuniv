@@ -343,13 +343,13 @@ export default function DashboardPage() {
           {/* Recent Activities */}
           <div className="lg:col-span-2">
             <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 shadow-brutal">
-              <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
                 <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase">
                   📊 Aktivitas Terbaru
                 </h2>
                 <Link
                   href="/activities"
-                  className="bg-blue-500 text-white px-3 sm:px-4 py-1 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-blue-600 transition-colors"
+                  className="bg-blue-500 text-white px-3 sm:px-4 py-2 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-blue-600 transition-colors text-center sm:text-left"
                 >
                   Lihat Semua
                 </Link>
@@ -536,32 +536,32 @@ export default function DashboardPage() {
         {/* Available Tryouts Section */}
         <div className="mt-6 sm:mt-8">
           <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 shadow-brutal">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase">
                 🎯 Tryout Tersedia
               </h2>
               <Link
                 href="/tryouts"
-                className="bg-orange-500 text-white px-3 sm:px-4 py-1 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-orange-600 transition-colors"
+                className="bg-orange-500 text-white px-3 sm:px-4 py-2 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-orange-600 transition-colors text-center sm:text-left"
               >
                 Lihat Semua
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
               {availableTryouts.slice(0, 4).map((tryout) => (
                 <div
                   key={tryout.id}
                   className="border-2 border-slate-800 p-3 sm:p-4 bg-gradient-to-br from-slate-50 to-slate-100 hover:from-orange-50 hover:to-orange-100 transition-all duration-200 transform hover:-translate-y-1"
                 >
-                  <div className="flex items-start justify-between mb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="font-black text-sm sm:text-base text-slate-900">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-2">
+                        <h3 className="font-black text-sm sm:text-base text-slate-900 leading-tight">
                           {tryout.title}
                         </h3>
                         <div
-                          className={`px-2 py-1 border-2 border-slate-800 font-black text-xs ${
+                          className={`px-2 py-1 border-2 border-slate-800 font-black text-xs self-start ${
                             tryout.type === "free"
                               ? "bg-emerald-400 text-slate-900"
                               : "bg-orange-400 text-slate-900"
@@ -573,7 +573,7 @@ export default function DashboardPage() {
                       <p className="text-xs sm:text-sm text-slate-600 font-bold mb-2">
                         📚 {tryout.subject}
                       </p>
-                      <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-600 mb-3">
+                      <div className="grid grid-cols-2 gap-1 sm:gap-2 text-xs font-bold text-slate-600 mb-3">
                         <div>⏱️ {tryout.duration}</div>
                         <div>📝 {tryout.questions} soal</div>
                         <div>
@@ -582,14 +582,14 @@ export default function DashboardPage() {
                         <div>⭐ {tryout.rating}/5.0</div>
                       </div>
                     </div>
-                    <div className="text-right ml-3">
+                    <div className="text-left sm:text-right sm:ml-3 mb-2 sm:mb-0">
                       <div className="font-black text-sm sm:text-base text-slate-900 mb-1">
                         {tryout.price === 0
                           ? "GRATIS"
                           : `Rp ${tryout.price.toLocaleString()}`}
                       </div>
                       <div
-                        className={`text-xs font-bold px-2 py-1 border border-slate-800 ${
+                        className={`text-xs font-bold px-2 py-1 border border-slate-800 inline-block ${
                           tryout.difficulty === "Sangat Sulit"
                             ? "bg-red-100 text-red-800"
                             : tryout.difficulty === "Sulit"
@@ -602,12 +602,12 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-bold text-slate-600">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <p className="text-xs font-bold text-slate-600 order-2 sm:order-1">
                       📅 Deadline: {tryout.deadline}
                     </p>
                     <button
-                      className={`px-3 py-2 font-black text-xs border-2 border-slate-800 transition-colors ${
+                      className={`px-3 py-2 font-black text-xs border-2 border-slate-800 transition-colors order-1 sm:order-2 ${
                         tryout.type === "free"
                           ? "bg-emerald-500 text-white hover:bg-emerald-600"
                           : "bg-orange-500 text-white hover:bg-orange-600"
@@ -623,16 +623,16 @@ export default function DashboardPage() {
         </div>
 
         {/* Tryout History & Upcoming */}
-        <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+        <div className="mt-6 sm:mt-8 grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {/* Tryout History */}
           <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 shadow-brutal">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase">
                 📊 Riwayat Tryout
               </h2>
               <Link
                 href="/history"
-                className="bg-blue-500 text-white px-3 sm:px-4 py-1 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-blue-600 transition-colors"
+                className="bg-blue-500 text-white px-3 sm:px-4 py-2 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-blue-600 transition-colors text-center sm:text-left"
               >
                 Lihat Semua
               </Link>
@@ -644,17 +644,17 @@ export default function DashboardPage() {
                   key={tryout.id}
                   className="border-2 border-slate-800 p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-emerald-50 hover:from-blue-100 hover:to-emerald-100 transition-all duration-200"
                 >
-                  <div className="flex items-start justify-between mb-2">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
                     <div className="flex-1">
-                      <h3 className="font-black text-sm text-slate-900 mb-1">
+                      <h3 className="font-black text-sm text-slate-900 mb-1 leading-tight">
                         {tryout.title}
                       </h3>
-                      <div className="flex items-center gap-2 mb-2">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-2">
                         <span className="text-xs font-bold text-slate-600">
                           📅 {tryout.date} • ⏰ {tryout.time}
                         </span>
                         <div
-                          className={`px-2 py-1 border border-slate-800 font-black text-xs ${
+                          className={`px-2 py-1 border border-slate-800 font-black text-xs self-start ${
                             tryout.type === "free"
                               ? "bg-emerald-400 text-slate-900"
                               : "bg-orange-400 text-slate-900"
@@ -664,9 +664,9 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="text-left sm:text-right mb-2 sm:mb-0">
                       <div
-                        className={`px-2 py-1 border-2 border-slate-800 font-black text-sm ${
+                        className={`px-2 py-1 border-2 border-slate-800 font-black text-sm inline-block ${
                           tryout.score >= 85
                             ? "bg-emerald-500 text-white"
                             : tryout.score >= 70
@@ -679,7 +679,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-600 mb-2">
+                  <div className="grid grid-cols-2 gap-1 sm:gap-2 text-xs font-bold text-slate-600 mb-2">
                     <div>📚 {tryout.subject}</div>
                     <div>⏱️ {tryout.duration}</div>
                     <div>🏆 Peringkat #{tryout.rank}</div>
@@ -698,13 +698,13 @@ export default function DashboardPage() {
 
           {/* Upcoming Tryouts */}
           <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 shadow-brutal">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase">
                 🗓️ Tryout Mendatang
               </h2>
               <Link
                 href="/upcoming"
-                className="bg-purple-500 text-white px-3 sm:px-4 py-1 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-purple-600 transition-colors"
+                className="bg-purple-500 text-white px-3 sm:px-4 py-2 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-purple-600 transition-colors text-center sm:text-left"
               >
                 Lihat Semua
               </Link>
@@ -716,17 +716,17 @@ export default function DashboardPage() {
                   key={tryout.id}
                   className="border-2 border-slate-800 p-3 sm:p-4 bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 transition-all duration-200"
                 >
-                  <div className="flex items-start justify-between mb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
                     <div className="flex-1">
-                      <h3 className="font-black text-sm text-slate-900 mb-1">
+                      <h3 className="font-black text-sm text-slate-900 mb-1 leading-tight">
                         {tryout.title}
                       </h3>
-                      <div className="flex items-center gap-2 mb-2">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-2">
                         <span className="text-xs font-bold text-slate-600">
                           📅 {tryout.date}
                         </span>
                         <div
-                          className={`px-2 py-1 border border-slate-800 font-black text-xs ${
+                          className={`px-2 py-1 border border-slate-800 font-black text-xs self-start ${
                             tryout.type === "free"
                               ? "bg-emerald-400 text-slate-900"
                               : "bg-orange-400 text-slate-900"
@@ -739,9 +739,9 @@ export default function DashboardPage() {
                         ⏰ {tryout.time} • ⏱️ {tryout.duration}
                       </p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-left sm:text-right mb-2 sm:mb-0">
                       <div
-                        className={`px-2 py-1 border-2 border-slate-800 font-black text-xs ${
+                        className={`px-2 py-1 border-2 border-slate-800 font-black text-xs inline-block ${
                           tryout.status === "registered"
                             ? "bg-emerald-400 text-slate-900"
                             : "bg-blue-400 text-slate-900"
@@ -757,7 +757,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-600 mb-3">
+                  <div className="grid grid-cols-2 gap-1 sm:gap-2 text-xs font-bold text-slate-600 mb-3">
                     <div>📚 {tryout.subject}</div>
                     <div>📝 {tryout.questions} soal</div>
                   </div>
