@@ -32,7 +32,7 @@ export default function HeaderNavigation({
   };
   return (
     <>
-      <div className="bg-slate-900 border-b-3 sm:border-b-4 border-orange-400 sticky top-0 z-50">
+      <div className="bg-slate-900 border-b-3 sm:border-b-4 border-orange-400 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
           <div className="flex justify-between items-center h-14 sm:h-16">
             {/* Logo */}
@@ -156,9 +156,9 @@ export default function HeaderNavigation({
       {/* Mobile Sidebar Overlay */}
       {!showBackButton && (
         <>
-          {/* Overlay Background */}
+          {/* Overlay Background with Blur */}
           <div
-            className={`fixed inset-0 bg-black bg-opacity-50 z-40 sm:hidden transition-opacity duration-300 ${
+            className={`fixed inset-0 backdrop-blur-sm z-40 sm:hidden transition-all duration-300 ${
               isMobileMenuOpen
                 ? "opacity-100 pointer-events-auto"
                 : "opacity-0 pointer-events-none"
