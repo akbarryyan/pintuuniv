@@ -25,11 +25,12 @@ export default function TryoutsPage() {
       difficulty: "Sulit",
       participants: 15420,
       rating: 4.8,
-      deadline: "5 Agustus 2025",
+      deadline: null,
       instructor: "Dr. Ahmad Yusuf",
       description:
-        "Tryout komprehensif untuk persiapan UTBK Saintek dengan soal-soal terbaru dan analisis mendalam",
+        "Tryout komprehensif untuk persiapan UTBK Saintek dengan soal-soal terbaru dan analisis mendalam. Akses selamanya tanpa batas waktu!",
       features: [
+        "Akses Selamanya",
         "Analisis AI",
         "Pembahasan Video",
         "Ranking Nasional",
@@ -72,11 +73,12 @@ export default function TryoutsPage() {
       difficulty: "Sangat Sulit",
       participants: 8924,
       rating: 4.9,
-      deadline: "15 Agustus 2025",
+      deadline: null,
       instructor: "Tim Expert PintuUniv",
       description:
-        "Simulasi lengkap UTBK dengan format dan tingkat kesulitan sesuai ujian sesungguhnya",
+        "Simulasi lengkap UTBK dengan format dan tingkat kesulitan sesuai ujian sesungguhnya. Beli sekali, akses selamanya!",
       features: [
+        "Akses Selamanya",
         "Simulasi Real",
         "Analisis AI",
         "Prediksi Nilai",
@@ -119,11 +121,12 @@ export default function TryoutsPage() {
       difficulty: "Sangat Sulit",
       participants: 5847,
       rating: 5.0,
-      deadline: "25 Agustus 2025",
+      deadline: null,
       instructor: "Tim AI PintuUniv",
       description:
-        "Tryout paling lengkap dengan AI analysis dan prediksi akurat untuk PTN favorit",
+        "Tryout paling lengkap dengan AI analysis dan prediksi akurat untuk PTN favorit. Investasi sekali untuk akses seumur hidup!",
       features: [
+        "Akses Selamanya",
         "AI Analysis",
         "Prediksi PTN",
         "Mentor Personal",
@@ -145,11 +148,16 @@ export default function TryoutsPage() {
       difficulty: "Mudah",
       participants: 18500,
       rating: 4.4,
-      deadline: "12 Agustus 2025",
+      deadline: null,
       instructor: "M. Rizki Pratama",
       description:
         "Fokus pada matematika dasar untuk memperkuat foundation UTBK",
-      features: ["Pembahasan Detail", "Latihan Tambahan", "Tips Cepat"],
+      features: [
+        "Akses Selamanya",
+        "Pembahasan Detail",
+        "Latihan Tambahan",
+        "Tips Cepat",
+      ],
       isPopular: false,
       discount: 29,
     },
@@ -186,10 +194,15 @@ export default function TryoutsPage() {
       difficulty: "Sulit",
       participants: 12400,
       rating: 4.7,
-      deadline: "22 Agustus 2025",
+      deadline: null,
       instructor: "Dr. Andi Wijaya",
       description: "Tryout fisika level advanced dengan soal-soal menantang",
-      features: ["Lab Virtual", "Simulasi", "Pembahasan Expert"],
+      features: [
+        "Akses Selamanya",
+        "Lab Virtual",
+        "Simulasi",
+        "Pembahasan Expert",
+      ],
       isPopular: false,
       discount: 24,
     },
@@ -206,10 +219,15 @@ export default function TryoutsPage() {
       difficulty: "Sulit",
       participants: 9800,
       rating: 4.6,
-      deadline: "28 Agustus 2025",
+      deadline: null,
       instructor: "Prof. Linda Sari",
       description: "Spesialisasi kimia organik untuk UTBK Saintek",
-      features: ["3D Molekul", "Reaksi Interaktif", "Bank Soal"],
+      features: [
+        "Akses Selamanya",
+        "3D Molekul",
+        "Reaksi Interaktif",
+        "Bank Soal",
+      ],
       isPopular: false,
       discount: 25,
     },
@@ -226,10 +244,15 @@ export default function TryoutsPage() {
       difficulty: "Sedang",
       participants: 14200,
       rating: 4.5,
-      deadline: "30 Agustus 2025",
+      deadline: null,
       instructor: "Ahmad Fauzi",
       description: "Mendalami sejarah Indonesia untuk UTBK Soshum",
-      features: ["Timeline Interaktif", "Video Sejarah", "Kuis Menarik"],
+      features: [
+        "Akses Selamanya",
+        "Timeline Interaktif",
+        "Video Sejarah",
+        "Kuis Menarik",
+      ],
       isPopular: false,
       discount: 25,
     },
@@ -246,10 +269,15 @@ export default function TryoutsPage() {
       difficulty: "Sulit",
       participants: 11600,
       rating: 4.8,
-      deadline: "2 September 2025",
+      deadline: null,
       instructor: "Dr. Rini Ekonomi",
       description: "Tryout ekonomi komprehensif covering mikro dan makro",
-      features: ["Grafik Interaktif", "Studi Kasus", "Analisis Pasar"],
+      features: [
+        "Akses Selamanya",
+        "Grafik Interaktif",
+        "Studi Kasus",
+        "Analisis Pasar",
+      ],
       isPopular: false,
       discount: 21,
     },
@@ -679,11 +707,19 @@ export default function TryoutsPage() {
 
                 {/* Deadline */}
                 <div className="mb-4">
-                  <div className="bg-red-100 border-2 border-red-400 p-2 text-center">
-                    <p className="text-xs font-black text-red-800">
-                      ⏰ Deadline: {tryout.deadline}
-                    </p>
-                  </div>
+                  {tryout.deadline ? (
+                    <div className="bg-red-100 border-2 border-red-400 p-2 text-center">
+                      <p className="text-xs font-black text-red-800">
+                        ⏰ Deadline: {tryout.deadline}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="bg-emerald-100 border-2 border-emerald-400 p-2 text-center">
+                      <p className="text-xs font-black text-emerald-800">
+                        ♾️ Akses Selamanya - Tanpa Batas Waktu
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Action Buttons */}
@@ -697,7 +733,7 @@ export default function TryoutsPage() {
                   >
                     {tryout.type === "free"
                       ? "🎯 MULAI GRATIS"
-                      : "💳 BELI & MULAI"}
+                      : "💳 BELI AKSES SELAMANYA"}
                   </button>
 
                   <button className="w-full bg-slate-900 text-white px-4 py-2 font-black text-xs border-2 border-slate-800 hover:bg-slate-800 transition-colors">
