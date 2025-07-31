@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import HeaderNavigation from "@/components/HeaderNavigation";
 
 export default function ProfilePage() {
   const [userData, setUserData] = useState({
@@ -117,29 +118,11 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-emerald-50">
       {/* Header Navigation */}
-      <div className="bg-slate-900 border-b-3 sm:border-b-4 border-orange-400 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-14 sm:h-16">
-            <Link href="/dashboard" className="flex items-center">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-orange-400 border-2 sm:border-3 border-slate-800 rotate-12 flex items-center justify-center mr-2 sm:mr-3 font-black text-sm sm:text-lg shadow-md">
-                📚
-              </div>
-              <span className="text-lg sm:text-2xl font-black text-white uppercase tracking-wider">
-                PintuUniv
-              </span>
-            </Link>
-
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <Link
-                href="/dashboard"
-                className="text-white font-bold text-sm hover:text-orange-300"
-              >
-                ← Kembali ke Dashboard
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+      <HeaderNavigation
+        showBackButton={true}
+        backButtonText="Kembali ke Dashboard"
+        backButtonHref="/dashboard"
+      />
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">

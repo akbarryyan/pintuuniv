@@ -1,32 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import HeaderNavigation from "@/components/HeaderNavigation";
 
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50">
       {/* Header */}
-      <div className="bg-slate-900 border-b-4 border-orange-400 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center">
-              <div className="w-8 h-8 bg-orange-400 border-3 border-slate-800 rotate-12 flex items-center justify-center mr-3 font-black text-lg shadow-md">
-                📚
-              </div>
-              <span className="text-2xl font-black text-white uppercase tracking-wider">
-                PintuUniv
-              </span>
-            </Link>
-
-            <Link
-              href="/"
-              className="text-white font-bold hover:text-orange-300 transition-colors"
-            >
-              ← Kembali ke Beranda
-            </Link>
-          </div>
-        </div>
-      </div>
+      <HeaderNavigation
+        showBackButton={true}
+        backButtonText="Kembali ke Beranda"
+        backButtonHref="/"
+      />
 
       {/* Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">

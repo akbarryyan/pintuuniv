@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import HeaderNavigation from "@/components/HeaderNavigation";
 
 export default function DashboardPage() {
   const [userData] = useState({
@@ -238,64 +239,14 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-emerald-50">
       {/* Header Navigation */}
-      <div className="bg-slate-900 border-b-3 sm:border-b-4 border-orange-400 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-14 sm:h-16">
-            <Link href="/" className="flex items-center">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-orange-400 border-2 sm:border-3 border-slate-800 rotate-12 flex items-center justify-center mr-2 sm:mr-3 font-black text-sm sm:text-lg shadow-md">
-                📚
-              </div>
-              <span className="text-lg sm:text-2xl font-black text-white uppercase tracking-wider">
-                PintuUniv
-              </span>
-            </Link>
-
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <div className="hidden sm:flex items-center space-x-4">
-                <Link
-                  href="/dashboard"
-                  className="text-orange-400 font-bold text-sm hover:text-orange-300"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/tryouts"
-                  className="text-white font-bold text-sm hover:text-orange-300"
-                >
-                  Tryouts
-                </Link>
-                <Link
-                  href="/leaderboard"
-                  className="text-white font-bold text-sm hover:text-orange-300"
-                >
-                  Leaderboard
-                </Link>
-                <Link
-                  href="/lessons"
-                  className="text-white font-bold text-sm hover:text-orange-300"
-                >
-                  Materi
-                </Link>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <span className="text-white font-bold text-sm sm:text-base">
-                  {userData.avatar}
-                </span>
-                <span className="hidden sm:block text-white font-bold text-sm">
-                  {userData.name.split(" ")[0]}
-                </span>
-                <Link
-                  href="/profile"
-                  className="bg-orange-500 text-white px-2 sm:px-3 py-1 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-orange-600 transition-colors"
-                >
-                  Profile
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <HeaderNavigation
+        currentPage="dashboard"
+        showBackButton={false}
+        userInfo={{
+          avatar: userData.avatar,
+          name: userData.name,
+        }}
+      />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
