@@ -361,8 +361,8 @@ export default function DashboardPage() {
                     key={activity.id}
                     className="border-2 border-slate-800 p-3 sm:p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
                   >
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start space-x-3">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-0">
+                      <div className="flex items-start space-x-3 flex-1">
                         <div
                           className={`w-8 h-8 sm:w-10 sm:h-10 border-2 border-slate-800 flex items-center justify-center font-black text-sm sm:text-base ${
                             activity.type === "tryout"
@@ -373,7 +373,7 @@ export default function DashboardPage() {
                           {activity.type === "tryout" ? "📝" : "📚"}
                         </div>
                         <div className="flex-1">
-                          <h3 className="font-black text-sm sm:text-base text-slate-900 mb-1">
+                          <h3 className="font-black text-sm sm:text-base text-slate-900 mb-1 leading-tight">
                             {activity.title}
                           </h3>
                           <p className="text-xs sm:text-sm text-slate-600 font-bold">
@@ -381,14 +381,14 @@ export default function DashboardPage() {
                           </p>
                         </div>
                       </div>
-                      <div className="text-right">
+                      <div className="text-left sm:text-right">
                         {activity.type === "tryout" ? (
-                          <div className="bg-blue-500 text-white px-2 sm:px-3 py-1 border-2 border-slate-800 font-black text-xs sm:text-sm">
+                          <div className="bg-blue-500 text-white px-2 sm:px-3 py-1 border-2 border-slate-800 font-black text-xs sm:text-sm inline-block">
                             Skor: {activity.score}
                           </div>
                         ) : (
                           <div
-                            className={`px-2 sm:px-3 py-1 border-2 border-slate-800 font-black text-xs sm:text-sm ${
+                            className={`px-2 sm:px-3 py-1 border-2 border-slate-800 font-black text-xs sm:text-sm inline-block ${
                               activity.status === "completed"
                                 ? "bg-emerald-500 text-white"
                                 : "bg-yellow-400 text-slate-900"
