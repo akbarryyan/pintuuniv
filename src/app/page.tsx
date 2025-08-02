@@ -1756,18 +1756,18 @@ export default function Home() {
               </p>
             </div>
             <div className="flex flex-wrap justify-center md:justify-end space-x-4 md:space-x-6">
-              <a
-                href="#"
+              <Link
+                href="/privacy"
                 className="text-white font-bold hover:text-orange-400 transition-colors border-b-2 border-transparent hover:border-orange-400 pb-1 text-xs md:text-sm"
               >
                 PRIVACY POLICY
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                href="/terms"
                 className="text-white font-bold hover:text-orange-400 transition-colors border-b-2 border-transparent hover:border-orange-400 pb-1 text-xs md:text-sm"
               >
                 TERMS OF SERVICE
-              </a>
+              </Link>
               <a
                 href="#"
                 className="text-white font-bold hover:text-orange-400 transition-colors border-b-2 border-transparent hover:border-orange-400 pb-1 text-xs md:text-sm"
