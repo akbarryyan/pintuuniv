@@ -30,24 +30,24 @@ export default function TermsPage() {
         {/* Terms Content */}
         <div className="bg-white border-4 border-slate-800 p-6 md:p-8 shadow-brutal mb-8">
           <div className="prose prose-slate max-w-none">
-            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-orange-400 pb-2">
+            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-blue-400 pb-2">
               1. PENERIMAAN KETENTUAN
             </h2>
-            <p className="mb-6 font-medium leading-relaxed">
+            <p className="mb-6 font-medium leading-relaxed text-slate-700">
               Dengan mengakses dan menggunakan platform PintuUniv, Anda setuju
               untuk terikat oleh syarat dan ketentuan ini. Jika Anda tidak
               setuju dengan ketentuan ini, mohon untuk tidak menggunakan layanan
               kami.
             </p>
 
-            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-orange-400 pb-2">
+            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-blue-400 pb-2">
               2. LAYANAN YANG DISEDIAKAN
             </h2>
-            <p className="mb-4 font-medium leading-relaxed">
+            <p className="mb-4 font-medium leading-relaxed text-slate-700">
               PintuUniv menyediakan platform pembelajaran online untuk persiapan
               UTBK yang meliputi:
             </p>
-            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium">
+            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium text-slate-700">
               <li>Simulasi tryout UTBK interaktif</li>
               <li>Bank soal dan pembahasan</li>
               <li>Analisis hasil belajar</li>
@@ -55,13 +55,13 @@ export default function TermsPage() {
               <li>Materi pembelajaran digital</li>
             </ul>
 
-            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-orange-400 pb-2">
+            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-blue-400 pb-2">
               3. AKUN PENGGUNA
             </h2>
-            <p className="mb-4 font-medium leading-relaxed">
+            <p className="mb-4 font-medium leading-relaxed text-slate-700">
               Untuk menggunakan layanan premium kami, Anda harus:
             </p>
-            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium">
+            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium text-slate-700">
               <li>Mendaftar dengan informasi yang akurat dan lengkap</li>
               <li>Menjaga kerahasiaan password akun</li>
               <li>Bertanggung jawab atas semua aktivitas dalam akun Anda</li>
@@ -71,36 +71,36 @@ export default function TermsPage() {
               </li>
             </ul>
 
-            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-orange-400 pb-2">
+            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-blue-400 pb-2">
               4. PEMBAYARAN & LANGGANAN
             </h2>
-            <p className="mb-4 font-medium leading-relaxed">
+            <p className="mb-4 font-medium leading-relaxed text-slate-700">
               Ketentuan pembayaran:
             </p>
-            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium">
+            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium text-slate-700">
               <li>Pembayaran dilakukan di muka sebelum layanan aktif</li>
               <li>Harga dapat berubah sewaktu-waktu dengan pemberitahuan</li>
               <li>Refund sesuai dengan kebijakan yang berlaku</li>
               <li>Langganan akan diperpanjang otomatis kecuali dibatalkan</li>
             </ul>
 
-            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-orange-400 pb-2">
+            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-blue-400 pb-2">
               5. KEKAYAAN INTELEKTUAL
             </h2>
-            <p className="mb-6 font-medium leading-relaxed">
+            <p className="mb-6 font-medium leading-relaxed text-slate-700">
               Semua konten, soal, pembahasan, dan materi dalam platform
               PintuUniv adalah milik kami dan dilindungi hak cipta. Pengguna
               dilarang menyalin, mendistribusikan, atau menggunakan konten untuk
               kepentingan komersial tanpa izin tertulis.
             </p>
 
-            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-orange-400 pb-2">
+            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-blue-400 pb-2">
               6. LARANGAN PENGGUNAAN
             </h2>
-            <p className="mb-4 font-medium leading-relaxed">
+            <p className="mb-4 font-medium leading-relaxed text-slate-700">
               Pengguna dilarang:
             </p>
-            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium">
+            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium text-slate-700">
               <li>Menyalahgunakan platform untuk aktivitas ilegal</li>
               <li>Berbagi akun dengan orang lain</li>
               <li>Melakukan reverse engineering pada sistem</li>
@@ -108,34 +108,34 @@ export default function TermsPage() {
               <li>Menggunakan bot atau script otomatis</li>
             </ul>
 
-            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-orange-400 pb-2">
+            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-blue-400 pb-2">
               7. PEMBATASAN TANGGUNG JAWAB
             </h2>
-            <p className="mb-6 font-medium leading-relaxed">
+            <p className="mb-6 font-medium leading-relaxed text-slate-700">
               PintuUniv tidak bertanggung jawab atas kerugian yang timbul akibat
               penggunaan layanan, termasuk namun tidak terbatas pada kegagalan
               teknis, kesalahan data, atau hasil ujian yang tidak sesuai
               harapan. Layanan disediakan "as is" tanpa jaminan apapun.
             </p>
 
-            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-orange-400 pb-2">
+            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-blue-400 pb-2">
               8. PERUBAHAN KETENTUAN
             </h2>
-            <p className="mb-6 font-medium leading-relaxed">
+            <p className="mb-6 font-medium leading-relaxed text-slate-700">
               Kami berhak mengubah syarat dan ketentuan ini sewaktu-waktu.
               Perubahan akan diberitahukan melalui email atau notifikasi dalam
               platform. Penggunaan layanan setelah perubahan dianggap sebagai
               persetujuan terhadap ketentuan yang baru.
             </p>
 
-            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-orange-400 pb-2">
+            <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-blue-400 pb-2">
               9. KONTAK
             </h2>
-            <p className="mb-4 font-medium leading-relaxed">
+            <p className="mb-4 font-medium leading-relaxed text-slate-700">
               Jika ada pertanyaan mengenai syarat dan ketentuan ini, silakan
               hubungi kami:
             </p>
-            <div className="bg-slate-100 border-2 border-slate-800 p-4 font-bold">
+            <div className="bg-blue-50 border-2 border-slate-800 p-4 font-bold text-slate-800">
               <p>📧 Email: legal@pintuuniv.com</p>
               <p>📱 WhatsApp: +62 812-3456-7890</p>
               <p>🏢 Alamat: Jakarta, Indonesia</p>

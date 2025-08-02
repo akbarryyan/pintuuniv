@@ -33,7 +33,7 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-purple-400 pb-2">
               1. PENGANTAR
             </h2>
-            <p className="mb-6 font-medium leading-relaxed">
+            <p className="mb-6 font-medium leading-relaxed text-slate-700">
               PintuUniv berkomitmen untuk melindungi privasi dan keamanan data
               pribadi pengguna. Kebijakan privasi ini menjelaskan bagaimana kami
               mengumpulkan, menggunakan, dan melindungi informasi Anda saat
@@ -47,7 +47,7 @@ export default function PrivacyPage() {
             <h3 className="text-lg font-bold text-slate-800 mb-3">
               📝 Informasi yang Anda Berikan:
             </h3>
-            <ul className="list-disc pl-6 mb-4 space-y-2 font-medium">
+            <ul className="list-disc pl-6 mb-4 space-y-2 font-medium text-slate-700">
               <li>Nama lengkap dan informasi profil</li>
               <li>Alamat email dan nomor telepon</li>
               <li>Informasi sekolah dan tingkat kelas</li>
@@ -58,7 +58,7 @@ export default function PrivacyPage() {
             <h3 className="text-lg font-bold text-slate-800 mb-3">
               📊 Informasi yang Dikumpulkan Otomatis:
             </h3>
-            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium">
+            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium text-slate-700">
               <li>Alamat IP dan lokasi geografis</li>
               <li>Jenis browser dan sistem operasi</li>
               <li>Halaman yang dikunjungi dan durasi sesi</li>
@@ -69,10 +69,10 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-purple-400 pb-2">
               3. PENGGUNAAN INFORMASI
             </h2>
-            <p className="mb-4 font-medium leading-relaxed">
+            <p className="mb-4 font-medium leading-relaxed text-slate-700">
               Kami menggunakan data Anda untuk:
             </p>
-            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium">
+            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium text-slate-700">
               <li>Menyediakan dan meningkatkan layanan platform</li>
               <li>Memberikan analisis hasil belajar yang personal</li>
               <li>Mengirim notifikasi penting dan update layanan</li>
@@ -84,11 +84,11 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-purple-400 pb-2">
               4. BERBAGI INFORMASI
             </h2>
-            <p className="mb-4 font-medium leading-relaxed">
+            <p className="mb-4 font-medium leading-relaxed text-slate-700">
               Kami TIDAK akan menjual atau menyewakan data pribadi Anda.
               Informasi hanya dibagikan dalam kondisi berikut:
             </p>
-            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium">
+            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium text-slate-700">
               <li>
                 <strong>Penyedia Layanan:</strong> Partner tepercaya untuk
                 payment gateway, hosting, dan analytics
@@ -109,11 +109,11 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-purple-400 pb-2">
               5. KEAMANAN DATA
             </h2>
-            <p className="mb-4 font-medium leading-relaxed">
+            <p className="mb-4 font-medium leading-relaxed text-slate-700">
               Kami menerapkan langkah-langkah keamanan yang ketat:
             </p>
-            <div className="bg-slate-100 border-2 border-slate-800 p-4 mb-6">
-              <ul className="space-y-2 font-medium">
+            <div className="bg-purple-50 border-2 border-slate-800 p-4 mb-6">
+              <ul className="space-y-2 font-medium text-slate-800">
                 <li>
                   🔐 <strong>Enkripsi SSL/TLS</strong> untuk semua transmisi
                   data
@@ -137,10 +137,10 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-purple-400 pb-2">
               6. HAK PENGGUNA
             </h2>
-            <p className="mb-4 font-medium leading-relaxed">
+            <p className="mb-4 font-medium leading-relaxed text-slate-700">
               Sebagai pengguna, Anda memiliki hak untuk:
             </p>
-            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium">
+            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium text-slate-700">
               <li>
                 <strong>Akses:</strong> Meminta copy data pribadi yang kami
                 simpan
@@ -166,16 +166,16 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-purple-400 pb-2">
               7. COOKIES & TRACKING
             </h2>
-            <p className="mb-4 font-medium leading-relaxed">
+            <p className="mb-4 font-medium leading-relaxed text-slate-700">
               Kami menggunakan cookies untuk:
             </p>
-            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium">
+            <ul className="list-disc pl-6 mb-6 space-y-2 font-medium text-slate-700">
               <li>Menjaga sesi login Anda tetap aktif</li>
               <li>Mengingat preferensi dan pengaturan</li>
               <li>Menganalisis penggunaan platform untuk perbaikan</li>
               <li>Memberikan konten yang relevan</li>
             </ul>
-            <p className="mb-6 font-medium">
+            <p className="mb-6 font-medium text-slate-700">
               Anda dapat mengatur browser untuk menolak cookies, namun beberapa
               fitur mungkin tidak berfungsi optimal.
             </p>
@@ -183,7 +183,7 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-purple-400 pb-2">
               8. RETENSI DATA
             </h2>
-            <p className="mb-6 font-medium leading-relaxed">
+            <p className="mb-6 font-medium leading-relaxed text-slate-700">
               Kami menyimpan data pribadi selama akun Anda aktif dan 2 tahun
               setelah penghapusan akun untuk keperluan legal dan audit. Data
               pembelajaran dapat disimpan lebih lama untuk riset pendidikan
@@ -193,7 +193,7 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-purple-400 pb-2">
               9. PERUBAHAN KEBIJAKAN
             </h2>
-            <p className="mb-6 font-medium leading-relaxed">
+            <p className="mb-6 font-medium leading-relaxed text-slate-700">
               Kami dapat memperbarui kebijakan privasi ini untuk mencerminkan
               perubahan dalam layanan atau regulasi. Perubahan signifikan akan
               dinotifikasi melalui email atau pengumuman di platform minimal 30
@@ -203,10 +203,10 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-black text-slate-900 mb-4 uppercase border-b-2 border-purple-400 pb-2">
               10. KONTAK PRIVASI
             </h2>
-            <p className="mb-4 font-medium leading-relaxed">
+            <p className="mb-4 font-medium leading-relaxed text-slate-700">
               Untuk pertanyaan mengenai privasi atau menggunakan hak Anda:
             </p>
-            <div className="bg-purple-50 border-2 border-slate-800 p-4 font-bold">
+            <div className="bg-purple-50 border-2 border-slate-800 p-4 font-bold text-slate-800">
               <p>
                 🛡️ <strong>Data Protection Officer</strong>
               </p>
