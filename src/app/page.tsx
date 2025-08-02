@@ -703,24 +703,6 @@ export default function Home() {
               >
                 📝 Daftar
               </Link>
-              <Link
-                href="/dashboard"
-                className="bg-blue-500 text-white px-3 py-2 md:px-4 md:py-2 font-bold uppercase border-3 border-slate-800 hover:bg-blue-400 transform hover:-translate-y-1 transition-all duration-200 shadow-lg text-xs md:text-sm"
-              >
-                📊 Dashboard
-              </Link>
-              <Link
-                href="/leaderboard"
-                className="bg-yellow-500 text-slate-900 px-3 py-2 md:px-4 md:py-2 font-bold uppercase border-3 border-slate-800 hover:bg-yellow-400 transform hover:-translate-y-1 transition-all duration-200 shadow-lg text-xs md:text-sm"
-              >
-                🏆 Leaderboard
-              </Link>
-              <Link
-                href="/profile"
-                className="bg-purple-500 text-white px-3 py-2 md:px-4 md:py-2 font-bold uppercase border-3 border-slate-800 hover:bg-purple-400 transform hover:-translate-y-1 transition-all duration-200 shadow-lg text-xs md:text-sm"
-              >
-                👤 Profile
-              </Link>
             </div>
           </div>
         </div>
