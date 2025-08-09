@@ -15,6 +15,7 @@ export default function LoginPage() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,18 +43,26 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (data.success) {
+        setLoginSuccess(true);
+
         toast.success(data.message, {
-          duration: 3000,
+          duration: 2000,
         });
 
         // Store token and user data
         localStorage.setItem("authToken", data.token);
         localStorage.setItem("userData", JSON.stringify(data.user));
 
-        // Redirect to dashboard using Next.js router
+        // Multiple redirect strategies
         setTimeout(() => {
-          router.push("/dashboard");
-        }, 1500);
+          // Try router.replace first
+          router.replace("/dashboard");
+        }, 300);
+
+        setTimeout(() => {
+          // Fallback to window.location
+          window.location.href = "/dashboard";
+        }, 800);
       } else {
         toast.error(data.message);
       }
@@ -83,135 +92,172 @@ export default function LoginPage() {
 
       <div className="relative z-10 flex items-center justify-center min-h-screen p-3 sm:p-4 py-6 sm:py-8">
         <div className="w-full max-w-sm sm:max-w-md">
-          {/* Header */}
-          <div className="text-center mb-6 sm:mb-8">
-            <Link href="/" className="inline-block mb-4 sm:mb-6">
-              <div className="bg-blue-500 text-white px-4 sm:px-6 py-2 sm:py-3 border-3 sm:border-4 border-slate-800 shadow-brutal transform rotate-2 hover:rotate-3 transition-transform">
+          {/* Success Screen */}
+          {loginSuccess ? (
+            <div className="text-center">
+              <div className="bg-green-500 text-white px-4 sm:px-6 py-2 sm:py-3 border-3 sm:border-4 border-slate-800 shadow-brutal transform rotate-2 mb-6">
                 <span className="text-lg sm:text-2xl font-black">
-                  📚 PINTU UNIV
+                  ✅ LOGIN BERHASIL!
                 </span>
               </div>
-            </Link>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mb-3 sm:mb-4 uppercase">
-              Masuk Akun
-            </h1>
-
-            <div className="bg-blue-400 text-slate-900 px-3 sm:px-4 py-2 border-3 border-slate-800 inline-block shadow-brutal transform -rotate-1">
-              <p className="font-black text-xs sm:text-sm uppercase">
-                � LANJUTKAN PERJALANAN BELAJARMU
-              </p>
-            </div>
-          </div>
-
-          {/* Login Form */}
-          <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 md:p-8 shadow-brutal transform hover:rotate-1 transition-all duration-300">
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-              {/* Email */}
-              <div>
-                <label className="block text-slate-900 font-black text-xs sm:text-sm mb-2 uppercase">
-                  📧 Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border-3 border-slate-800 bg-blue-50 text-slate-900 font-bold placeholder-slate-500 focus:outline-none focus:bg-blue-100 focus:border-blue-500 transition-colors text-sm sm:text-base"
-                  placeholder="email@contoh.com"
-                />
+              <div className="bg-white border-3 border-slate-800 p-6 shadow-brutal">
+                <div className="w-16 h-16 bg-green-400 border-3 border-slate-800 mx-auto mb-4 flex items-center justify-center text-2xl">
+                  🎉
+                </div>
+                <h2 className="text-xl font-black text-slate-900 mb-4">
+                  Redirecting ke Dashboard...
+                </h2>
+                <p className="text-slate-600 font-bold mb-6">
+                  Jika tidak redirect otomatis, klik tombol di bawah:
+                </p>
+                <Link
+                  href="/dashboard"
+                  className="bg-blue-500 text-white px-6 py-3 font-black border-3 border-slate-800 hover:bg-blue-600 transition-colors inline-block"
+                >
+                  🚀 Pergi ke Dashboard
+                </Link>
               </div>
+            </div>
+          ) : (
+            <>
+              {/* Header */}
+              <div className="text-center mb-6 sm:mb-8">
+                <Link href="/" className="inline-block mb-4 sm:mb-6">
+                  <div className="bg-blue-500 text-white px-4 sm:px-6 py-2 sm:py-3 border-3 sm:border-4 border-slate-800 shadow-brutal transform rotate-2 hover:rotate-3 transition-transform">
+                    <span className="text-lg sm:text-2xl font-black">
+                      📚 PINTU UNIV
+                    </span>
+                  </div>
+                </Link>
 
-              {/* Password */}
-              <div>
-                <label className="block text-slate-900 font-black text-xs sm:text-sm mb-2 uppercase">
-                  🔒 Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border-3 border-slate-800 bg-emerald-50 text-slate-900 font-bold placeholder-slate-500 focus:outline-none focus:bg-emerald-100 focus:border-emerald-500 transition-colors text-sm sm:text-base pr-12"
-                    placeholder="Password Kamu"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-600 hover:text-slate-800 transition-colors text-sm"
-                  >
-                    {showPassword ? "🙈" : "👁️"}
-                  </button>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mb-3 sm:mb-4 uppercase">
+                  Masuk Akun
+                </h1>
+
+                <div className="bg-blue-400 text-slate-900 px-3 sm:px-4 py-2 border-3 border-slate-800 inline-block shadow-brutal transform -rotate-1">
+                  <p className="font-black text-xs sm:text-sm uppercase">
+                    � LANJUTKAN PERJALANAN BELAJARMU
+                  </p>
                 </div>
               </div>
 
-              {/* Remember Me & Forgot Password */}
-              <div className="flex items-center justify-between text-xs sm:text-sm">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="rememberMe"
-                    checked={formData.rememberMe}
-                    onChange={handleChange}
-                    className="w-4 h-4 border-2 border-slate-800 bg-white"
-                  />
-                  <span className="text-slate-700 font-bold">Ingat saya</span>
-                </label>
-                <Link
-                  href="/forgot-password"
-                  className="text-blue-600 font-bold hover:text-blue-800 transition-colors underline"
+              {/* Login Form */}
+              <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 md:p-8 shadow-brutal transform hover:rotate-1 transition-all duration-300">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-4 sm:space-y-5"
                 >
-                  Lupa password?
-                </Link>
-              </div>
+                  {/* Email */}
+                  <div>
+                    <label className="block text-slate-900 font-black text-xs sm:text-sm mb-2 uppercase">
+                      📧 Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-3 sm:px-4 py-2 sm:py-3 border-3 border-slate-800 bg-blue-50 text-slate-900 font-bold placeholder-slate-500 focus:outline-none focus:bg-blue-100 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                      placeholder="email@contoh.com"
+                    />
+                  </div>
 
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-slate-400 text-white font-black py-3 sm:py-4 px-4 sm:px-6 border-3 border-slate-800 shadow-brutal transform hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 uppercase text-sm sm:text-base disabled:transform-none disabled:shadow-brutal"
-              >
-                {isLoading ? (
-                  <span className="flex items-center justify-center space-x-2">
-                    <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-2 border-white border-t-transparent"></div>
-                    <span>MASUK...</span>
-                  </span>
-                ) : (
-                  "� MASUK SEKARANG"
-                )}
-              </Button>
+                  {/* Password */}
+                  <div>
+                    <label className="block text-slate-900 font-black text-xs sm:text-sm mb-2 uppercase">
+                      🔒 Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border-3 border-slate-800 bg-emerald-50 text-slate-900 font-bold placeholder-slate-500 focus:outline-none focus:bg-emerald-100 focus:border-emerald-500 transition-colors text-sm sm:text-base pr-12"
+                        placeholder="Password Kamu"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-600 hover:text-slate-800 transition-colors text-sm"
+                      >
+                        {showPassword ? "🙈" : "👁️"}
+                      </button>
+                    </div>
+                  </div>
 
-              {/* Register Link */}
-              <div className="text-center pt-2 sm:pt-4">
-                <p className="text-slate-600 text-xs sm:text-sm font-bold">
-                  Belum punya akun?{" "}
-                  <Link
-                    href="/register"
-                    className="text-emerald-600 hover:text-emerald-800 transition-colors underline font-black"
+                  {/* Remember Me & Forgot Password */}
+                  <div className="flex items-center justify-between text-xs sm:text-sm">
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="rememberMe"
+                        checked={formData.rememberMe}
+                        onChange={handleChange}
+                        className="w-4 h-4 border-2 border-slate-800 bg-white"
+                      />
+                      <span className="text-slate-700 font-bold">
+                        Ingat saya
+                      </span>
+                    </label>
+                    <Link
+                      href="/forgot-password"
+                      className="text-blue-600 font-bold hover:text-blue-800 transition-colors underline"
+                    >
+                      Lupa password?
+                    </Link>
+                  </div>
+
+                  {/* Submit Button */}
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-slate-400 text-white font-black py-3 sm:py-4 px-4 sm:px-6 border-3 border-slate-800 shadow-brutal transform hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 uppercase text-sm sm:text-base disabled:transform-none disabled:shadow-brutal"
                   >
-                    Daftar di sini
-                  </Link>
-                </p>
-              </div>
-            </form>
-          </div>
+                    {isLoading ? (
+                      <span className="flex items-center justify-center space-x-2">
+                        <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-2 border-white border-t-transparent"></div>
+                        <span>MASUK...</span>
+                      </span>
+                    ) : (
+                      "� MASUK SEKARANG"
+                    )}
+                  </Button>
 
-          {/* Quick Login Demo */}
-          <div className="mt-4 sm:mt-6 text-center">
-            <div className="bg-yellow-100 border-3 border-yellow-500 p-3 sm:p-4">
-              <p className="text-yellow-800 font-bold text-xs sm:text-sm mb-2">
-                🚀 Demo Account:
-              </p>
-              <p className="text-yellow-700 font-bold text-xs">
-                Email: <span className="font-mono">ahmad.bayu@email.com</span>
-                <br />
-                Password: <span className="font-mono">password123</span>
-              </p>
-            </div>
-          </div>
+                  {/* Register Link */}
+                  <div className="text-center pt-2 sm:pt-4">
+                    <p className="text-slate-600 text-xs sm:text-sm font-bold">
+                      Belum punya akun?{" "}
+                      <Link
+                        href="/register"
+                        className="text-emerald-600 hover:text-emerald-800 transition-colors underline font-black"
+                      >
+                        Daftar di sini
+                      </Link>
+                    </p>
+                  </div>
+                </form>
+              </div>
+
+              {/* Quick Login Demo */}
+              <div className="mt-4 sm:mt-6 text-center">
+                <div className="bg-yellow-100 border-3 border-yellow-500 p-3 sm:p-4">
+                  <p className="text-yellow-800 font-bold text-xs sm:text-sm mb-2">
+                    🚀 Demo Account:
+                  </p>
+                  <p className="text-yellow-700 font-bold text-xs">
+                    Email:{" "}
+                    <span className="font-mono">ahmad.bayu@email.com</span>
+                    <br />
+                    Password: <span className="font-mono">password123</span>
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -233,16 +233,8 @@ export default function DashboardPage() {
       try {
         if (typeof window !== "undefined") {
           const storedUserData = localStorage.getItem("userData");
-          const storedAuthToken = localStorage.getItem("authToken");
-
-          // Debug logging
-          console.log("Stored userData:", storedUserData);
-          console.log("Stored authToken:", storedAuthToken);
-          console.log("Document cookies:", document.cookie);
-
           if (storedUserData) {
             const parsedData = JSON.parse(storedUserData);
-            console.log("Parsed user data:", parsedData);
             setUserData({
               name: parsedData.name || "User",
               email: parsedData.email || "",
@@ -251,8 +243,6 @@ export default function DashboardPage() {
               avatar: parsedData.avatar || "👨‍🎓",
               subscriptionType: parsedData.subscriptionType || "free",
             });
-          } else {
-            console.log("No userData found in localStorage");
           }
         }
       } catch (error) {
@@ -279,10 +269,6 @@ export default function DashboardPage() {
           if (typeof window !== "undefined") {
             localStorage.removeItem("authToken");
             localStorage.removeItem("userData");
-
-            // Clear auth-token cookie
-            document.cookie =
-              "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
           }
 
           toast.success("Logout berhasil! Sampai jumpa lagi! 👋");
@@ -337,7 +323,7 @@ export default function DashboardPage() {
                   {userData.email} • {userData.school || "Sekolah belum diset"}{" "}
                   - Kelas {userData.grade}
                 </p>
-                <div className="flex items-center space-x-2 flex-wrap gap-2">
+                <div className="flex items-center space-x-2">
                   <span
                     className={`px-2 py-1 text-xs font-black rounded border-2 border-slate-800 ${
                       userData.subscriptionType === "premium"
@@ -354,27 +340,6 @@ export default function DashboardPage() {
                     className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-xs font-black border-2 border-slate-800 transition-colors"
                   >
                     🚪 Logout
-                  </button>
-                  {/* Debug button - remove in production */}
-                  <button
-                    onClick={() => {
-                      const testUser = {
-                        name: "John Doe",
-                        email: "john@example.com",
-                        school: "SMA Negeri 1 Jakarta",
-                        grade: "12",
-                        avatar: "👨‍🎓",
-                        subscriptionType: "premium",
-                      };
-                      localStorage.setItem(
-                        "userData",
-                        JSON.stringify(testUser)
-                      );
-                      window.location.reload();
-                    }}
-                    className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 text-xs font-black border-2 border-slate-800 transition-colors"
-                  >
-                    🧪 Test Data
                   </button>
                 </div>
               </div>

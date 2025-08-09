@@ -19,6 +19,11 @@ export async function middleware(request: NextRequest) {
     request.cookies.get("auth-token")?.value ||
     request.headers.get("authorization")?.replace("Bearer ", "");
 
+  // Debug logging
+  console.log("Middleware - Path:", pathname);
+  console.log("Middleware - Token:", token ? "Present" : "Not found");
+  console.log("Middleware - Cookies:", request.cookies.getAll());
+
   // Check if current route is protected
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
