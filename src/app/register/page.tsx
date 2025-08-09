@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
@@ -21,23 +23,19 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [passwordMatch, setPasswordMatch] = useState(true);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
 
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setPasswordMatch(false);
-      setError("Password dan konfirmasi password tidak sama");
+      toast.error("Password dan konfirmasi password tidak sama");
       return;
     }
 
     if (!formData.agreeTerms) {
-      setError("Harap setujui syarat dan ketentuan");
+      toast.error("Harap setujui syarat dan ketentuan");
       return;
     }
 
@@ -55,21 +53,24 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (data.success) {
-        setSuccess(data.message);
+        toast.success(data.message, {
+          duration: 3000,
+        });
+
         // Store token in localStorage
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("authToken", data.token);
+        localStorage.setItem("userData", JSON.stringify(data.user));
 
         // Redirect to dashboard after successful registration
         setTimeout(() => {
-          router.push("/dashboard");
+          window.location.href = "/dashboard";
         }, 1500);
       } else {
-        setError(data.message);
+        toast.error(data.message);
       }
     } catch (error) {
       console.error("Registration error:", error);
-      setError("Terjadi kesalahan. Silakan coba lagi.");
+      toast.error("Terjadi kesalahan. Silakan coba lagi.");
     } finally {
       setIsLoading(false);
     }
@@ -132,22 +133,6 @@ export default function RegisterPage() {
           {/* Register Form */}
           <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 md:p-8 shadow-brutal transform hover:rotate-1 transition-all duration-300">
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-              {/* Error Message */}
-              {error && (
-                <div className="bg-red-100 border-3 border-red-500 p-3 mb-4">
-                  <p className="text-red-700 font-bold text-sm">❌ {error}</p>
-                </div>
-              )}
-
-              {/* Success Message */}
-              {success && (
-                <div className="bg-green-100 border-3 border-green-500 p-3 mb-4">
-                  <p className="text-green-700 font-bold text-sm">
-                    ✅ {success}
-                  </p>
-                </div>
-              )}
-
               {/* Full Name */}
               <div>
                 <label className="block text-slate-900 font-black text-xs sm:text-sm mb-2 uppercase">
@@ -327,7 +312,7 @@ export default function RegisterPage() {
               </div>
 
               {/* Submit Button */}
-              <button
+              <Button
                 type="submit"
                 disabled={isLoading || !passwordMatch}
                 className="group w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 sm:px-6 py-3 sm:py-4 font-black text-sm sm:text-lg uppercase border-3 sm:border-4 border-slate-800 transform hover:-rotate-1 hover:-translate-y-2 hover:scale-105 transition-all duration-300 shadow-brutal disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
@@ -347,7 +332,7 @@ export default function RegisterPage() {
                     </>
                   )}
                 </span>
-              </button>
+              </Button>
             </form>
 
             {/* Login Link */}

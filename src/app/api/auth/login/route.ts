@@ -12,9 +12,10 @@ interface LoginRequestBody {
 interface UserRow extends RowDataPacket {
   id: number;
   email: string;
-  password: string;
-  full_name: string;
+  name: string;
+  password_hash: string;
   subscription_type: string;
+  status: string;
   avatar: string;
 }
 
@@ -42,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     // Get user by email
     const [users] = await db.execute<UserRow[]>(
-      "SELECT id, email, password, full_name, subscription_type, avatar FROM users WHERE email = ?",
+      "SELECT id, email, name, password_hash, subscription_type, status, avatar FROM users WHERE email = ?",
       [email]
     );
 
@@ -55,8 +56,19 @@ export async function POST(request: NextRequest) {
 
     const user = users[0];
 
+    // Check if user account is active
+    if (user.status !== "active") {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Akun Anda sedang tidak aktif. Silakan hubungi admin.",
+        },
+        { status: 403 }
+      );
+    }
+
     // Verify password
-    const isPasswordValid = await verifyPassword(password, user.password);
+    const isPasswordValid = await verifyPassword(password, user.password_hash);
 
     if (!isPasswordValid) {
       return NextResponse.json(
@@ -73,9 +85,19 @@ export async function POST(request: NextRequest) {
     });
 
     // Store session in database
+    const sessionToken = `session_${Date.now()}_${Math.random()
+      .toString(36)
+      .substr(2, 9)}`;
     const expiresAt = new Date();
     const expirationDays = body.rememberMe ? 30 : 7; // 30 days if remember me, otherwise 7 days
     expiresAt.setDate(expiresAt.getDate() + expirationDays);
+
+    // Get client info
+    const clientIP =
+      request.headers.get("x-forwarded-for") ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+    const userAgent = request.headers.get("user-agent") || "unknown";
 
     // Clean up old sessions for this user (optional - keep only latest sessions)
     await db.execute(
@@ -85,26 +107,46 @@ export async function POST(request: NextRequest) {
 
     // Insert new session
     await db.execute(
-      "INSERT INTO user_sessions (user_id, session_token, expires_at) VALUES (?, ?, ?)",
-      [user.id, token, expiresAt]
+      "INSERT INTO user_sessions (user_id, session_token, jwt_token, expires_at, ip_address, user_agent) VALUES (?, ?, ?, ?, ?, ?)",
+      [user.id, sessionToken, token, expiresAt, clientIP, userAgent]
+    );
+
+    // Update last activity
+    await db.execute(
+      "UPDATE users SET last_activity = CURRENT_TIMESTAMP WHERE id = ?",
+      [user.id]
     );
 
     // Return success response (don't include password)
-    return NextResponse.json(
+    const userData = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      subscriptionType: user.subscription_type,
+      avatar: user.avatar,
+    };
+
+    // Create response
+    const response = NextResponse.json(
       {
         success: true,
-        message: "Login berhasil! Selamat datang kembali!",
-        user: {
-          id: user.id,
-          email: user.email,
-          fullName: user.full_name,
-          subscriptionType: user.subscription_type,
-          avatar: user.avatar,
-        },
+        message: "Login berhasil! Selamat datang kembali di PintuUniv!",
+        user: userData,
         token,
       },
       { status: 200 }
     );
+
+    // Set HTTP-only cookie for additional security
+    response.cookies.set("auth-token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: expirationDays * 24 * 60 * 60, // Convert days to seconds
+      path: "/",
+    });
+
+    return response;
   } catch (error) {
     console.error("Login error:", error);
 
