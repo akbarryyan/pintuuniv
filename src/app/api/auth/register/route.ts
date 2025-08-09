@@ -23,7 +23,7 @@ interface RegisterRequestBody {
 interface UserRow extends RowDataPacket {
   id: number;
   email: string;
-  full_name: string;
+  name: string; // Fixed: changed from full_name to name
   subscription_type: string;
 }
 
@@ -108,13 +108,13 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await hashPassword(password);
 
-    // Insert new user
+    // Insert new user - Fixed column names to match database schema
     const [result] = await db.execute<ResultSetHeader>(
-      `INSERT INTO users (email, password, full_name, school, grade, phone, avatar) 
+      `INSERT INTO users (email, password_hash, name, school, grade, phone, avatar) 
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
         email,
-        hashedPassword,
+        hashedPassword, // Fixed: changed from password to password_hash
         fullName,
         body.school || null,
         grade,
@@ -125,9 +125,9 @@ export async function POST(request: NextRequest) {
 
     const userId = result.insertId;
 
-    // Get the created user
+    // Get the created user - Fixed column names
     const [newUser] = await db.execute<UserRow[]>(
-      "SELECT id, email, full_name, subscription_type FROM users WHERE id = ?",
+      "SELECT id, email, name, subscription_type FROM users WHERE id = ?",
       [userId]
     );
 
@@ -140,13 +140,14 @@ export async function POST(request: NextRequest) {
       subscriptionType: user.subscription_type,
     });
 
-    // Store session in database
+    // Store session in database - Fixed to include all required fields
+    const sessionToken = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
 
     await db.execute(
-      "INSERT INTO user_sessions (user_id, session_token, expires_at) VALUES (?, ?, ?)",
-      [userId, token, expiresAt]
+      "INSERT INTO user_sessions (user_id, session_token, jwt_token, expires_at) VALUES (?, ?, ?, ?)",
+      [userId, sessionToken, token, expiresAt]
     );
 
     // Return success response
@@ -157,7 +158,7 @@ export async function POST(request: NextRequest) {
         user: {
           id: user.id,
           email: user.email,
-          fullName: user.full_name,
+          fullName: user.name, // Fixed: changed from full_name to name
           subscriptionType: user.subscription_type,
         },
         token,
