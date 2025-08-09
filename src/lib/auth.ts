@@ -25,8 +25,9 @@ export interface JWTPayload {
 }
 
 export function generateToken(payload: JWTPayload): string {
-  const options: SignOptions = { expiresIn: JWT_EXPIRES_IN as string };
-  return jwt.sign(payload, JWT_SECRET, options);
+  // Using 'as any' to bypass TypeScript strict typing issue with jsonwebtoken library
+  // The library accepts string values for expiresIn but TypeScript definitions are restrictive
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as any);
 }
 
 export function verifyToken(token: string): JWTPayload | null {
