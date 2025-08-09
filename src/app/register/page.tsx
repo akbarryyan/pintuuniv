@@ -3,8 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -12,37 +14,65 @@ export default function RegisterPage() {
     password: "",
     confirmPassword: "",
     school: "",
-    grade: "",
+    grade: "12",
     agreeTerms: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [passwordMatch, setPasswordMatch] = useState(true);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
 
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setPasswordMatch(false);
+      setError("Password dan konfirmasi password tidak sama");
       return;
     }
 
     if (!formData.agreeTerms) {
-      alert("Harap setujui syarat dan ketentuan");
+      setError("Harap setujui syarat dan ketentuan");
       return;
     }
 
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Register data:", formData);
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSuccess(data.message);
+        // Store token in localStorage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        // Redirect to dashboard after successful registration
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 1500);
+      } else {
+        setError(data.message);
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      setError("Terjadi kesalahan. Silakan coba lagi.");
+    } finally {
       setIsLoading(false);
-      // Redirect to dashboard after successful registration
-      window.location.href = "/dashboard";
-    }, 2000);
+    }
   };
 
   const handleChange = (
@@ -102,6 +132,22 @@ export default function RegisterPage() {
           {/* Register Form */}
           <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 md:p-8 shadow-brutal transform hover:rotate-1 transition-all duration-300">
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-100 border-3 border-red-500 p-3 mb-4">
+                  <p className="text-red-700 font-bold text-sm">❌ {error}</p>
+                </div>
+              )}
+
+              {/* Success Message */}
+              {success && (
+                <div className="bg-green-100 border-3 border-green-500 p-3 mb-4">
+                  <p className="text-green-700 font-bold text-sm">
+                    ✅ {success}
+                  </p>
+                </div>
+              )}
+
               {/* Full Name */}
               <div>
                 <label className="block text-slate-900 font-black text-xs sm:text-sm mb-2 uppercase">

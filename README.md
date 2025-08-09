@@ -1,36 +1,243 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PintuUniv - Platform Tryout UTBK
 
-## Getting Started
+Platform pembelajaran online untuk persiapan UTBK dengan fitur tryout, analisis AI, dan bimbingan personal.
 
-First, run the development server:
+## 🚀 Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript, TailwindCSS
+- **Backend**: Next.js API Routes
+- **Database**: MySQL
+- **Authentication**: JWT + bcrypt
+- **Styling**: Neobrutalism Design
+
+## 📋 Prerequisites
+
+- Node.js 18+
+- MySQL 8.0+
+- npm atau yarn
+
+## 🛠️ Setup Development
+
+### 1. Clone Repository
+
+```bash
+git clone <repository-url>
+cd pintuuniv
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Setup Environment
+
+Copy `.env.local` file dan sesuaikan konfigurasi database:
+
+```env
+# Database Configuration
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DB_NAME=pintuuniv
+DB_PORT=3306
+
+# JWT Configuration
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+JWT_EXPIRES_IN=7d
+
+# App Configuration
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NODE_ENV=development
+```
+
+### 4. Setup Database
+
+Pastikan MySQL sudah running, kemudian jalankan:
+
+```bash
+npm run init-db
+```
+
+Script ini akan:
+
+- Membuat database `pintuuniv`
+- Membuat semua tabel yang diperlukan
+- Insert data sample (tryouts dan questions)
+
+### 5. Start Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Website akan tersedia di `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📊 Database Schema
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Users Table
 
-## Learn More
+- User registration dan profile data
+- Subscription management
+- Authentication tokens
 
-To learn more about Next.js, take a look at the following resources:
+### Tryouts & Questions
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Tryout management (free/premium)
+- Questions dengan multiple choice
+- Kategorisasi berdasarkan subject
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### User Attempts & Answers
 
-## Deploy on Vercel
+- Tracking user progress
+- Storing jawaban dan hasil
+- Analytics data
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Leaderboard & Sessions
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Ranking system
+- Session management untuk security
+
+## 🔐 API Endpoints
+
+### Authentication
+
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
+
+### Protected Routes
+
+Routes yang memerlukan authentication:
+
+- `/dashboard` - User dashboard
+- `/tryouts` - Tryout list dan simulasi
+- `/leaderboard` - Ranking dan statistik
+- `/profile` - User profile management
+
+## 🧪 Testing Registration
+
+1. Buka `http://localhost:3000/register`
+2. Isi form dengan data valid:
+   - Email format valid
+   - Password minimal 8 karakter (huruf besar, kecil, angka)
+   - Setujui terms & conditions
+3. Submit form
+4. Check console browser dan server logs
+
+## 🔒 Security Features
+
+- **Password Hashing**: bcrypt dengan salt rounds 12
+- **JWT Authentication**: Secure token-based auth
+- **Input Validation**: Server-side validation
+- **SQL Injection Protection**: Prepared statements
+- **Session Management**: Database-stored sessions
+
+## 📱 Features Implemented
+
+### ✅ Completed
+
+- User Registration dengan validasi lengkap
+- Database schema dan connection
+- JWT authentication system
+- Password hashing
+- Input validation (email, password, phone)
+- Error handling dan user feedback
+- Responsive design
+- Header Navigation dengan mobile menu
+
+### 🚧 Next Features
+
+- User Login functionality
+- Dashboard dengan user data
+- Tryout system
+- Leaderboard
+- Profile management
+- Email verification
+- Password reset
+
+## 🐛 Troubleshooting
+
+### Database Connection Error
+
+```bash
+# Check MySQL service
+sudo systemctl status mysql  # Linux
+brew services list | grep mysql  # macOS
+
+# Check credentials
+mysql -u root -p
+```
+
+### Permission Errors
+
+```sql
+-- Grant privileges to user
+GRANT ALL PRIVILEGES ON pintuuniv.* TO 'your_user'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+### JWT Errors
+
+- Pastikan `JWT_SECRET` sudah diset di `.env.local`
+- Check token expiration
+- Verify token format
+
+## 📚 Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── api/auth/          # Authentication APIs
+│   ├── dashboard/         # Dashboard pages
+│   ├── register/          # Registration page
+│   └── ...
+├── components/            # Reusable components
+│   └── HeaderNavigation.tsx
+├── lib/                   # Utilities
+│   ├── auth.ts           # JWT & validation
+│   └── db.ts             # Database connection
+└── middleware.ts         # Route protection
+
+database/
+└── schema.sql            # Database schema
+
+scripts/
+└── init-db.js           # Database initialization
+```
+
+## 🚀 Deployment Notes
+
+### Environment Variables
+
+Update production environment variables:
+
+- Secure JWT_SECRET (32+ chars random)
+- Production database credentials
+- HTTPS URLs
+
+### Database
+
+- Use connection pooling in production
+- Enable SSL for database connections
+- Regular backups
+
+### Security
+
+- Enable CORS restrictions
+- Rate limiting for APIs
+- Input sanitization
+- SQL injection prevention
+
+## 👥 Contributing
+
+1. Fork repository
+2. Create feature branch
+3. Make changes
+4. Test thoroughly
+5. Submit pull request
+
+## 📄 License
+
+Private project - All rights reserved
