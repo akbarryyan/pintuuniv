@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -48,9 +50,9 @@ export default function LoginPage() {
         localStorage.setItem("authToken", data.token);
         localStorage.setItem("userData", JSON.stringify(data.user));
 
-        // Redirect to dashboard
+        // Redirect to dashboard using Next.js router
         setTimeout(() => {
-          window.location.href = "/dashboard";
+          router.push("/dashboard");
         }, 1500);
       } else {
         toast.error(data.message);

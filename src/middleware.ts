@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/lib/auth";
+import { verifyTokenEdge } from "@/lib/auth-edge";
 
 // Define protected routes
 const protectedRoutes = [
@@ -13,10 +13,10 @@ const protectedRoutes = [
 // Define auth routes (redirect to dashboard if already logged in)
 const authRoutes = ["/login", "/register"];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token =
-    request.cookies.get("token")?.value ||
+    request.cookies.get("auth-token")?.value ||
     request.headers.get("authorization")?.replace("Bearer ", "");
 
   // Check if current route is protected
@@ -37,7 +37,7 @@ export function middleware(request: NextRequest) {
     }
 
     // Verify token
-    const payload = verifyToken(token);
+    const payload = await verifyTokenEdge(token);
     if (!payload) {
       // Invalid token, redirect to login
       const loginUrl = new URL("/login", request.url);
@@ -56,7 +56,7 @@ export function middleware(request: NextRequest) {
   // For auth routes (login/register)
   if (isAuthRoute && token) {
     // If user is already logged in, redirect to dashboard
-    const payload = verifyToken(token);
+    const payload = await verifyTokenEdge(token);
     if (payload) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }

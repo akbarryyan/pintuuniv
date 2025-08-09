@@ -63,7 +63,7 @@ export default function RegisterPage() {
 
         // Redirect to dashboard after successful registration
         setTimeout(() => {
-          window.location.href = "/dashboard";
+          router.push("/dashboard");
         }, 1500);
       } else {
         toast.error(data.message);
