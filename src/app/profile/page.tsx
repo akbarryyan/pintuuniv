@@ -1,22 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import HeaderNavigation from "@/components/HeaderNavigation";
 
 export default function ProfilePage() {
+  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [userData, setUserData] = useState({
-    name: "Ahmad Bayu Pratama",
-    email: "ahmad.bayu@email.com",
-    phone: "08123456789",
-    school: "SMA Negeri 1 Jakarta",
-    grade: "12",
+    name: "",
+    email: "",
+    phone: "",
+    school: "",
+    grade: "",
     avatar: "👨‍🎓",
-    joinDate: "15 Januari 2025",
-    subscription: "Premium",
-    subscriptionExpiry: "15 Agustus 2025",
-    targetUniversity: "Universitas Indonesia",
-    targetMajor: "Fakultas Kedokteran",
+    joinDate: "",
+    subscription: "free",
+    subscriptionExpiry: "",
+    targetUniversity: "",
+    targetMajor: "",
     utbkTarget: 650,
   });
 
@@ -98,14 +104,88 @@ export default function ProfilePage() {
     marketingEmails: false,
   });
 
+  // Load user data from localStorage on component mount
+  useEffect(() => {
+    setMounted(true);
+
+    const loadUserData = () => {
+      try {
+        if (typeof window !== "undefined") {
+          const storedUserData = localStorage.getItem("userData");
+          const storedAuthToken = localStorage.getItem("authToken");
+
+          // Check if user is logged in
+          if (!storedAuthToken || !storedUserData) {
+            toast.error("Silakan login terlebih dahulu");
+            router.push("/login");
+            return;
+          }
+
+          if (storedUserData) {
+            const parsedData = JSON.parse(storedUserData);
+
+            // Set user data with fallback values
+            setUserData({
+              name: parsedData.name || "User",
+              email: parsedData.email || "",
+              phone: parsedData.phone || "Belum diset",
+              school: parsedData.school || "Belum diset",
+              grade: parsedData.grade || "12",
+              avatar: parsedData.avatar || "👨‍🎓",
+              joinDate: parsedData.joinDate || "Tidak diketahui",
+              subscription: parsedData.subscriptionType || "free",
+              subscriptionExpiry: parsedData.subscriptionExpiry || "Tidak ada",
+              targetUniversity: parsedData.targetUniversity || "Belum diset",
+              targetMajor: parsedData.targetMajor || "Belum diset",
+              utbkTarget: parsedData.utbkTarget || 650,
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error loading user data:", error);
+        toast.error("Gagal memuat data user");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUserData();
+  }, [router]);
+
   const handleSave = async () => {
     setIsSaving(true);
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Get existing data from localStorage
+      const existingData = localStorage.getItem("userData");
+      if (existingData) {
+        const parsedData = JSON.parse(existingData);
+
+        // Update with new profile data
+        const updatedData = {
+          ...parsedData,
+          name: userData.name,
+          email: userData.email,
+          phone: userData.phone,
+          school: userData.school,
+          grade: userData.grade,
+          avatar: userData.avatar,
+          targetUniversity: userData.targetUniversity,
+          targetMajor: userData.targetMajor,
+          utbkTarget: userData.utbkTarget,
+        };
+
+        // Save back to localStorage
+        localStorage.setItem("userData", JSON.stringify(updatedData));
+
+        toast.success("Profile berhasil diperbarui! 🎉");
+        setIsEditing(false);
+      }
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      toast.error("Gagal menyimpan perubahan");
+    } finally {
       setIsSaving(false);
-      setIsEditing(false);
-      console.log("Profile updated:", userData);
-    }, 2000);
+    }
   };
 
   const handlePreferenceChange = (key: keyof typeof preferences) => {
@@ -115,6 +195,47 @@ export default function ProfilePage() {
     }));
   };
 
+  // Logout function
+  const handleLogout = () => {
+    toast("Yakin ingin logout?", {
+      description: "Anda akan keluar dari akun dan kembali ke halaman utama.",
+      action: {
+        label: "Logout",
+        onClick: () => {
+          // Clear stored data
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("userData");
+
+            // Clear auth-token cookie
+            document.cookie =
+              "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          }
+
+          toast.success("Logout berhasil! Sampai jumpa lagi! 👋");
+
+          // Redirect to home page
+          setTimeout(() => {
+            router.push("/");
+          }, 1000);
+        },
+      },
+      cancel: {
+        label: "Batal",
+        onClick: () => toast.dismiss(),
+      },
+    });
+  };
+
+  // Loading state - AFTER ALL HOOKS
+  if (!mounted || isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-100 via-emerald-50 to-purple-100 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-emerald-50">
       {/* Header Navigation */}
@@ -122,6 +243,11 @@ export default function ProfilePage() {
         showBackButton={true}
         backButtonText="Kembali ke Dashboard"
         backButtonHref="/dashboard"
+        userInfo={{
+          name: userData.name,
+          avatar: userData.avatar,
+        }}
+        onLogout={handleLogout}
       />
 
       {/* Main Content */}
@@ -519,20 +645,39 @@ export default function ProfilePage() {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                   <div>
                     <h3 className="text-xl sm:text-2xl font-black text-slate-900 mb-2 uppercase">
-                      {userData.subscription} PLAN
+                      {userData.subscription === "premium"
+                        ? "PREMIUM"
+                        : userData.subscription === "pro"
+                        ? "PRO"
+                        : "FREE"}{" "}
+                      PLAN
                     </h3>
                     <p className="text-sm sm:text-base font-bold text-slate-800 mb-2">
-                      Berlaku sampai: {userData.subscriptionExpiry}
+                      {userData.subscription === "free"
+                        ? "Paket gratis - Upgrade untuk fitur lengkap"
+                        : `Berlaku sampai: ${userData.subscriptionExpiry}`}
                     </p>
                     <div className="flex items-center space-x-4 text-xs sm:text-sm font-bold text-slate-800">
-                      <span>✅ Unlimited Tryout</span>
-                      <span>✅ AI Analysis</span>
-                      <span>✅ Mentor 24/7</span>
+                      {userData.subscription === "free" ? (
+                        <>
+                          <span>✅ 3 Tryout/bulan</span>
+                          <span>❌ AI Analysis</span>
+                          <span>❌ Mentor 24/7</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>✅ Unlimited Tryout</span>
+                          <span>✅ AI Analysis</span>
+                          <span>✅ Mentor 24/7</span>
+                        </>
+                      )}
                     </div>
                   </div>
                   <div className="mt-4 sm:mt-0">
                     <button className="bg-slate-900 text-white px-4 py-3 font-black text-sm border-3 border-slate-800 hover:bg-slate-800 transition-colors">
-                      📱 KELOLA LANGGANAN
+                      {userData.subscription === "free"
+                        ? "🚀 UPGRADE"
+                        : "📱 KELOLA LANGGANAN"}
                     </button>
                   </div>
                 </div>
@@ -693,12 +838,12 @@ export default function ProfilePage() {
                 <p className="text-sm font-bold text-slate-600 mb-4">
                   Keluar dari akun PintuUniv
                 </p>
-                <Link
-                  href="/"
-                  className="bg-slate-900 text-white px-6 py-3 font-black text-sm uppercase border-3 border-slate-800 hover:bg-slate-800 transition-colors inline-block"
+                <button
+                  onClick={handleLogout}
+                  className="bg-slate-900 text-white px-6 py-3 font-black text-sm uppercase border-3 border-slate-800 hover:bg-slate-800 transition-colors"
                 >
                   🔓 LOGOUT SEKARANG
-                </Link>
+                </button>
               </div>
             </div>
           </div>
