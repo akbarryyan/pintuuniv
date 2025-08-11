@@ -318,6 +318,7 @@ export default function DashboardPage() {
           name: userData.name,
           avatar: userData.avatar,
         }}
+        onLogout={handleLogout}
       />
 
       {/* Main Content */}
@@ -349,33 +350,6 @@ export default function DashboardPage() {
                       ? "🌟 PREMIUM"
                       : "🆓 FREE"}
                   </span>
-                  <button
-                    onClick={handleLogout}
-                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-xs font-black border-2 border-slate-800 transition-colors"
-                  >
-                    🚪 Logout
-                  </button>
-                  {/* Debug button - remove in production */}
-                  <button
-                    onClick={() => {
-                      const testUser = {
-                        name: "John Doe",
-                        email: "john@example.com",
-                        school: "SMA Negeri 1 Jakarta",
-                        grade: "12",
-                        avatar: "👨‍🎓",
-                        subscriptionType: "premium",
-                      };
-                      localStorage.setItem(
-                        "userData",
-                        JSON.stringify(testUser)
-                      );
-                      window.location.reload();
-                    }}
-                    className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 text-xs font-black border-2 border-slate-800 transition-colors"
-                  >
-                    🧪 Test Data
-                  </button>
                 </div>
               </div>
               <div className="mt-4 sm:mt-0 text-center">

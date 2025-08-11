@@ -12,6 +12,7 @@ interface HeaderNavigationProps {
     avatar: string;
     name: string;
   };
+  onLogout?: () => void;
 }
 
 export default function HeaderNavigation({
@@ -20,6 +21,7 @@ export default function HeaderNavigation({
   backButtonText = "Kembali ke Dashboard",
   backButtonHref = "/dashboard",
   userInfo,
+  onLogout,
 }: HeaderNavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -121,6 +123,14 @@ export default function HeaderNavigation({
                   >
                     Profile
                   </Link>
+                  {onLogout && (
+                    <button
+                      onClick={onLogout}
+                      className="bg-red-500 text-white px-2 sm:px-3 py-1 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-red-600 transition-colors"
+                    >
+                      🚪 Logout
+                    </button>
+                  )}
                 </div>
 
                 {/* Mobile Hamburger Button */}
@@ -266,14 +276,28 @@ export default function HeaderNavigation({
 
             {/* Profile Button */}
             <div className="absolute bottom-0 left-0 right-0 p-4 border-t-2 border-slate-700">
-              <Link
-                href="/profile"
-                onClick={closeMobileMenu}
-                className="w-full bg-orange-500 text-white px-4 py-3 font-black text-sm border-2 border-slate-800 hover:bg-orange-600 transition-colors flex items-center justify-center gap-2"
-              >
-                <span>👤</span>
-                Profile
-              </Link>
+              <div className="space-y-2">
+                <Link
+                  href="/profile"
+                  onClick={closeMobileMenu}
+                  className="w-full bg-orange-500 text-white px-4 py-3 font-black text-sm border-2 border-slate-800 hover:bg-orange-600 transition-colors flex items-center justify-center gap-2"
+                >
+                  <span>👤</span>
+                  Profile
+                </Link>
+                {onLogout && (
+                  <button
+                    onClick={() => {
+                      closeMobileMenu();
+                      onLogout();
+                    }}
+                    className="w-full bg-red-500 text-white px-4 py-3 font-black text-sm border-2 border-slate-800 hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <span>🚪</span>
+                    Logout
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </>
