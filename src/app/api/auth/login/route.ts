@@ -17,6 +17,7 @@ interface UserRow extends RowDataPacket {
   subscription_type: string;
   status: string;
   avatar: string;
+  created_at: Date;
 }
 
 export async function POST(request: NextRequest) {
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
 
     // Get user by email
     const [users] = await db.execute<UserRow[]>(
-      "SELECT id, email, name, password_hash, subscription_type, status, avatar FROM users WHERE email = ?",
+      "SELECT id, email, name, password_hash, subscription_type, status, avatar, created_at FROM users WHERE email = ?",
       [email]
     );
 
@@ -124,6 +125,7 @@ export async function POST(request: NextRequest) {
       name: user.name,
       subscriptionType: user.subscription_type,
       avatar: user.avatar,
+      createdAt: user.created_at,
     };
 
     // Create response

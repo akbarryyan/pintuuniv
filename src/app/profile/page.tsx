@@ -104,6 +104,59 @@ export default function ProfilePage() {
     marketingEmails: false,
   });
 
+  // Generate a reasonable join date for existing users
+  const generateJoinDate = () => {
+    // For demo purposes, use current date if no join date exists
+    const today = new Date();
+    const months = [
+      "Januari",
+      "Februari",
+      "Maret",
+      "April",
+      "Mei",
+      "Juni",
+      "Juli",
+      "Agustus",
+      "September",
+      "Oktober",
+      "November",
+      "Desember",
+    ];
+
+    return `${today.getDate()} ${
+      months[today.getMonth()]
+    } ${today.getFullYear()}`;
+  };
+
+  // Format created_at date to Indonesian format
+  const formatCreatedAt = (createdAt: string) => {
+    // Handle both string and Date formats
+    const date = new Date(createdAt);
+
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      console.error("Invalid date:", createdAt);
+      return generateJoinDate(); // fallback
+    }
+
+    const months = [
+      "Januari",
+      "Februari",
+      "Maret",
+      "April",
+      "Mei",
+      "Juni",
+      "Juli",
+      "Agustus",
+      "September",
+      "Oktober",
+      "November",
+      "Desember",
+    ];
+
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  };
+
   // Load user data from localStorage on component mount
   useEffect(() => {
     setMounted(true);
@@ -124,6 +177,45 @@ export default function ProfilePage() {
           if (storedUserData) {
             const parsedData = JSON.parse(storedUserData);
 
+            // Debug logging
+            console.log("Profile page - stored userData:", parsedData);
+            console.log("Profile page - createdAt:", parsedData.createdAt);
+            console.log(
+              "Profile page - existing joinDate:",
+              parsedData.joinDate
+            );
+
+            // Always prioritize createdAt from database if available
+            let joinDate = parsedData.joinDate;
+
+            // Force use createdAt if available (this is the most accurate)
+            if (parsedData.createdAt) {
+              const formattedDate = formatCreatedAt(parsedData.createdAt);
+              console.log("Profile page - createdAt formatted:", formattedDate);
+              joinDate = formattedDate;
+
+              // Always update localStorage with correct date from createdAt
+              if (parsedData.joinDate !== formattedDate) {
+                console.log("Profile page - updating joinDate from createdAt");
+                const updatedUserData = {
+                  ...parsedData,
+                  joinDate: formattedDate,
+                };
+                localStorage.setItem(
+                  "userData",
+                  JSON.stringify(updatedUserData)
+                );
+              }
+            } else if (!joinDate) {
+              // Only fallback to generated date if no createdAt and no existing joinDate
+              console.log("Profile page - no createdAt, using generated date");
+              joinDate = generateJoinDate();
+              const updatedUserData = { ...parsedData, joinDate };
+              localStorage.setItem("userData", JSON.stringify(updatedUserData));
+            }
+
+            console.log("Profile page - final joinDate:", joinDate);
+
             // Set user data with fallback values
             setUserData({
               name: parsedData.name || "User",
@@ -132,7 +224,7 @@ export default function ProfilePage() {
               school: parsedData.school || "Belum diset",
               grade: parsedData.grade || "12",
               avatar: parsedData.avatar || "👨‍🎓",
-              joinDate: parsedData.joinDate || "Tidak diketahui",
+              joinDate: joinDate,
               subscription: parsedData.subscriptionType || "free",
               subscriptionExpiry: parsedData.subscriptionExpiry || "Tidak ada",
               targetUniversity: parsedData.targetUniversity || "Belum diset",
@@ -169,6 +261,7 @@ export default function ProfilePage() {
           school: userData.school,
           grade: userData.grade,
           avatar: userData.avatar,
+          joinDate: userData.joinDate, // Preserve join date
           targetUniversity: userData.targetUniversity,
           targetMajor: userData.targetMajor,
           utbkTarget: userData.utbkTarget,
@@ -193,6 +286,35 @@ export default function ProfilePage() {
       ...prev,
       [key]: !prev[key],
     }));
+  };
+
+  // Debug function to clear stored data and force re-login
+  const handleRefreshUserData = () => {
+    toast("Reset data user?", {
+      description:
+        "Data user akan dihapus dan Anda harus login ulang untuk mendapatkan data terbaru.",
+      action: {
+        label: "Reset",
+        onClick: () => {
+          // Clear stored data
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("userData");
+            // Clear auth-token cookie
+            document.cookie =
+              "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          }
+          toast.success("Data direset! Silakan login ulang.");
+          setTimeout(() => {
+            router.push("/login");
+          }, 1000);
+        },
+      },
+      cancel: {
+        label: "Batal",
+        onClick: () => toast.dismiss(),
+      },
+    });
   };
 
   // Logout function
@@ -824,6 +946,14 @@ export default function ProfilePage() {
 
                 <button className="w-full bg-red-500 text-white px-4 py-3 font-black text-sm border-3 border-slate-800 hover:bg-red-600 transition-colors text-left">
                   🗑️ HAPUS AKUN
+                </button>
+
+                {/* Debug button - for fixing join date */}
+                <button
+                  onClick={handleRefreshUserData}
+                  className="w-full bg-purple-500 text-white px-4 py-3 font-black text-sm border-3 border-slate-800 hover:bg-purple-600 transition-colors text-left"
+                >
+                  🔄 REFRESH DATA USER (Debug)
                 </button>
               </div>
             </div>

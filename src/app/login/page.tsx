@@ -49,11 +49,12 @@ export default function LoginPage() {
           duration: 2000,
         });
 
+        console.log("Login response data:", data);
+        console.log("User data from API:", data.user);
+
         // Store token and user data
         localStorage.setItem("authToken", data.token);
-        localStorage.setItem("userData", JSON.stringify(data.user));
-
-        // Multiple redirect strategies
+        localStorage.setItem("userData", JSON.stringify(data.user)); // Multiple redirect strategies
         setTimeout(() => {
           // Try router.replace first
           router.replace("/dashboard");
