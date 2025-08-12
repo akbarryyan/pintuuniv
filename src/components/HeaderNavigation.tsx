@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface HeaderNavigationProps {
   currentPage?: string;
@@ -35,34 +36,37 @@ export default function HeaderNavigation({
     setIsMobileMenuOpen(false);
   };
 
-  const handleLogoutClick = async () => {
-    // Konfirmasi sederhana agar konsisten di semua halaman
-    const confirmLogout = typeof window !== "undefined"
-      ? window.confirm("Yakin ingin logout? Anda akan kembali ke halaman utama.")
-      : true;
-    if (!confirmLogout) return;
-
-    try {
-      await fetch("/api/auth/logout", { method: "POST" });
-    } catch (_) {
-      // ignore
-    } finally {
-      if (typeof window !== "undefined") {
-        try {
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("userData");
-        } catch (_) {}
-        // Best-effort clear cookie non-HttpOnly
-        document.cookie =
-          "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      }
-      // Jika consumer masih ingin menjalankan hook tambahan, panggil setelah server logout
-      try {
-        onLogout && onLogout();
-      } catch (_) {}
-
-      router.push("/");
-    }
+  const handleLogoutClick = () => {
+    toast("Yakin ingin logout?", {
+      description: "Anda akan keluar dari akun dan kembali ke halaman utama.",
+      action: {
+        label: "Logout",
+        onClick: async () => {
+          try {
+            await fetch("/api/auth/logout", { method: "POST" });
+          } catch (_) {
+            // ignore network error, tetap lanjut clear client
+          } finally {
+            if (typeof window !== "undefined") {
+              try {
+                localStorage.removeItem("authToken");
+                localStorage.removeItem("userData");
+              } catch (_) {}
+              document.cookie =
+                "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            }
+            try {
+              onLogout && onLogout();
+            } catch (_) {}
+            router.push("/");
+          }
+        },
+      },
+      cancel: {
+        label: "Batal",
+        onClick: () => toast.dismiss(),
+      },
+    });
   };
   return (
     <>
