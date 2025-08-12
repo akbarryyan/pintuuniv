@@ -231,6 +231,64 @@ export default function ProfilePage() {
               targetMajor: parsedData.targetMajor || "Belum diset",
               utbkTarget: parsedData.utbkTarget || 0,
             });
+
+            // Tarik data terbaru dari server agar sinkron dengan database
+            try {
+              const freshToken = localStorage.getItem("authToken");
+              if (freshToken) {
+                fetch("/api/profile", {
+                  headers: { Authorization: `Bearer ${freshToken}` },
+                })
+                  .then((res) => res.json())
+                  .then((resp) => {
+                    if (resp?.success && resp.user) {
+                      const server = resp.user;
+                      const existing = (() => {
+                        try {
+                          return JSON.parse(
+                            localStorage.getItem("userData") || "{}"
+                          );
+                        } catch {
+                          return {};
+                        }
+                      })();
+
+                      const merged = {
+                        ...existing,
+                        ...server,
+                        // Pastikan grade bertipe string seperti yang UI harapkan
+                        grade: server.grade ? String(server.grade) : existing.grade,
+                        // Pertahankan joinDate yang sudah diformat
+                        joinDate,
+                      };
+
+                      localStorage.setItem("userData", JSON.stringify(merged));
+
+                      setUserData({
+                        name: merged.name || "User",
+                        email: merged.email || "",
+                        phone: merged.phone || "Belum diset",
+                        school: merged.school || "Belum diset",
+                        grade: merged.grade || "Belum diset",
+                        avatar: merged.avatar || "👨‍🎓",
+                        joinDate,
+                        subscription: merged.subscriptionType || "free",
+                        subscriptionExpiry:
+                          merged.subscriptionExpiry || "Tidak ada",
+                        targetUniversity:
+                          merged.targetUniversity || "Belum diset",
+                        targetMajor: merged.targetMajor || "Belum diset",
+                        utbkTarget: merged.utbkTarget || 0,
+                      });
+                    }
+                  })
+                  .catch((err) =>
+                    console.error("Profile page - fetch /api/profile error:", err)
+                  );
+              }
+            } catch (e) {
+              console.error("Profile page - failed to refresh from server", e);
+            }
           }
         }
       } catch (error) {
