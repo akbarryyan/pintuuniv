@@ -115,7 +115,8 @@ export async function PUT(request: NextRequest) {
     }
 
     if (body.utbkTarget !== undefined) {
-      updateFields.push("utbk_target = ?");
+      // Map UTBK target from client to target_score column in DB
+      updateFields.push("target_score = ?");
       updateValues.push(body.utbkTarget);
     }
 
@@ -137,7 +138,7 @@ export async function PUT(request: NextRequest) {
 
     // Get updated user data
     const [updatedUser] = await db.execute(
-      "SELECT id, email, name, phone, school, grade, avatar, target_university, target_major, utbk_target, subscription_type, created_at FROM users WHERE id = ?",
+      "SELECT id, email, name, phone, school, grade, avatar, target_university, target_major, target_score, subscription_type, subscription_expires, created_at FROM users WHERE id = ?",
       [userId]
     );
 
@@ -161,8 +162,9 @@ export async function PUT(request: NextRequest) {
       avatar: user.avatar,
       targetUniversity: user.target_university,
       targetMajor: user.target_major,
-      utbkTarget: user.utbk_target,
+      utbkTarget: user.target_score,
       subscriptionType: user.subscription_type,
+      subscriptionExpiry: user.subscription_expires,
       createdAt: user.created_at,
     };
 

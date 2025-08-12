@@ -22,7 +22,8 @@ interface UserRow extends RowDataPacket {
   grade: string | null;
   target_university: string | null;
   target_major: string | null;
-  utbk_target: number | null;
+  target_score: number | null;
+  subscription_expires: string | Date | null;
   created_at: Date;
 }
 
@@ -50,7 +51,7 @@ export async function POST(request: NextRequest) {
 
     // Get user by email
     const [users] = await db.execute<UserRow[]>(
-      "SELECT id, email, name, password_hash, subscription_type, status, avatar, phone, school, grade, target_university, target_major, utbk_target, created_at FROM users WHERE email = ?",
+      "SELECT id, email, name, password_hash, subscription_type, subscription_expires, status, avatar, phone, school, grade, target_university, target_major, target_score, created_at FROM users WHERE email = ?",
       [email]
     );
 
@@ -136,7 +137,8 @@ export async function POST(request: NextRequest) {
       grade: user.grade,
       targetUniversity: user.target_university,
       targetMajor: user.target_major,
-      utbkTarget: user.utbk_target,
+      utbkTarget: user.target_score,
+      subscriptionExpiry: user.subscription_expires,
       createdAt: user.created_at,
     };
 
