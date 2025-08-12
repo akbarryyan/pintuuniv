@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface HeaderNavigationProps {
   currentPage?: string;
@@ -23,6 +24,7 @@ export default function HeaderNavigation({
   userInfo,
   onLogout,
 }: HeaderNavigationProps) {
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -31,6 +33,36 @@ export default function HeaderNavigation({
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+  };
+
+  const handleLogoutClick = async () => {
+    // Konfirmasi sederhana agar konsisten di semua halaman
+    const confirmLogout = typeof window !== "undefined"
+      ? window.confirm("Yakin ingin logout? Anda akan kembali ke halaman utama.")
+      : true;
+    if (!confirmLogout) return;
+
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (_) {
+      // ignore
+    } finally {
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("userData");
+        } catch (_) {}
+        // Best-effort clear cookie non-HttpOnly
+        document.cookie =
+          "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      }
+      // Jika consumer masih ingin menjalankan hook tambahan, panggil setelah server logout
+      try {
+        onLogout && onLogout();
+      } catch (_) {}
+
+      router.push("/");
+    }
   };
   return (
     <>
@@ -123,14 +155,12 @@ export default function HeaderNavigation({
                   >
                     Profile
                   </Link>
-                  {onLogout && (
-                    <button
-                      onClick={onLogout}
-                      className="bg-red-500 text-white px-2 sm:px-3 py-1 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-red-600 transition-colors"
-                    >
-                      🚪 Logout
-                    </button>
-                  )}
+                  <button
+                    onClick={handleLogoutClick}
+                    className="bg-red-500 text-white px-2 sm:px-3 py-1 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-red-600 transition-colors"
+                  >
+                    🚪 Logout
+                  </button>
                 </div>
 
                 {/* Mobile Hamburger Button */}
@@ -285,18 +315,16 @@ export default function HeaderNavigation({
                   <span>👤</span>
                   Profile
                 </Link>
-                {onLogout && (
-                  <button
-                    onClick={() => {
-                      closeMobileMenu();
-                      onLogout();
-                    }}
-                    className="w-full bg-red-500 text-white px-4 py-3 font-black text-sm border-2 border-slate-800 hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
-                  >
-                    <span>🚪</span>
-                    Logout
-                  </button>
-                )}
+                <button
+                  onClick={() => {
+                    closeMobileMenu();
+                    handleLogoutClick();
+                  }}
+                  className="w-full bg-red-500 text-white px-4 py-3 font-black text-sm border-2 border-slate-800 hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
+                >
+                  <span>🚪</span>
+                  Logout
+                </button>
               </div>
             </div>
           </div>

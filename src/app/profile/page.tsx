@@ -409,22 +409,26 @@ export default function ProfilePage() {
       action: {
         label: "Logout",
         onClick: () => {
-          // Clear stored data
-          if (typeof window !== "undefined") {
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("userData");
+          // Panggil endpoint server untuk hapus cookie HttpOnly & sesi
+          fetch("/api/auth/logout", { method: "POST" })
+            .catch(() => {})
+            .finally(() => {
+              // Clear stored data di client
+              if (typeof window !== "undefined") {
+                localStorage.removeItem("authToken");
+                localStorage.removeItem("userData");
+                // Best-effort: clear non-HttpOnly cookie jika ada
+                document.cookie =
+                  "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+              }
 
-            // Clear auth-token cookie
-            document.cookie =
-              "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          }
+              toast.success("Logout berhasil! Sampai jumpa lagi! 👋");
 
-          toast.success("Logout berhasil! Sampai jumpa lagi! 👋");
-
-          // Redirect to home page
-          setTimeout(() => {
-            router.push("/");
-          }, 1000);
+              // Redirect ke halaman utama
+              setTimeout(() => {
+                router.push("/");
+              }, 200);
+            });
         },
       },
       cancel: {
