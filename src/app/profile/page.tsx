@@ -352,7 +352,7 @@ export default function ProfilePage() {
         }
 
         toast.success(
-          "Profile berhasil diperbarui dan tersimpan ke database! 🎉"
+          "Profile berhasil diperbarui! 🎉"
         );
         setIsEditing(false);
       } else {
