@@ -268,37 +268,7 @@ export default function DashboardPage() {
     loadUserData();
   }, []);
 
-  // Logout function with confirmation
-  const handleLogout = () => {
-    toast("Yakin ingin logout?", {
-      description: "Anda akan keluar dari akun dan kembali ke halaman utama.",
-      action: {
-        label: "Logout",
-        onClick: () => {
-          // Clear stored data
-          if (typeof window !== "undefined") {
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("userData");
-
-            // Clear auth-token cookie
-            document.cookie =
-              "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          }
-
-          toast.success("Logout berhasil! Sampai jumpa lagi! 👋");
-
-          // Redirect to home page
-          setTimeout(() => {
-            router.push("/");
-          }, 1000);
-        },
-      },
-      cancel: {
-        label: "Batal",
-        onClick: () => toast.dismiss(),
-      },
-    });
-  };
+  // HeaderNavigation kini menangani logout sepenuhnya
 
   // Loading state - AFTER ALL HOOKS
   if (!mounted || isLoading) {
@@ -318,7 +288,6 @@ export default function DashboardPage() {
           name: userData.name,
           avatar: userData.avatar,
         }}
-        onLogout={handleLogout}
       />
 
       {/* Main Content */}
