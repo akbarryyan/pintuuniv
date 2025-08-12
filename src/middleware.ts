@@ -35,15 +35,31 @@ export async function middleware(request: NextRequest) {
   // For protected routes
   if (isProtectedRoute) {
     if (!token) {
-      // Redirect to login if no token (tanpa query redirect)
-      return NextResponse.redirect(new URL("/login", request.url));
+      // Redirect to login if no token (tanpa query redirect) + set cookie flag for toast
+      const resp = NextResponse.redirect(new URL("/login", request.url));
+      resp.cookies.set("login_required", "1", {
+        path: "/",
+        maxAge: 30,
+        httpOnly: false,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+      });
+      return resp;
     }
 
     // Verify token
     const payload = await verifyTokenEdge(token);
     if (!payload) {
-      // Invalid token, redirect to login (tanpa query redirect)
-      return NextResponse.redirect(new URL("/login", request.url));
+      // Invalid token, redirect to login (tanpa query redirect) + set cookie flag for toast
+      const resp = NextResponse.redirect(new URL("/login", request.url));
+      resp.cookies.set("login_required", "1", {
+        path: "/",
+        maxAge: 30,
+        httpOnly: false,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+      });
+      return resp;
     }
 
     // Add user info to headers for the request

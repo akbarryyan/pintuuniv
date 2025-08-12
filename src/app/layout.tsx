@@ -29,8 +29,8 @@ export default function RootLayout({
       <body
         className={`${plusJakartaSans.variable} ${geistMono.variable} antialiased font-sans`}
       >
-        {children}
         <Toaster richColors position="top-right" />
+        {children}
       </body>
     </html>
   );

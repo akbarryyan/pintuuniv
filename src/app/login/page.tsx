@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -16,6 +16,28 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
+
+  // Tampilkan notif jika diarahkan dari protected route tanpa login
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined") {
+        const getCookie = (name: string) => {
+          const match = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([.$?*|{}()\[\]\\\/\+^])/g, "\\$1") + "=([^;]*)"));
+          return match ? decodeURIComponent(match[1]) : undefined;
+        };
+        const flag = getCookie("login_required");
+        if (flag === "1") {
+          setTimeout(() => {
+            toast("Silakan login terlebih dahulu", {
+              description: "Akses dashboard memerlukan autentikasi.",
+            });
+          }, 0);
+          // Hapus flag agar tidak muncul lagi di refresh berikutnya
+          document.cookie = "login_required=; Max-Age=0; path=/;";
+        }
+      }
+    } catch (_) {}
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
