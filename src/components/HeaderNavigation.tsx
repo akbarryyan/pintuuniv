@@ -42,10 +42,12 @@ export default function HeaderNavigation({
       action: {
         label: "Logout",
         onClick: async () => {
+          let serverOk = false;
           try {
-            await fetch("/api/auth/logout", { method: "POST" });
+            const res = await fetch("/api/auth/logout", { method: "POST" });
+            serverOk = res.ok;
           } catch (_) {
-            // ignore network error, tetap lanjut clear client
+            serverOk = false;
           } finally {
             if (typeof window !== "undefined") {
               try {
@@ -55,9 +57,11 @@ export default function HeaderNavigation({
               document.cookie =
                 "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             }
-            try {
-              onLogout && onLogout();
-            } catch (_) {}
+            if (serverOk) {
+              toast.success("Logout berhasil! Sampai jumpa lagi! 👋");
+            } else {
+              toast.error("Logout gagal di server, namun sesi lokal dibersihkan.");
+            }
             router.push("/");
           }
         },
