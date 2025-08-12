@@ -35,19 +35,15 @@ export async function middleware(request: NextRequest) {
   // For protected routes
   if (isProtectedRoute) {
     if (!token) {
-      // Redirect to login if no token
-      const loginUrl = new URL("/login", request.url);
-      loginUrl.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(loginUrl);
+      // Redirect to login if no token (tanpa query redirect)
+      return NextResponse.redirect(new URL("/login", request.url));
     }
 
     // Verify token
     const payload = await verifyTokenEdge(token);
     if (!payload) {
-      // Invalid token, redirect to login
-      const loginUrl = new URL("/login", request.url);
-      loginUrl.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(loginUrl);
+      // Invalid token, redirect to login (tanpa query redirect)
+      return NextResponse.redirect(new URL("/login", request.url));
     }
 
     // Add user info to headers for the request
