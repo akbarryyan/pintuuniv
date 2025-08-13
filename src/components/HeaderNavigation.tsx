@@ -60,7 +60,9 @@ export default function HeaderNavigation({
             if (serverOk) {
               toast.success("Logout berhasil! Sampai jumpa lagi! 👋");
             } else {
-              toast.error("Logout gagal di server, namun sesi lokal dibersihkan.");
+              toast.error(
+                "Logout gagal di server, namun sesi lokal dibersihkan."
+              );
             }
             router.push("/");
           }
@@ -134,14 +136,14 @@ export default function HeaderNavigation({
                     Leaderboard
                   </Link>
                   <Link
-                    href="/lessons"
+                    href="/discuss"
                     className={`font-bold text-sm hover:text-orange-300 ${
-                      currentPage === "lessons"
+                      currentPage === "discuss"
                         ? "text-orange-400"
                         : "text-white"
                     }`}
                   >
-                    Materi
+                    Forum
                   </Link>
                 </div>
 
@@ -298,16 +300,16 @@ export default function HeaderNavigation({
                   Leaderboard
                 </Link>
                 <Link
-                  href="/lessons"
+                  href="/discuss"
                   onClick={closeMobileMenu}
                   className={`flex items-center px-4 py-3 text-sm font-bold border-l-4 transition-all duration-200 ${
-                    currentPage === "lessons"
+                    currentPage === "discuss"
                       ? "text-orange-400 border-orange-400 bg-slate-800"
                       : "text-white border-transparent hover:text-orange-300 hover:border-orange-300 hover:bg-slate-800"
                   }`}
                 >
-                  <span className="mr-3">📚</span>
-                  Materi
+                  <span className="mr-3">�</span>
+                  Forum
                 </Link>
               </nav>
             </div>
