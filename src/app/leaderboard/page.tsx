@@ -1,14 +1,69 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import HeaderNavigation from "@/components/HeaderNavigation";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileFriendlyHeader from "@/components/MobileFriendlyHeader";
 
 export default function LeaderboardPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("overall");
   const [timeFilter, setTimeFilter] = useState("monthly");
+  const [userData, setUserData] = useState({
+    name: "User",
+    avatar: "👨‍🎓",
+  });
+
+  // Load user data
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined") {
+        const storedUserData = localStorage.getItem("userData");
+        if (storedUserData) {
+          const parsedData = JSON.parse(storedUserData);
+          setUserData({
+            name: parsedData.name || "User",
+            avatar: parsedData.avatar || "👨‍🎓",
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error loading user data:", error);
+    }
+  }, []);
+
+  // Logout function
+  const handleLogout = () => {
+    toast("Yakin ingin logout?", {
+      description: "Anda akan keluar dari akun dan kembali ke halaman utama.",
+      action: {
+        label: "Logout",
+        onClick: () => {
+          fetch("/api/auth/logout", { method: "POST" })
+            .catch(() => {})
+            .finally(() => {
+              if (typeof window !== "undefined") {
+                localStorage.removeItem("authToken");
+                localStorage.removeItem("userData");
+                document.cookie =
+                  "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+              }
+              toast.success("Logout berhasil! Sampai jumpa lagi! 👋");
+              setTimeout(() => {
+                router.push("/");
+              }, 200);
+            });
+        },
+      },
+      cancel: {
+        label: "Batal",
+        onClick: () => toast.dismiss(),
+      },
+    });
+  };
 
   // Overall Leaderboard Data
   const [overallLeaderboard] = useState([
@@ -313,12 +368,14 @@ export default function LeaderboardPage() {
           showBackButton={true}
           backButtonText="Kembali ke Dashboard"
           backButtonHref="/dashboard"
+          userInfo={userData}
+          onLogout={handleLogout}
         />
       </div>
 
       {/* Mobile Header */}
       <div className="block md:hidden">
-        <MobileFriendlyHeader />
+        <MobileFriendlyHeader userInfo={userData} showMobileMenu={false} />
       </div>
 
       {/* Main Content */}

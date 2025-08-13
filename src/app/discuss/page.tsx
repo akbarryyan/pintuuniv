@@ -270,6 +270,36 @@ export default function DiscussPage() {
     loadUserData();
   }, []);
 
+  // Logout function
+  const handleLogout = () => {
+    toast("Yakin ingin logout?", {
+      description: "Anda akan keluar dari akun dan kembali ke halaman utama.",
+      action: {
+        label: "Logout",
+        onClick: () => {
+          fetch("/api/auth/logout", { method: "POST" })
+            .catch(() => {})
+            .finally(() => {
+              if (typeof window !== "undefined") {
+                localStorage.removeItem("authToken");
+                localStorage.removeItem("userData");
+                document.cookie =
+                  "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+              }
+              toast.success("Logout berhasil! Sampai jumpa lagi! 👋");
+              setTimeout(() => {
+                router.push("/");
+              }, 200);
+            });
+        },
+      },
+      cancel: {
+        label: "Batal",
+        onClick: () => toast.dismiss(),
+      },
+    });
+  };
+
   // Filter posts based on category and search
   const filteredPosts = forumPosts.filter((post) => {
     const matchesCategory =
@@ -326,6 +356,7 @@ export default function DiscussPage() {
             name: userData.name,
             avatar: userData.avatar,
           }}
+          onLogout={handleLogout}
         />
       </div>
       <div className="sm:hidden">

@@ -1,17 +1,72 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import HeaderNavigation from "@/components/HeaderNavigation";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileFriendlyHeader from "@/components/MobileFriendlyHeader";
 
 export default function TryoutsPage() {
+  const router = useRouter();
   const [activeFilter, setActiveFilter] = useState("all");
   const [selectedSubject, setSelectedSubject] = useState("all");
   const [priceRange, setPriceRange] = useState("all");
   const [difficulty, setDifficulty] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [userData, setUserData] = useState({
+    name: "User",
+    avatar: "👨‍🎓",
+  });
+
+  // Load user data
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined") {
+        const storedUserData = localStorage.getItem("userData");
+        if (storedUserData) {
+          const parsedData = JSON.parse(storedUserData);
+          setUserData({
+            name: parsedData.name || "User",
+            avatar: parsedData.avatar || "👨‍🎓",
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error loading user data:", error);
+    }
+  }, []);
+
+  // Logout function
+  const handleLogout = () => {
+    toast("Yakin ingin logout?", {
+      description: "Anda akan keluar dari akun dan kembali ke halaman utama.",
+      action: {
+        label: "Logout",
+        onClick: () => {
+          fetch("/api/auth/logout", { method: "POST" })
+            .catch(() => {})
+            .finally(() => {
+              if (typeof window !== "undefined") {
+                localStorage.removeItem("authToken");
+                localStorage.removeItem("userData");
+                document.cookie =
+                  "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+              }
+              toast.success("Logout berhasil! Sampai jumpa lagi! 👋");
+              setTimeout(() => {
+                router.push("/");
+              }, 200);
+            });
+        },
+      },
+      cancel: {
+        label: "Batal",
+        onClick: () => toast.dismiss(),
+      },
+    });
+  };
 
   // Complete tryouts data
   const [allTryouts] = useState([
@@ -378,12 +433,14 @@ export default function TryoutsPage() {
           showBackButton={true}
           backButtonText="Kembali ke Dashboard"
           backButtonHref="/dashboard"
+          userInfo={userData}
+          onLogout={handleLogout}
         />
       </div>
 
       {/* Mobile Header */}
       <div className="block md:hidden">
-        <MobileFriendlyHeader />
+        <MobileFriendlyHeader userInfo={userData} showMobileMenu={false} />
       </div>
 
       {/* Main Content */}

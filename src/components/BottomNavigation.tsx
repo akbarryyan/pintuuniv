@@ -41,32 +41,34 @@ export default function BottomNavigation({
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden">
-      <div className="bg-slate-900 border-t-3 border-orange-400 px-3 py-2 shadow-brutal">
-        <div className="flex items-center justify-around">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex flex-col items-center py-2 px-3 transition-all duration-200 ${
-                item.isActive
-                  ? "text-orange-400"
-                  : "text-white hover:text-orange-300"
-              }`}
-            >
-              <div
-                className={`w-8 h-8 flex items-center justify-center border-2 border-slate-800 mb-1 transition-all duration-200 ${
+      <div className="bg-slate-900 border-t-3 border-orange-400 px-4 py-3 shadow-brutal">
+        <div className="max-w-sm mx-auto">
+          <div className="grid grid-cols-4 gap-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex flex-col items-center py-2 px-1 transition-all duration-200 ${
                   item.isActive
-                    ? "bg-orange-400 text-slate-900 shadow-brutal transform -translate-y-1"
-                    : "bg-slate-800 hover:bg-slate-700"
+                    ? "text-orange-400"
+                    : "text-white hover:text-orange-300"
                 }`}
               >
-                <span className="text-sm font-black">{item.icon}</span>
-              </div>
-              <span className="text-xs font-black uppercase tracking-wider">
-                {item.label}
-              </span>
-            </Link>
-          ))}
+                <div
+                  className={`w-10 h-10 flex items-center justify-center border-2 border-slate-800 mb-1.5 transition-all duration-200 ${
+                    item.isActive
+                      ? "bg-orange-400 text-slate-900 shadow-brutal transform -translate-y-1 -rotate-1"
+                      : "bg-slate-800 hover:bg-slate-700"
+                  }`}
+                >
+                  <span className="text-base font-black">{item.icon}</span>
+                </div>
+                <span className="text-xs font-black uppercase tracking-wider text-center leading-tight">
+                  {item.label}
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </div>
