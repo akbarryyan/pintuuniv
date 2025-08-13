@@ -6,6 +6,9 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import HeaderNavigation from "@/components/HeaderNavigation";
+import WelcomeSection from "@/components/dashboard/WelcomeSection";
+import StatsGrid from "@/components/dashboard/StatsGrid";
+import RecentActivities from "@/components/dashboard/RecentActivities";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -91,6 +94,7 @@ export default function DashboardPage() {
     totalTryouts: 0,
     averageScore: 0,
     completedLessons: 0,
+    achievements: 12,
     studyStreak: 0,
     rank: 0,
     totalStudents: 1247,
@@ -360,241 +364,16 @@ export default function DashboardPage() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
         {/* Welcome Section */}
-        <div className="mb-6 sm:mb-8">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-3 sm:p-6 md:p-8 border-3 sm:border-4 border-slate-800 shadow-brutal transform hover:rotate-1 transition-all duration-300">
-            <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-start">
-              <div className="flex-1 min-w-0">
-                <h1 className="text-xl sm:text-3xl md:text-4xl font-black mb-2 sm:mb-3 uppercase leading-tight">
-                  Selamat Datang Kembali! 👋
-                </h1>
-                <p className="text-base sm:text-xl font-bold mb-1 sm:mb-2 truncate">
-                  {userData.name}
-                </p>
-                <p className="text-xs sm:text-base font-medium opacity-90 mb-3 leading-relaxed">
-                  <span className="block sm:inline">{userData.email}</span>
-                  <span className="hidden sm:inline"> • </span>
-                  <span className="block sm:inline">
-                    {userData.school || "Sekolah belum diset"} - Kelas{" "}
-                    {userData.grade}
-                  </span>
-                </p>
-                <div className="flex items-center justify-start">
-                  <span
-                    className={`px-2 py-1 text-xs font-black border-2 border-slate-800 inline-block ${
-                      userData.subscriptionType === "premium"
-                        ? "bg-yellow-400 text-slate-900"
-                        : "bg-gray-300 text-slate-900"
-                    }`}
-                  >
-                    {userData.subscriptionType === "premium"
-                      ? "🌟 PREMIUM"
-                      : "🆓 FREE"}
-                  </span>
-                </div>
-              </div>
-
-              {/* Target University Card - Redesigned for mobile */}
-              <div className="flex-shrink-0 w-full sm:w-auto">
-                <div className="bg-white p-3 sm:p-4 border-3 border-slate-800 shadow-brutal transform -rotate-1 hover:-rotate-2 transition-all duration-300 mx-auto sm:mx-0 max-w-[280px] sm:max-w-[180px]">
-                  <div className="flex items-center sm:flex-col sm:text-center space-x-3 sm:space-x-0 sm:space-y-2">
-                    <div className="relative w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 border-2 border-slate-800 bg-white overflow-hidden">
-                      <Image
-                        src={
-                          targetUniversities[
-                            userData.targetUniversity as keyof typeof targetUniversities
-                          ]?.logo || "/university/ui.png"
-                        }
-                        alt={
-                          targetUniversities[
-                            userData.targetUniversity as keyof typeof targetUniversities
-                          ]?.name || "Universitas Indonesia"
-                        }
-                        width={64}
-                        height={64}
-                        className="w-full h-full object-contain"
-                        onError={(e) => {
-                          // Fallback jika gambar error
-                          const target = e.target as HTMLImageElement;
-                          target.src = "/university/ui.png";
-                        }}
-                      />
-                    </div>
-                    <div className="flex-1 sm:flex-none">
-                      <p className="font-black text-xs sm:text-sm uppercase text-slate-900 mb-1">
-                        🎯 Target Kampus
-                      </p>
-                      <p className="font-black text-xs sm:text-sm text-slate-900 leading-tight mb-2">
-                        {targetUniversities[
-                          userData.targetUniversity as keyof typeof targetUniversities
-                        ]?.name
-                          .split(" ")
-                          .slice(0, 2)
-                          .join(" ") || "Universitas Indonesia"}
-                      </p>
-                      <div
-                        className={`px-2 py-1 border-2 border-slate-800 text-xs font-black text-white inline-block ${
-                          targetUniversities[
-                            userData.targetUniversity as keyof typeof targetUniversities
-                          ]?.color || "bg-yellow-400"
-                        }`}
-                      >
-                        IMPIAN!
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <WelcomeSection userData={userData} />
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8">
-          <div className="bg-white border-3 border-slate-800 p-3 sm:p-4 md:p-6 shadow-brutal transform hover:-rotate-1 hover:-translate-y-1 transition-all duration-200">
-            <div className="text-center">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-400 border-3 border-slate-800 mx-auto mb-2 sm:mb-3 flex items-center justify-center font-black text-lg sm:text-xl">
-                📝
-              </div>
-              <p className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 mb-1">
-                {stats.totalTryouts}
-              </p>
-              <p className="text-xs sm:text-sm font-bold text-slate-600 uppercase">
-                Total Tryouts
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white border-3 border-slate-800 p-3 sm:p-4 md:p-6 shadow-brutal transform hover:rotate-1 hover:-translate-y-1 transition-all duration-200">
-            <div className="text-center">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-400 border-3 border-slate-800 mx-auto mb-2 sm:mb-3 flex items-center justify-center font-black text-lg sm:text-xl">
-                🎯
-              </div>
-              <p className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 mb-1">
-                {stats.averageScore}
-              </p>
-              <p className="text-xs sm:text-sm font-bold text-slate-600 uppercase">
-                Rata-rata Skor
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white border-3 border-slate-800 p-3 sm:p-4 md:p-6 shadow-brutal transform hover:rotate-1 hover:-translate-y-1 transition-all duration-200">
-            <div className="text-center">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-400 border-3 border-slate-800 mx-auto mb-2 sm:mb-3 flex items-center justify-center font-black text-lg sm:text-xl">
-                📚
-              </div>
-              <p className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 mb-1">
-                {stats.completedLessons}
-              </p>
-              <p className="text-xs sm:text-sm font-bold text-slate-600 uppercase">
-                Materi Selesai
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white border-3 border-slate-800 p-3 sm:p-4 md:p-6 shadow-brutal transform hover:rotate-1 hover:-translate-y-1 transition-all duration-200">
-            <div className="text-center">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-400 border-3 border-slate-800 mx-auto mb-2 sm:mb-3 flex items-center justify-center font-black text-lg sm:text-xl">
-                🎖️
-              </div>
-              <p className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 mb-1">
-                12
-              </p>
-              <p className="text-xs sm:text-sm font-bold text-slate-600 uppercase">
-                Achievement
-              </p>
-            </div>
-          </div>
-        </div>
+        <StatsGrid stats={stats} />
 
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {/* Recent Activities */}
           <div className="lg:col-span-2">
-            <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 shadow-brutal mb-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase">
-                  📊 Aktivitas Terbaru
-                </h2>
-                <Link
-                  href="/activities"
-                  className="bg-blue-500 text-white px-3 sm:px-4 py-2 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-blue-600 transition-colors text-center sm:text-left"
-                >
-                  Lihat Semua
-                </Link>
-              </div>
-
-              <div className="space-y-3 sm:space-y-4">
-                {recentActivities.length > 0 ? (
-                  recentActivities.map((activity) => (
-                    <div
-                      key={activity.id}
-                      className="border-2 border-slate-800 p-3 sm:p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-0">
-                        <div className="flex items-start space-x-3 flex-1">
-                          <div
-                            className={`w-8 h-8 sm:w-10 sm:h-10 border-2 border-slate-800 flex items-center justify-center font-black text-sm sm:text-base ${
-                              activity.type === "tryout"
-                                ? "bg-orange-400"
-                                : "bg-emerald-400"
-                            }`}
-                          >
-                            {activity.type === "tryout" ? "📝" : "📚"}
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="font-black text-sm sm:text-base text-slate-900 mb-1 leading-tight">
-                              {activity.title}
-                            </h3>
-                            <p className="text-xs sm:text-sm text-slate-600 font-bold">
-                              {activity.date}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-left sm:text-right">
-                          {activity.type === "tryout" ? (
-                            <div className="bg-blue-500 text-white px-2 sm:px-3 py-1 border-2 border-slate-800 font-black text-xs sm:text-sm inline-block">
-                              Skor: {activity.score}
-                            </div>
-                          ) : (
-                            <div
-                              className={`px-2 sm:px-3 py-1 border-2 border-slate-800 font-black text-xs sm:text-sm inline-block ${
-                                activity.status === "completed"
-                                  ? "bg-emerald-500 text-white"
-                                  : "bg-yellow-400 text-slate-900"
-                              }`}
-                            >
-                              {activity.status === "completed"
-                                ? "Selesai"
-                                : `${activity.progress}%`}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-8">
-                    <div className="w-16 h-16 bg-slate-200 border-3 border-slate-800 mx-auto mb-4 flex items-center justify-center text-2xl">
-                      📊
-                    </div>
-                    <h3 className="font-black text-lg text-slate-900 mb-2">
-                      Belum Ada Aktivitas
-                    </h3>
-                    <p className="text-slate-600 font-bold mb-4">
-                      Mulai tryout atau pelajari materi untuk melihat aktivitas
-                      terbaru kamu!
-                    </p>
-                    <Link
-                      href="/tryouts"
-                      className="inline-block bg-orange-500 text-white px-4 py-2 font-black text-sm border-2 border-slate-800 hover:bg-orange-600 transition-colors"
-                    >
-                      🚀 Mulai Tryout
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </div>
+            <RecentActivities activities={recentActivities} />
 
             {/* Progress Tracking Chart */}
             <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 shadow-brutal mb-6">
