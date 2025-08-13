@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import HeaderNavigation from "@/components/HeaderNavigation";
+import BottomNavigation from "@/components/BottomNavigation";
+import MobileFriendlyHeader from "@/components/MobileFriendlyHeader";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -257,7 +259,9 @@ export default function ProfilePage() {
                         ...existing,
                         ...server,
                         // Pastikan grade bertipe string seperti yang UI harapkan
-                        grade: server.grade ? String(server.grade) : existing.grade,
+                        grade: server.grade
+                          ? String(server.grade)
+                          : existing.grade,
                         // Pertahankan joinDate yang sudah diformat
                         joinDate,
                       };
@@ -283,7 +287,10 @@ export default function ProfilePage() {
                     }
                   })
                   .catch((err) =>
-                    console.error("Profile page - fetch /api/profile error:", err)
+                    console.error(
+                      "Profile page - fetch /api/profile error:",
+                      err
+                    )
                   );
               }
             } catch (e) {
@@ -351,9 +358,7 @@ export default function ProfilePage() {
           localStorage.setItem("userData", JSON.stringify(updatedData));
         }
 
-        toast.success(
-          "Profile berhasil diperbarui! 🎉"
-        );
+        toast.success("Profile berhasil diperbarui! 🎉");
         setIsEditing(false);
       } else {
         toast.error(data.message || "Gagal menyimpan perubahan");
@@ -448,18 +453,25 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-emerald-50">
-      {/* Header Navigation */}
-      <HeaderNavigation
-        showBackButton={true}
-        backButtonText="Kembali ke Dashboard"
-        backButtonHref="/dashboard"
-        userInfo={{
-          name: userData.name,
-          avatar: userData.avatar,
-        }}
-        onLogout={handleLogout}
-      />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-emerald-50 pb-20 md:pb-0">
+      {/* Desktop Header */}
+      <div className="hidden md:block">
+        <HeaderNavigation
+          showBackButton={true}
+          backButtonText="Kembali ke Dashboard"
+          backButtonHref="/dashboard"
+          userInfo={{
+            name: userData.name,
+            avatar: userData.avatar,
+          }}
+          onLogout={handleLogout}
+        />
+      </div>
+
+      {/* Mobile Header */}
+      <div className="block md:hidden">
+        <MobileFriendlyHeader />
+      </div>
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
@@ -476,7 +488,8 @@ export default function ProfilePage() {
                     {userData.name}
                   </h1>
                   <p className="text-sm sm:text-base font-bold opacity-90">
-                    {userData.school || "Belum diset"} - {userData.grade ? `Kelas ${userData.grade}` : "Belum diset"}
+                    {userData.school || "Belum diset"} -{" "}
+                    {userData.grade ? `Kelas ${userData.grade}` : "Belum diset"}
                   </p>
                   <p className="text-xs sm:text-sm font-medium opacity-80">
                     Bergabung sejak {userData.joinDate}
@@ -497,15 +510,16 @@ export default function ProfilePage() {
                     Status
                   </p>
                   <p className="text-lg sm:text-xl font-black">
-                    {userData.subscription === "premium" 
-                      ? "PREMIUM" 
-                      : userData.subscription === "pro" 
-                      ? "PRO" 
+                    {userData.subscription === "premium"
+                      ? "PREMIUM"
+                      : userData.subscription === "pro"
+                      ? "PRO"
                       : "FREE"}
                   </p>
                   <p className="text-xs font-bold">
-                    {userData.subscriptionExpiry && userData.subscriptionExpiry !== "Tidak ada" 
-                      ? `Sampai ${userData.subscriptionExpiry}` 
+                    {userData.subscriptionExpiry &&
+                    userData.subscriptionExpiry !== "Tidak ada"
+                      ? `Sampai ${userData.subscriptionExpiry}`
                       : "Tidak ada batas waktu"}
                   </p>
                 </div>
@@ -679,7 +693,9 @@ export default function ProfilePage() {
                       </select>
                     ) : (
                       <div className="bg-slate-100 border-2 border-slate-800 p-3 sm:p-4 font-bold text-slate-900 text-sm sm:text-base">
-                        {userData.grade ? `Kelas ${userData.grade}` : "Belum diset"}
+                        {userData.grade
+                          ? `Kelas ${userData.grade}`
+                          : "Belum diset"}
                       </div>
                     )}
                   </div>
@@ -763,7 +779,9 @@ export default function ProfilePage() {
                     />
                   ) : (
                     <div className="bg-emerald-100 border-2 border-emerald-400 p-3 sm:p-4 font-bold text-slate-900 text-sm sm:text-base">
-                      {userData.utbkTarget ? `${userData.utbkTarget} poin` : "Belum diset"}
+                      {userData.utbkTarget
+                        ? `${userData.utbkTarget} poin`
+                        : "Belum diset"}
                     </div>
                   )}
                 </div>
@@ -776,7 +794,9 @@ export default function ProfilePage() {
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs font-bold">
                       <span>Skor Saat Ini: 520</span>
-                      <span>Target: {userData.utbkTarget || "Belum diset"}</span>
+                      <span>
+                        Target: {userData.utbkTarget || "Belum diset"}
+                      </span>
                     </div>
                     {userData.utbkTarget ? (
                       <>
@@ -784,7 +804,10 @@ export default function ProfilePage() {
                           <div
                             className="h-full bg-gradient-to-r from-blue-400 to-emerald-400 border-r-2 border-slate-800 transition-all duration-500"
                             style={{
-                              width: `${Math.min((520 / userData.utbkTarget) * 100, 100)}%`,
+                              width: `${Math.min(
+                                (520 / userData.utbkTarget) * 100,
+                                100
+                              )}%`,
                             }}
                           ></div>
                         </div>
@@ -888,7 +911,8 @@ export default function ProfilePage() {
                     <p className="text-sm sm:text-base font-bold text-slate-800 mb-2">
                       {userData.subscription === "free"
                         ? "Paket gratis - Upgrade untuk fitur lengkap"
-                        : userData.subscriptionExpiry && userData.subscriptionExpiry !== "Tidak ada"
+                        : userData.subscriptionExpiry &&
+                          userData.subscriptionExpiry !== "Tidak ada"
                         ? `Berlaku sampai: ${userData.subscriptionExpiry}`
                         : "Paket berlangganan aktif"}
                     </p>
@@ -1092,6 +1116,9 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
+
+      {/* Bottom Navigation - Mobile Only */}
+      <BottomNavigation currentPage="profile" />
     </div>
   );
 }

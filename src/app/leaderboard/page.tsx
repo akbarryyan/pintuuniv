@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import HeaderNavigation from "@/components/HeaderNavigation";
+import BottomNavigation from "@/components/BottomNavigation";
+import MobileFriendlyHeader from "@/components/MobileFriendlyHeader";
 
 export default function LeaderboardPage() {
   const [activeTab, setActiveTab] = useState("overall");
@@ -304,13 +306,20 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-emerald-50">
-      {/* Header Navigation */}
-      <HeaderNavigation
-        showBackButton={true}
-        backButtonText="Kembali ke Dashboard"
-        backButtonHref="/dashboard"
-      />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-emerald-50 pb-20 md:pb-0">
+      {/* Desktop Header */}
+      <div className="hidden md:block">
+        <HeaderNavigation
+          showBackButton={true}
+          backButtonText="Kembali ke Dashboard"
+          backButtonHref="/dashboard"
+        />
+      </div>
+
+      {/* Mobile Header */}
+      <div className="block md:hidden">
+        <MobileFriendlyHeader />
+      </div>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
@@ -646,6 +655,9 @@ export default function LeaderboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Bottom Navigation - Mobile Only */}
+      <BottomNavigation currentPage="leaderboard" />
     </div>
   );
 }

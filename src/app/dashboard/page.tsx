@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import HeaderNavigation from "@/components/HeaderNavigation";
+import MobileFriendlyHeader from "@/components/MobileFriendlyHeader";
+import BottomNavigation from "@/components/BottomNavigation";
 import WelcomeSection from "@/components/dashboard/WelcomeSection";
 import StatsGrid from "@/components/dashboard/StatsGrid";
 import RecentActivities from "@/components/dashboard/RecentActivities";
@@ -356,17 +358,29 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-emerald-50 to-purple-100">
-      {/* Header Navigation */}
-      <HeaderNavigation
-        currentPage="Dashboard"
-        userInfo={{
-          name: userData.name,
-          avatar: userData.avatar,
-        }}
-      />
+      {/* Header Navigation - Desktop uses HeaderNavigation, Mobile uses MobileFriendlyHeader */}
+      <div className="hidden sm:block">
+        <HeaderNavigation
+          currentPage="dashboard"
+          userInfo={{
+            name: userData.name,
+            avatar: userData.avatar,
+          }}
+        />
+      </div>
+      <div className="sm:hidden">
+        <MobileFriendlyHeader
+          currentPage="dashboard"
+          userInfo={{
+            name: userData.name,
+            avatar: userData.avatar,
+          }}
+          showMobileMenu={false}
+        />
+      </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 pb-24 sm:pb-8">
         {/* Welcome Section */}
         <WelcomeSection userData={userData} />
 
@@ -393,6 +407,9 @@ export default function DashboardPage() {
         {/* Upcoming Tryouts */}
         <UpcomingTryouts tryouts={upcomingTryouts} />
       </div>
+
+      {/* Bottom Navigation - Mobile Only */}
+      <BottomNavigation currentPage="dashboard" />
     </div>
   );
 }
