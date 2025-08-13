@@ -470,7 +470,13 @@ export default function ProfilePage() {
 
       {/* Mobile Header */}
       <div className="block md:hidden">
-        <MobileFriendlyHeader />
+        <MobileFriendlyHeader
+          userInfo={{
+            name: userData.name,
+            avatar: userData.avatar,
+          }}
+          showMobileMenu={false}
+        />
       </div>
 
       {/* Main Content */}
