@@ -143,22 +143,46 @@ export default function CTASection() {
         </div>
 
         {/* Special Offer Banner */}
-        <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-3 sm:p-4 md:p-6 border-3 sm:border-4 md:border-6 border-yellow-400 transform -rotate-1 inline-block shadow-brutal hover:rotate-0 transition-transform duration-300 mb-6 sm:mb-8 md:mb-10">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 md:gap-4">
-            <div className="flex items-center gap-1 sm:gap-2">
-              <span className="text-xl sm:text-2xl animate-spin">⏰</span>
-              <span className="font-black text-xs sm:text-sm md:text-base lg:text-lg uppercase">
-                PROMO TERBATAS!
-              </span>
+        <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-4 sm:p-5 md:p-6 border-3 sm:border-4 md:border-6 border-yellow-400 transform -rotate-1 inline-block shadow-brutal hover:rotate-0 transition-transform duration-300 mb-6 sm:mb-8 md:mb-10 max-w-full mx-auto">
+          <div className="flex flex-col items-center justify-center gap-3 sm:gap-4">
+            {/* Top section with promo text */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 w-full">
+              <div className="flex items-center gap-1 sm:gap-2">
+                <span className="text-lg sm:text-xl md:text-2xl animate-spin">
+                  ⏰
+                </span>
+                <span className="font-black text-xs sm:text-sm md:text-base lg:text-lg uppercase text-center">
+                  PROMO TERBATAS!
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1 sm:gap-2">
+                <span className="text-lg sm:text-xl md:text-2xl animate-bounce">
+                  🔥
+                </span>
+                <span className="font-black text-xs sm:text-sm md:text-base lg:text-lg uppercase text-center">
+                  BERAKHIR MALAM INI!
+                </span>
+              </div>
             </div>
-            <div className="bg-yellow-400 text-slate-900 px-3 sm:px-4 py-1 sm:py-2 border-2 sm:border-3 border-white font-black text-xs sm:text-sm md:text-base uppercase shadow-lg animate-pulse">
-              DAFTAR HARI INI DAPAT DISKON 50%
+
+            {/* Main CTA in yellow banner - Full width on mobile */}
+            <div className="bg-yellow-400 text-slate-900 px-4 sm:px-6 md:px-8 py-2 sm:py-3 border-2 sm:border-3 border-white font-black text-sm sm:text-base md:text-lg uppercase shadow-lg animate-pulse w-full sm:w-auto text-center rounded-sm sm:rounded-none">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
+                <span className="text-xs sm:text-sm md:text-base">
+                  DAFTAR HARI INI
+                </span>
+                <span className="text-xs sm:text-sm md:text-base">
+                  DAPAT DISKON 50%
+                </span>
+              </div>
             </div>
-            <div className="flex items-center gap-1 sm:gap-2">
-              <span className="text-xl sm:text-2xl animate-bounce">🔥</span>
-              <span className="font-black text-xs sm:text-sm md:text-base lg:text-lg uppercase">
-                BERAKHIR MALAM INI!
-              </span>
+
+            {/* Bottom urgency text */}
+            <div className="text-center">
+              <p className="text-xs sm:text-sm font-bold text-yellow-200 uppercase">
+                💸 Penawaran terbaik tahun ini! Jangan sampai terlewat! 💸
+              </p>
             </div>
           </div>
         </div>

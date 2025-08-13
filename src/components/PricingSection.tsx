@@ -274,35 +274,39 @@ export default function PricingSection() {
 
         {/* Special Offer CTA */}
         <div className="text-center">
-          <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-orange-300 p-6 md:p-10 border-4 md:border-6 border-orange-500 transform rotate-2 max-w-4xl mx-auto shadow-brutal hover:rotate-0 transition-transform duration-300">
-            <div className="mb-4 md:mb-6">
-              <h3 className="text-2xl md:text-4xl font-black uppercase mb-3 md:mb-4 flex items-center justify-center gap-3">
-                <span className="animate-spin">🎉</span>
-                SPECIAL OFFER!
-                <span className="animate-bounce">🎉</span>
+          <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-orange-300 p-4 sm:p-6 md:p-8 lg:p-10 border-3 sm:border-4 md:border-6 border-orange-500 transform rotate-2 max-w-5xl mx-auto shadow-brutal hover:rotate-0 transition-transform duration-300">
+            <div className="mb-4 sm:mb-6 md:mb-8">
+              <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-black uppercase mb-2 sm:mb-3 md:mb-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
+                <span className="animate-spin text-2xl sm:text-3xl">🎉</span>
+                <span className="text-center">SPECIAL OFFER!</span>
+                <span className="animate-bounce text-2xl sm:text-3xl">🎉</span>
               </h3>
-              <p className="text-sm md:text-lg font-bold mb-4 md:mb-6">
+              <p className="text-xs sm:text-sm md:text-base lg:text-lg font-bold mb-4 sm:mb-6 leading-relaxed px-2 sm:px-4">
                 Daftar sekarang dan dapatkan{" "}
-                <span className="bg-orange-500 text-white px-2 py-1 border-2 border-orange-300">
+                <span className="bg-orange-500 text-white px-2 py-1 border-2 border-orange-300 inline-block my-1 sm:my-0 mx-1">
                   7 hari gratis
                 </span>{" "}
                 untuk semua paket!
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <button className="bg-orange-500 text-white px-6 md:px-8 py-3 md:py-4 border-3 md:border-4 border-orange-300 font-black uppercase hover:bg-orange-600 transition-all duration-300 text-sm md:text-base transform hover:-translate-y-2 hover:scale-105 shadow-lg">
+            <div className="flex flex-col gap-4 sm:gap-6 justify-center items-center">
+              <button className="bg-orange-500 text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 border-2 sm:border-3 md:border-4 border-orange-300 font-black uppercase hover:bg-orange-600 transition-all duration-300 text-sm sm:text-base md:text-lg transform hover:-translate-y-1 sm:hover:-translate-y-2 hover:scale-105 shadow-lg w-full sm:w-auto max-w-xs sm:max-w-none">
                 🔥 KLAIM TRIAL GRATIS →
               </button>
 
-              <div className="flex items-center gap-4 text-sm">
-                <div className="flex items-center gap-1">
-                  <span className="text-emerald-400 text-lg">✓</span>
-                  <span className="font-bold">No Credit Card</span>
+              <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 text-xs sm:text-sm">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <span className="text-emerald-400 text-base sm:text-lg">
+                    ✓
+                  </span>
+                  <span className="font-bold text-center">No Credit Card</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-emerald-400 text-lg">✓</span>
-                  <span className="font-bold">Cancel Anytime</span>
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <span className="text-emerald-400 text-base sm:text-lg">
+                    ✓
+                  </span>
+                  <span className="font-bold text-center">Cancel Anytime</span>
                 </div>
               </div>
             </div>
