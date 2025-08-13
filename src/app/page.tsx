@@ -633,17 +633,17 @@ export default function Home() {
           style={{ animationDelay: "0.8s" }}
         ></div>
       </div>
-
       {/* Decorative Elements */}
       <div className="absolute top-20 left-4 md:left-10 w-12 md:w-24 h-12 md:h-24 bg-orange-400 rotate-12 border-3 border-slate-800 opacity-80 z-10"></div>
       <div className="absolute top-40 right-4 md:right-20 w-8 md:w-16 h-8 md:h-16 bg-blue-400 rounded-full border-3 border-slate-800 opacity-80 z-10"></div>
       <div className="absolute bottom-40 left-4 md:left-20 w-10 md:w-20 h-10 md:h-20 bg-emerald-400 rotate-45 border-3 border-slate-800 opacity-80 z-10"></div>
       <div className="absolute bottom-20 right-8 md:right-40 w-8 md:w-14 h-8 md:h-14 bg-violet-400 border-3 border-slate-800 opacity-80 z-10"></div>
-
       {/* Navigation */}
+      {/* Desktop/Mobile Header */}
       <nav className="bg-slate-900 border-b-4 border-orange-400 relative z-50 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 md:h-18">
+            {/* Logo - Always visible */}
             <div className="flex items-center">
               <div className="flex-shrink-0 flex items-center">
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-orange-400 border-3 border-slate-800 rotate-12 flex items-center justify-center mr-3 md:mr-4 font-black text-sm md:text-lg shadow-md">
@@ -655,25 +655,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button className="text-white p-2">
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              </button>
-            </div>
-
+            {/* Desktop Navigation Links */}
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-3 lg:space-x-4">
                 <a
@@ -697,55 +679,150 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
+            {/* Right side buttons */}
+            <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
+              {/* Login button - hidden on small mobile, visible on sm+ */}
               <Link
                 href="/login"
-                className="bg-white text-slate-900 px-3 py-2 md:px-4 md:py-2 font-bold uppercase border-3 border-slate-800 hover:bg-orange-100 transform hover:-translate-y-1 transition-all duration-200 text-xs md:text-sm shadow-md"
+                className="hidden sm:block bg-white text-slate-900 px-2 sm:px-3 py-2 md:px-4 md:py-2 font-bold uppercase border-3 border-slate-800 hover:bg-orange-100 transform hover:-translate-y-1 transition-all duration-200 text-xs md:text-sm shadow-md"
               >
                 🔐 Masuk
               </Link>
+              {/* Get Started button - Always visible, more prominent on mobile */}
               <Link
                 href="/register"
-                className="bg-orange-500 text-white px-3 py-2 md:px-4 md:py-2 font-bold uppercase border-3 border-slate-800 hover:bg-orange-400 transform hover:-translate-y-1 transition-all duration-200 shadow-lg text-xs md:text-sm"
+                className="bg-orange-500 text-white px-3 sm:px-3 py-2 md:px-4 md:py-2 font-black uppercase border-3 border-slate-800 hover:bg-orange-400 transform hover:-translate-y-1 transition-all duration-200 shadow-lg text-xs sm:text-xs md:text-sm"
               >
-                📝 Daftar
+                <span className="md:hidden">GET STARTED</span>
+                <span className="hidden md:inline">📝 Daftar</span>
               </Link>
             </div>
           </div>
         </div>
       </nav>
+      {/* Mobile Bottom Navigation - Only visible on mobile */}
+      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 via-slate-800 to-slate-900 border-t-4 border-orange-400 md:hidden z-50 shadow-2xl backdrop-blur-sm">
+        {/* Subtle top glow effect */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-300 to-transparent opacity-60"></div>
+
+        <div className="flex justify-around items-end py-3 px-2 relative">
+          {/* Navigation Items */}
+          <a
+            href="#features"
+            className="flex flex-col items-center p-2 text-center min-w-0 flex-1 group active:scale-95 transition-all duration-200"
+          >
+            <div className="relative">
+              <div className="w-11 h-11 bg-gradient-to-br from-blue-400 to-blue-500 border-3 border-slate-800 rounded-xl flex items-center justify-center mb-1 shadow-lg group-hover:shadow-blue-400/20 group-hover:-translate-y-1 transition-all duration-200 group-active:scale-95">
+                <span className="text-slate-900 font-black text-lg group-hover:scale-110 transition-transform duration-200">
+                  ⚡
+                </span>
+              </div>
+              {/* Active indicator dot */}
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-300 border-2 border-slate-800 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+            </div>
+            <span className="text-blue-200 group-hover:text-blue-100 font-bold text-xs uppercase truncate transition-colors duration-200">
+              Fitur
+            </span>
+          </a>
+
+          <a
+            href="#pricing"
+            className="flex flex-col items-center p-2 text-center min-w-0 flex-1 group active:scale-95 transition-all duration-200"
+          >
+            <div className="relative">
+              <div className="w-11 h-11 bg-gradient-to-br from-emerald-400 to-emerald-500 border-3 border-slate-800 rounded-xl flex items-center justify-center mb-1 shadow-lg group-hover:shadow-emerald-400/20 group-hover:-translate-y-1 transition-all duration-200 group-active:scale-95">
+                <span className="text-slate-900 font-black text-lg group-hover:scale-110 transition-transform duration-200">
+                  💰
+                </span>
+              </div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-300 border-2 border-slate-800 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+            </div>
+            <span className="text-emerald-200 group-hover:text-emerald-100 font-bold text-xs uppercase truncate transition-colors duration-200">
+              Harga
+            </span>
+          </a>
+
+          <a
+            href="#about"
+            className="flex flex-col items-center p-2 text-center min-w-0 flex-1 group active:scale-95 transition-all duration-200"
+          >
+            <div className="relative">
+              <div className="w-11 h-11 bg-gradient-to-br from-violet-400 to-violet-500 border-3 border-slate-800 rounded-xl flex items-center justify-center mb-1 shadow-lg group-hover:shadow-violet-400/20 group-hover:-translate-y-1 transition-all duration-200 group-active:scale-95">
+                <span className="text-slate-900 font-black text-lg group-hover:scale-110 transition-transform duration-200">
+                  📚
+                </span>
+              </div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-violet-300 border-2 border-slate-800 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+            </div>
+            <span className="text-violet-200 group-hover:text-violet-100 font-bold text-xs uppercase truncate transition-colors duration-200">
+              Tentang
+            </span>
+          </a>
+
+          <Link
+            href="/login"
+            className="flex flex-col items-center p-2 text-center min-w-0 flex-1 group active:scale-95 transition-all duration-200"
+          >
+            <div className="relative">
+              <div className="w-11 h-11 bg-gradient-to-br from-white to-gray-100 border-3 border-slate-800 rounded-xl flex items-center justify-center mb-1 shadow-lg group-hover:shadow-white/20 group-hover:-translate-y-1 transition-all duration-200 group-active:scale-95">
+                <span className="text-slate-900 font-black text-lg group-hover:scale-110 transition-transform duration-200">
+                  🔐
+                </span>
+              </div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-gray-300 border-2 border-slate-800 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+            </div>
+            <span className="text-gray-200 group-hover:text-white font-bold text-xs uppercase truncate transition-colors duration-200">
+              Masuk
+            </span>
+          </Link>
+
+          <Link
+            href="/register"
+            className="flex flex-col items-center p-2 text-center min-w-0 flex-1 group active:scale-95 transition-all duration-200"
+          >
+            <div className="relative">
+              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 border-3 border-slate-800 rounded-xl flex items-center justify-center mb-1 shadow-xl group-hover:shadow-orange-500/30 group-hover:-translate-y-2 transition-all duration-200 group-active:scale-95 animate-pulse">
+                <span className="text-white font-black text-xl group-hover:scale-110 transition-transform duration-200">
+                  🚀
+                </span>
+                {/* Premium glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-300/20 to-orange-600/20 rounded-xl animate-pulse"></div>
+              </div>
+              {/* Special active indicator for CTA */}
+              <div className="absolute -top-2 -right-1 w-4 h-4 bg-gradient-to-br from-yellow-400 to-orange-400 border-2 border-slate-800 rounded-full animate-bounce shadow-lg"></div>
+            </div>
+            <span className="text-orange-300 group-hover:text-orange-200 font-black text-xs uppercase truncate transition-colors duration-200">
+              Daftar
+            </span>
+          </Link>
+        </div>
+
+        {/* Bottom safe area for devices with home indicators */}
+        <div className="h-1 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900"></div>
+      </div>
 
       {/* Hero Section */}
       <HeroSection />
-
       {/* Features Section */}
       <FeaturesSection />
-
       {/* Statistics Section */}
       <StatisticsSection />
-
       {/* Testimonial Section */}
       <TestimonialSection />
-
       {/* University Partners Section */}
       {/* Dipindahkan ke komponen terpisah agar rapi dan bisa pakai logo */}
       {(() => {
         const U = require("@/components/UniversityPartners").default;
         return <U />;
       })()}
-
       {/* Interactive Tryout Simulation Section */}
       <TryoutSimulation />
-
       {/* Pricing Section */}
       <PricingSection />
-
       {/* FAQ Section */}
       <FAQSection />
-
       {/* Bottom CTA */}
       <CTASection />
-
       {/* Footer */}
       <footer className="bg-slate-900 text-white py-12 md:py-16 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -975,6 +1052,9 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Mobile Bottom Padding - Add padding to prevent content from being hidden behind bottom nav */}
+      <div className="md:hidden h-24"></div>
     </div>
   );
 }
