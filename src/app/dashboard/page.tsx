@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -18,8 +19,73 @@ export default function DashboardPage() {
     grade: "",
     avatar: "👨‍🎓",
     subscriptionType: "free",
+    targetUniversity: "ui", // Default target university
   });
   const [isLoading, setIsLoading] = useState(true);
+
+  // Target Universities Data
+  const targetUniversities = {
+    ui: {
+      name: "Universitas Indonesia",
+      logo: "/university/ui.png",
+      color: "bg-yellow-400",
+    },
+    ugm: {
+      name: "Universitas Gadjah Mada",
+      logo: "/university/ugm.png",
+      color: "bg-yellow-500",
+    },
+    itb: {
+      name: "Institut Teknologi Bandung",
+      logo: "/university/itb.png",
+      color: "bg-blue-500",
+    },
+    its: {
+      name: "Institut Teknologi Sepuluh Nopember",
+      logo: "/university/its.png",
+      color: "bg-blue-600",
+    },
+    ipb: {
+      name: "Institut Pertanian Bogor",
+      logo: "/university/ipb.png",
+      color: "bg-green-500",
+    },
+    unair: {
+      name: "Universitas Airlangga",
+      logo: "/university/unair.png",
+      color: "bg-blue-400",
+    },
+    undip: {
+      name: "Universitas Diponegoro",
+      logo: "/university/undip.png",
+      color: "bg-blue-700",
+    },
+    unhas: {
+      name: "Universitas Hasanuddin",
+      logo: "/university/unhas.png",
+      color: "bg-red-500",
+    },
+    unpad: {
+      name: "Universitas Padjadjaran",
+      logo: "/university/unpad.webp",
+      color: "bg-green-600",
+    },
+    unsri: {
+      name: "Universitas Sriwijaya",
+      logo: "/university/unsri.jpg",
+      color: "bg-red-600",
+    },
+    usu: {
+      name: "Universitas Sumatera Utara",
+      logo: "/university/usu.svg",
+      color: "bg-green-700",
+    },
+    unand: {
+      name: "Universitas Andalas",
+      logo: "/university/unand.jpg",
+      color: "bg-orange-500",
+    },
+  };
 
   const [stats] = useState({
     totalTryouts: 0,
@@ -250,6 +316,7 @@ export default function DashboardPage() {
               grade: parsedData.grade || "12",
               avatar: parsedData.avatar || "👨‍🎓",
               subscriptionType: parsedData.subscriptionType || "free",
+              targetUniversity: parsedData.targetUniversity || "ui",
             });
           } else {
             console.log("No userData found in localStorage");
@@ -322,13 +389,49 @@ export default function DashboardPage() {
                 </div>
               </div>
               <div className="mt-4 sm:mt-0 text-center">
-                <div className="bg-white text-purple-600 px-3 sm:px-4 py-2 sm:py-3 border-3 border-slate-800 shadow-brutal transform -rotate-3">
-                  <p className="font-black text-xs sm:text-sm uppercase">
-                    Streak Belajar
+                <div className="bg-white px-3 sm:px-4 py-3 sm:py-4 border-3 border-slate-800 shadow-brutal transform -rotate-2 hover:-rotate-3 transition-all duration-300 min-w-[140px] sm:min-w-[160px]">
+                  <p className="font-black text-xs sm:text-sm uppercase text-slate-900 mb-2">
+                    🎯 Target Kampus
                   </p>
-                  <p className="text-xl sm:text-2xl font-black">
-                    {stats.studyStreak} Hari 🔥
+                  <div className="relative w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 border-2 border-slate-800 bg-white overflow-hidden">
+                    <Image
+                      src={
+                        targetUniversities[
+                          userData.targetUniversity as keyof typeof targetUniversities
+                        ]?.logo || "/university/ui.png"
+                      }
+                      alt={
+                        targetUniversities[
+                          userData.targetUniversity as keyof typeof targetUniversities
+                        ]?.name || "Universitas Indonesia"
+                      }
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        // Fallback jika gambar error
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/university/ui.png";
+                      }}
+                    />
+                  </div>
+                  <p className="font-black text-xs text-slate-900 leading-tight">
+                    {targetUniversities[
+                      userData.targetUniversity as keyof typeof targetUniversities
+                    ]?.name
+                      .split(" ")
+                      .slice(0, 2)
+                      .join(" ") || "Universitas Indonesia"}
                   </p>
+                  <div
+                    className={`px-2 py-1 mt-2 border-2 border-slate-800 text-xs font-black text-white ${
+                      targetUniversities[
+                        userData.targetUniversity as keyof typeof targetUniversities
+                      ]?.color || "bg-yellow-400"
+                    }`}
+                  >
+                    IMPIAN!
+                  </div>
                 </div>
               </div>
             </div>
