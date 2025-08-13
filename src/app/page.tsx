@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import HeroSection from "@/components/HeroSection";
 
 // Simulasi data soal tryout
 const tryoutQuestions = [
@@ -709,98 +710,7 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-20 md:pt-32 pb-16 md:pb-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center">
-            {/* Main Heading */}
-            <div className="mb-6 md:mb-8">
-              <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-slate-900 mb-4 md:mb-6 leading-none tracking-tighter uppercase transform rotate-1">
-                RAIH PTN
-                <br />
-                <span className="bg-orange-500 text-white px-2 md:px-3 py-1 md:py-2 border-3 md:border-6 border-slate-800 transform -rotate-2 inline-block shadow-lg">
-                  IMPIANMU!
-                </span>
-              </h1>
-
-              <div className="bg-slate-900 text-orange-300 px-3 md:px-6 py-2 md:py-4 border-3 md:border-6 border-orange-500 transform rotate-1 inline-block mb-4 md:mb-6 shadow-lg">
-                <p className="text-sm sm:text-lg md:text-2xl font-black uppercase tracking-wider">
-                  🎯 PLATFORM #1 INDONESIA
-                </p>
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className="max-w-4xl mx-auto mb-6 md:mb-8">
-              <div className="bg-white border-3 md:border-6 border-slate-800 p-3 md:p-6 transform -rotate-1 shadow-lg">
-                <p className="text-sm sm:text-base md:text-lg text-slate-900 font-bold leading-tight">
-                  Bergabung dengan{" "}
-                  <span className="bg-orange-300 px-2 py-1 border-2 md:border-3 border-slate-800">
-                    50,000+ SISWA
-                  </span>{" "}
-                  yang telah berhasil masuk PTN favorit. Latihan soal
-                  terlengkap, analisis mendalam, dan bimbingan personal untuk
-                  memastikan kamu siap menghadapi UTBK-SNBT.
-                </p>
-              </div>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-8 md:mb-12 px-4">
-              <button className="group bg-emerald-400 text-slate-900 px-4 md:px-6 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-slate-800 transform hover:-rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg w-full sm:w-auto">
-                <span className="flex items-center justify-center gap-2">
-                  ⚡ MULAI TRYOUT GRATIS
-                </span>
-              </button>
-
-              <Link
-                href="/register"
-                className="group bg-orange-500 text-white px-4 md:px-6 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-slate-800 transform hover:rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg w-full sm:w-auto text-center"
-              >
-                <span className="flex items-center justify-center gap-2">
-                  🚀 DAFTAR SEKARANG
-                </span>
-              </Link>
-
-              <Link
-                href="/login"
-                className="group bg-blue-400 text-slate-900 px-4 md:px-6 py-3 md:py-4 font-black text-sm md:text-base uppercase border-3 md:border-6 border-slate-800 transform hover:rotate-1 hover:-translate-y-2 transition-all duration-200 shadow-lg w-full sm:w-auto text-center"
-              >
-                <span className="flex items-center justify-center gap-2">
-                  � MASUK AKUN
-                </span>
-              </Link>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-              <div className="bg-orange-500 text-white p-3 md:p-4 border-3 md:border-6 border-slate-800 transform rotate-2 shadow-lg">
-                <div className="text-2xl md:text-3xl font-black mb-1">50K+</div>
-                <div className="font-bold text-xs md:text-sm uppercase">
-                  SISWA AKTIF
-                </div>
-              </div>
-              <div className="bg-blue-500 text-white p-3 md:p-4 border-3 md:border-6 border-slate-800 transform -rotate-1 shadow-lg">
-                <div className="text-2xl md:text-3xl font-black mb-1">95%</div>
-                <div className="font-bold text-xs md:text-sm uppercase">
-                  LULUS PTN
-                </div>
-              </div>
-              <div className="bg-violet-500 text-white p-3 md:p-4 border-3 md:border-6 border-slate-800 transform rotate-1 shadow-lg">
-                <div className="text-2xl md:text-3xl font-black mb-1">10K+</div>
-                <div className="font-bold text-xs md:text-sm uppercase">
-                  SOAL PREMIUM
-                </div>
-              </div>
-              <div className="bg-emerald-500 text-white p-3 md:p-4 border-3 md:border-6 border-slate-800 transform -rotate-2 shadow-lg">
-                <div className="text-2xl md:text-3xl font-black mb-1">24/7</div>
-                <div className="font-bold text-xs md:text-sm uppercase">
-                  SUPPORT
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroSection />
 
       {/* Features Section */}
       <section id="features" className="py-16 md:py-20 bg-white relative">
