@@ -364,9 +364,7 @@ export default function LeaderboardPage() {
       {/* Desktop Header */}
       <div className="hidden md:block">
         <HeaderNavigation
-          showBackButton={true}
-          backButtonText="Kembali ke Dashboard"
-          backButtonHref="/dashboard"
+          currentPage="leaderboard"
           userInfo={userData}
           onLogout={handleLogout}
         />

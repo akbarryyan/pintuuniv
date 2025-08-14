@@ -457,9 +457,7 @@ export default function ProfilePage() {
       {/* Desktop Header */}
       <div className="hidden md:block">
         <HeaderNavigation
-          showBackButton={true}
-          backButtonText="Kembali ke Dashboard"
-          backButtonHref="/dashboard"
+          currentPage="profile"
           userInfo={{
             name: userData.name,
             avatar: userData.avatar,

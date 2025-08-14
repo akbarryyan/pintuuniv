@@ -429,9 +429,7 @@ export default function TryoutsPage() {
       {/* Desktop Header */}
       <div className="hidden md:block">
         <HeaderNavigation
-          showBackButton={true}
-          backButtonText="Kembali ke Dashboard"
-          backButtonHref="/dashboard"
+          currentPage="tryouts"
           userInfo={userData}
           onLogout={handleLogout}
         />
