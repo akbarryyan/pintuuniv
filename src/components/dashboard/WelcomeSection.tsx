@@ -16,8 +16,13 @@ interface WelcomeSectionProps {
 }
 
 export default function WelcomeSection({ userData }: WelcomeSectionProps) {
-  // Target Universities Data
+  // Debug logging untuk targetUniversity
+  console.log("WelcomeSection - userData:", userData);
+  console.log("WelcomeSection - userData.targetUniversity:", userData.targetUniversity);
+  
+  // Target Universities Data dengan mapping yang lebih fleksibel
   const targetUniversities = {
+    // Kode singkat
     ui: {
       name: "Universitas Indonesia",
       logo: "/university/ui.png",
@@ -78,7 +83,94 @@ export default function WelcomeSection({ userData }: WelcomeSectionProps) {
       logo: "/university/unand.jpg",
       color: "bg-orange-500",
     },
+    // Nama lengkap untuk kompatibilitas dengan database
+    "Universitas Indonesia": {
+      name: "Universitas Indonesia",
+      logo: "/university/ui.png",
+      color: "bg-yellow-400",
+    },
+    "Universitas Gadjah Mada": {
+      name: "Universitas Gadjah Mada",
+      logo: "/university/ugm.png",
+      color: "bg-yellow-500",
+    },
+    "Institut Teknologi Bandung": {
+      name: "Institut Teknologi Bandung",
+      logo: "/university/itb.png",
+      color: "bg-blue-500",
+    },
+    "Institut Teknologi Sepuluh Nopember": {
+      name: "Institut Teknologi Sepuluh Nopember",
+      logo: "/university/its.png",
+      color: "bg-blue-600",
+    },
+    "Institut Pertanian Bogor": {
+      name: "Institut Pertanian Bogor",
+      logo: "/university/ipb.png",
+      color: "bg-green-500",
+    },
+    "Universitas Airlangga": {
+      name: "Universitas Airlangga",
+      logo: "/university/unair.png",
+      color: "bg-blue-400",
+    },
+    "Universitas Diponegoro": {
+      name: "Universitas Diponegoro",
+      logo: "/university/undip.png",
+      color: "bg-blue-700",
+    },
+    "Universitas Hasanuddin": {
+      name: "Universitas Hasanuddin",
+      logo: "/university/unhas.png",
+      color: "bg-red-500",
+    },
+    "Universitas Padjadjaran": {
+      name: "Universitas Padjadjaran",
+      logo: "/university/unpad.webp",
+      color: "bg-green-600",
+    },
+    "Universitas Sriwijaya": {
+      name: "Universitas Sriwijaya",
+      logo: "/university/unsri.jpg",
+      color: "bg-red-600",
+    },
+    "Universitas Sumatera Utara": {
+      name: "Universitas Sumatera Utara",
+      logo: "/university/usu.svg",
+      color: "bg-green-700",
+    },
+    "Universitas Andalas": {
+      name: "Universitas Andalas",
+      logo: "/university/unand.jpg",
+      color: "bg-orange-500",
+    },
   };
+
+  // Helper function untuk mencari universitas berdasarkan nama yang cocok
+  const findUniversity = (targetName: string) => {
+    if (!targetName) return targetUniversities.ui; // Default fallback
+    
+    // Coba exact match dulu
+    if (targetUniversities[targetName as keyof typeof targetUniversities]) {
+      return targetUniversities[targetName as keyof typeof targetUniversities];
+    }
+    
+    // Coba partial match berdasarkan nama
+    const normalizedTarget = targetName.toLowerCase();
+    for (const [key, uni] of Object.entries(targetUniversities)) {
+      if (uni.name.toLowerCase().includes(normalizedTarget) || 
+          normalizedTarget.includes(uni.name.toLowerCase())) {
+        return uni;
+      }
+    }
+    
+    // Fallback ke UI jika tidak ditemukan
+    return targetUniversities.ui;
+  };
+
+  // Dapatkan data universitas target
+  const targetUni = findUniversity(userData.targetUniversity);
+  console.log("WelcomeSection - targetUni found:", targetUni);
 
   return (
     <div className="mb-6 sm:mb-8">
@@ -120,16 +212,8 @@ export default function WelcomeSection({ userData }: WelcomeSectionProps) {
               <div className="flex items-center sm:flex-col sm:text-center space-x-3 sm:space-x-0 sm:space-y-2">
                 <div className="relative w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 border-2 border-slate-800 bg-white overflow-hidden">
                   <Image
-                    src={
-                      targetUniversities[
-                        userData.targetUniversity as keyof typeof targetUniversities
-                      ]?.logo || "/university/ui.png"
-                    }
-                    alt={
-                      targetUniversities[
-                        userData.targetUniversity as keyof typeof targetUniversities
-                      ]?.name || "Universitas Indonesia"
-                    }
+                    src={targetUni.logo}
+                    alt={targetUni.name}
                     width={64}
                     height={64}
                     className="w-full h-full object-contain"
@@ -145,19 +229,10 @@ export default function WelcomeSection({ userData }: WelcomeSectionProps) {
                     🎯 Target Kampus
                   </p>
                   <p className="font-black text-xs sm:text-sm text-slate-900 leading-tight mb-2">
-                    {targetUniversities[
-                      userData.targetUniversity as keyof typeof targetUniversities
-                    ]?.name
-                      .split(" ")
-                      .slice(0, 2)
-                      .join(" ") || "Universitas Indonesia"}
+                    {targetUni.name.split(" ").slice(0, 2).join(" ")}
                   </p>
                   <div
-                    className={`px-2 py-1 border-2 border-slate-800 text-xs font-black text-white inline-block ${
-                      targetUniversities[
-                        userData.targetUniversity as keyof typeof targetUniversities
-                      ]?.color || "bg-yellow-400"
-                    }`}
+                    className={`px-2 py-1 border-2 border-slate-800 text-xs font-black text-white inline-block ${targetUni.color}`}
                   >
                     IMPIAN!
                   </div>

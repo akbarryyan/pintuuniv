@@ -58,6 +58,7 @@ interface TabContentProps {
   onPreferenceChange: (key: keyof Preferences) => void;
   onLogout: () => void;
   onRefreshUserData: () => void;
+  onDebugState?: () => void;
 }
 
 export default function TabContent({
@@ -75,6 +76,7 @@ export default function TabContent({
   onPreferenceChange,
   onLogout,
   onRefreshUserData,
+  onDebugState,
 }: TabContentProps) {
   if (activeTab === "profile") {
     return (
@@ -570,6 +572,16 @@ export default function TabContent({
             >
               🔄 REFRESH DATA USER (Debug)
             </button>
+
+            {/* Debug button - for checking current state */}
+            {onDebugState && (
+              <button
+                onClick={onDebugState}
+                className="w-full bg-indigo-500 text-white px-4 py-3 font-black text-sm border-3 border-slate-800 hover:bg-indigo-600 transition-colors text-left"
+              >
+                🔍 DEBUG CURRENT STATE
+              </button>
+            )}
           </div>
         </div>
 

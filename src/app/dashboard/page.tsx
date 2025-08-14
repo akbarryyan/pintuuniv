@@ -319,6 +319,8 @@ export default function DashboardPage() {
           if (storedUserData) {
             const parsedData = JSON.parse(storedUserData);
             console.log("Parsed user data:", parsedData);
+            
+            // Set initial data from localStorage
             setUserData({
               name: parsedData.name || "User",
               email: parsedData.email || "",
@@ -328,6 +330,44 @@ export default function DashboardPage() {
               subscriptionType: parsedData.subscriptionType || "free",
               targetUniversity: parsedData.targetUniversity || "ui",
             });
+
+            // Fetch fresh data from server to ensure sync with database
+            if (storedAuthToken) {
+              fetch("/api/profile", {
+                headers: { Authorization: `Bearer ${storedAuthToken}` },
+              })
+                .then((res) => res.json())
+                .then((resp) => {
+                  if (resp?.success && resp.user) {
+                    const server = resp.user;
+                    console.log("Dashboard - server data:", server);
+                    console.log("Dashboard - server.targetUniversity:", server.targetUniversity);
+                    
+                    // Update localStorage with fresh data
+                    const existing = JSON.parse(storedUserData);
+                    const merged = {
+                      ...existing,
+                      ...server,
+                      grade: server.grade ? String(server.grade) : existing.grade,
+                    };
+                    localStorage.setItem("userData", JSON.stringify(merged));
+                    
+                    // Update state with fresh data
+                    setUserData({
+                      name: merged.name || "User",
+                      email: merged.email || "",
+                      school: merged.school || "Tidak diset",
+                      grade: merged.grade || "12",
+                      avatar: merged.avatar || "👨‍🎓",
+                      subscriptionType: merged.subscriptionType || "free",
+                      targetUniversity: merged.targetUniversity || "ui",
+                    });
+                  }
+                })
+                .catch((err) => {
+                  console.error("Dashboard - fetch /api/profile error:", err);
+                });
+            }
           } else {
             console.log("No userData found in localStorage");
           }

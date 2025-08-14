@@ -219,6 +219,11 @@ export default function ProfilePage() {
 
             console.log("Profile page - final joinDate:", joinDate);
 
+            // Debug logging untuk targetUniversity
+            console.log("Profile page - parsedData.targetUniversity:", parsedData.targetUniversity);
+            console.log("Profile page - parsedData.targetMajor:", parsedData.targetMajor);
+            console.log("Profile page - parsedData.utbkTarget:", parsedData.utbkTarget);
+
             // Set user data with fallback values - menggunakan data dari database
             setUserData({
               name: parsedData.name || "User",
@@ -246,6 +251,13 @@ export default function ProfilePage() {
                   .then((resp) => {
                     if (resp?.success && resp.user) {
                       const server = resp.user;
+                      
+                      // Debug logging untuk data dari server
+                      console.log("Profile page - server data:", server);
+                      console.log("Profile page - server.targetUniversity:", server.targetUniversity);
+                      console.log("Profile page - server.targetMajor:", server.targetMajor);
+                      console.log("Profile page - server.utbkTarget:", server.utbkTarget);
+                      
                       const existing = (() => {
                         try {
                           return JSON.parse(
@@ -268,6 +280,12 @@ export default function ProfilePage() {
                       };
 
                       localStorage.setItem("userData", JSON.stringify(merged));
+
+                      // Debug logging untuk data yang akan diupdate ke state
+                      console.log("Profile page - merged data untuk state:", merged);
+                      console.log("Profile page - merged.targetUniversity untuk state:", merged.targetUniversity);
+                      console.log("Profile page - merged.targetMajor untuk state:", merged.targetMajor);
+                      console.log("Profile page - merged.utbkTarget untuk state:", merged.utbkTarget);
 
                       setUserData({
                         name: merged.name || "User",
@@ -359,6 +377,23 @@ export default function ProfilePage() {
           localStorage.setItem("userData", JSON.stringify(updatedData));
         }
 
+        // Debug logging untuk data yang akan diupdate ke state
+        console.log("Profile page - handleSave - data.user:", data.user);
+        console.log("Profile page - handleSave - data.user.targetUniversity:", data.user.targetUniversity);
+        console.log("Profile page - handleSave - data.user.targetMajor:", data.user.targetMajor);
+        console.log("Profile page - handleSave - data.user.utbkTarget:", data.user.utbkTarget);
+
+        // Update state with the latest data from server
+        setUserData(prevData => {
+          const newData = {
+            ...prevData,
+            ...data.user,
+            joinDate: prevData.joinDate, // Preserve join date formatting
+          };
+          console.log("Profile page - handleSave - new state data:", newData);
+          return newData;
+        });
+
         toast.success("Profile berhasil diperbarui! 🎉");
         setIsEditing(false);
       } else {
@@ -377,6 +412,14 @@ export default function ProfilePage() {
       ...prev,
       [key]: !prev[key],
     }));
+  };
+
+  // Debug function untuk melihat current state
+  const debugCurrentState = () => {
+    console.log("Profile page - Current userData state:", userData);
+    console.log("Profile page - Current userData.targetUniversity:", userData.targetUniversity);
+    console.log("Profile page - Current userData.targetMajor:", userData.targetMajor);
+    console.log("Profile page - Current userData.utbkTarget:", userData.utbkTarget);
   };
 
   // Debug function to clear stored data and force re-login
@@ -502,6 +545,7 @@ export default function ProfilePage() {
           onPreferenceChange={handlePreferenceChange}
           onLogout={handleLogout}
           onRefreshUserData={handleRefreshUserData}
+          onDebugState={debugCurrentState}
         />
 
 
