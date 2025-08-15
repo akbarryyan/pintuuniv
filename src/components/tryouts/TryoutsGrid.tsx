@@ -3,22 +3,17 @@
 interface Tryout {
   id: number;
   title: string;
-  subject: string;
-  category: string;
-  duration: string;
-  questions: number;
   price: number;
   originalPrice: number;
   type: string;
   difficulty: string;
   participants: number;
-  rating: number;
-  deadline: string | null;
-  instructor: string;
-  description: string;
-  features: string[];
-  isPopular: boolean;
   discount: number;
+  startDate: string;
+  endDate: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface TryoutsGridProps {
@@ -41,6 +36,15 @@ export default function TryoutsGrid({ tryouts }: TryoutsGridProps) {
     }
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('id-ID', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
       {tryouts.map((tryout) => (
@@ -53,11 +57,6 @@ export default function TryoutsGrid({ tryouts }: TryoutsGridProps) {
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  {tryout.isPopular && (
-                    <div className="bg-yellow-400 text-slate-900 px-2 py-1 border-2 border-slate-800 font-black text-xs transform -rotate-3">
-                      🔥 POPULER
-                    </div>
-                  )}
                   <div
                     className={`px-2 py-1 border-2 border-slate-800 font-black text-xs ${
                       tryout.type === "free"
@@ -67,15 +66,19 @@ export default function TryoutsGrid({ tryouts }: TryoutsGridProps) {
                   >
                     {tryout.type === "free" ? "GRATIS" : "PREMIUM"}
                   </div>
+                  <div
+                    className={`px-2 py-1 border-2 border-slate-800 font-black text-xs ${getDifficultyColor(
+                      tryout.difficulty
+                    )}`}
+                  >
+                    {tryout.difficulty}
+                  </div>
                 </div>
                 <h3 className="font-black text-sm sm:text-base text-slate-900 mb-2 leading-tight">
                   {tryout.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-600 font-bold mb-2">
-                  📚 {tryout.subject}
-                </p>
                 <p className="text-xs text-slate-500 font-bold">
-                  👨‍🏫 {tryout.instructor}
+                  👥 {tryout.participants.toLocaleString()} peserta
                 </p>
               </div>
               <div className="text-right ml-3">
@@ -102,81 +105,30 @@ export default function TryoutsGrid({ tryouts }: TryoutsGridProps) {
                 )}
               </div>
             </div>
-
-            <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-600 mb-3">
-              <div>⏱️ {tryout.duration}</div>
-              <div>📝 {tryout.questions} soal</div>
-              <div>👥 {tryout.participants.toLocaleString()}</div>
-              <div>⭐ {tryout.rating}/5.0</div>
-            </div>
-
-            <div
-              className={`text-xs font-bold px-2 py-1 border-2 border-slate-800 inline-block ${getDifficultyColor(
-                tryout.difficulty
-              )}`}
-            >
-              {tryout.difficulty}
-            </div>
           </div>
 
           {/* Card Body */}
           <div className="p-4 sm:p-6">
-            <p className="text-xs sm:text-sm text-slate-600 font-bold mb-4 leading-relaxed">
-              {tryout.description}
-            </p>
-
-            {/* Features */}
-            <div className="mb-4">
-              <h4 className="font-black text-xs text-slate-900 mb-2 uppercase">
-                ✨ Fitur Unggulan
-              </h4>
-              <div className="grid grid-cols-2 gap-1">
-                {tryout.features.map((feature, index) => (
-                  <div
-                    key={index}
-                    className="text-xs font-bold text-slate-600 flex items-center"
-                  >
-                    <span className="w-1 h-1 bg-orange-400 rounded-full mr-2"></span>
-                    {feature}
-                  </div>
-                ))}
+            <div className="space-y-3">
+              {/* Date Range */}
+              <div className="flex items-center justify-between text-xs sm:text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-slate-600">📅 Periode:</span>
+                  <span className="font-bold text-slate-900">
+                    {formatDate(tryout.startDate)} - {formatDate(tryout.endDate)}
+                  </span>
+                </div>
               </div>
-            </div>
 
-            {/* Deadline */}
-            <div className="mb-4">
-              {tryout.deadline ? (
-                <div className="bg-red-100 border-2 border-red-400 p-2 text-center">
-                  <p className="text-xs font-black text-red-800">
-                    ⏰ Deadline: {tryout.deadline}
-                  </p>
-                </div>
-              ) : (
-                <div className="bg-emerald-100 border-2 border-emerald-400 p-2 text-center">
-                  <p className="text-xs font-black text-emerald-800">
-                    ♾️ Akses Selamanya - Tanpa Batas Waktu
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Action Buttons */}
-            <div className="space-y-2">
-              <button
-                className={`w-full px-4 py-3 font-black text-sm border-3 border-slate-800 transition-all duration-200 transform hover:-translate-y-1 ${
-                  tryout.type === "free"
-                    ? "bg-emerald-500 text-white hover:bg-emerald-600"
-                    : "bg-orange-500 text-white hover:bg-orange-600"
-                }`}
-              >
-                {tryout.type === "free"
-                  ? "🎯 MULAI GRATIS"
-                  : "💳 BELI AKSES SELAMANYA"}
-              </button>
-
-              <button className="w-full bg-slate-900 text-white px-4 py-2 font-black text-xs border-2 border-slate-800 hover:bg-slate-800 transition-colors">
-                📋 LIHAT DETAIL
-              </button>
+              {/* Action Buttons */}
+              <div className="flex gap-2 pt-2">
+                <button className="flex-1 bg-blue-500 text-white px-3 py-2 sm:px-4 sm:py-3 font-black text-xs sm:text-sm border-2 border-slate-800 hover:bg-blue-600 transition-colors">
+                  🚀 MULAI
+                </button>
+                <button className="flex-1 bg-slate-100 text-slate-900 px-3 py-2 sm:px-4 sm:py-3 font-black text-xs sm:text-sm border-2 border-slate-800 hover:bg-slate-200 transition-colors">
+                  📋 DETAIL
+                </button>
+              </div>
             </div>
           </div>
         </div>

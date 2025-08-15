@@ -5,8 +5,6 @@ interface SearchAndFiltersProps {
   setSearchQuery: (query: string) => void;
   activeFilter: string;
   setActiveFilter: (filter: string) => void;
-  selectedSubject: string;
-  setSelectedSubject: (subject: string) => void;
   priceRange: string;
   setPriceRange: (range: string) => void;
   difficulty: string;
@@ -21,8 +19,6 @@ export default function SearchAndFilters({
   setSearchQuery,
   activeFilter,
   setActiveFilter,
-  selectedSubject,
-  setSelectedSubject,
   priceRange,
   setPriceRange,
   difficulty,
@@ -39,7 +35,7 @@ export default function SearchAndFilters({
           <div className="flex-1">
             <input
               type="text"
-              placeholder="🔍 Cari tryout, mata pelajaran, atau instruktur..."
+              placeholder="🔍 Cari tryout..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full px-3 sm:px-4 py-2 sm:py-3 border-3 border-slate-800 bg-blue-50 text-slate-900 font-bold placeholder-slate-500 focus:outline-none focus:bg-blue-100 focus:border-blue-500 transition-colors text-sm sm:text-base"
@@ -88,25 +84,25 @@ export default function SearchAndFilters({
             </div>
           </div>
 
-          {/* Subject Filter */}
+          {/* Difficulty Filter */}
           <div>
             <h3 className="font-black text-slate-900 text-sm mb-2 uppercase">
-              📚 Kategori
+              🎯 Tingkat Kesulitan
             </h3>
             <div className="flex flex-wrap gap-2">
               {[
                 { id: "all", label: "🎯 Semua" },
-                { id: "saintek", label: "🔬 Saintek" },
-                { id: "soshum", label: "📜 Soshum" },
-                { id: "tps", label: "🧠 TPS" },
-                { id: "campuran", label: "🌐 Campuran" },
+                { id: "Mudah", label: "🟢 Mudah" },
+                { id: "Sedang", label: "🟡 Sedang" },
+                { id: "Sulit", label: "🟠 Sulit" },
+                { id: "Sangat Sulit", label: "🔴 Sangat Sulit" },
               ].map((filter) => (
                 <button
                   key={filter.id}
-                  onClick={() => setSelectedSubject(filter.id)}
-                  className={`px-3 sm:px-4 py-2 font-black text-xs sm:text-sm uppercase border-2 border-slate-800 transition-all duration-200 ${
-                    selectedSubject === filter.id
-                      ? "bg-blue-500 text-white transform rotate-1 -translate-y-1"
+                  onClick={() => setDifficulty(filter.id)}
+                  className={`px-3 sm:px-4 py-2 font-black text-xs sm:text-sm uppercase border-2 sm:border-3 border-slate-800 transition-all duration-200 ${
+                    difficulty === filter.id
+                      ? "bg-blue-500 text-white transform -rotate-1 -translate-y-1"
                       : "bg-slate-100 text-slate-900 hover:bg-slate-200"
                   }`}
                 >
@@ -119,49 +115,21 @@ export default function SearchAndFilters({
           {/* Price Range Filter */}
           <div>
             <h3 className="font-black text-slate-900 text-sm mb-2 uppercase">
-              💰 Harga
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {[
-                { id: "all", label: "💳 Semua" },
-                { id: "free", label: "🆓 Gratis" },
-                { id: "cheap", label: "💵 ≤ 50K" },
-                { id: "expensive", label: "💎 > 50K" },
-              ].map((filter) => (
-                <button
-                  key={filter.id}
-                  onClick={() => setPriceRange(filter.id)}
-                  className={`px-3 sm:px-4 py-2 font-black text-xs sm:text-sm uppercase border-2 border-slate-800 transition-all duration-200 ${
-                    priceRange === filter.id
-                      ? "bg-emerald-500 text-white transform -rotate-1 -translate-y-1"
-                      : "bg-slate-100 text-slate-900 hover:bg-slate-200"
-                  }`}
-                >
-                  {filter.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Difficulty Filter */}
-          <div>
-            <h3 className="font-black text-slate-900 text-sm mb-2 uppercase">
-              ⚡ Tingkat Kesulitan
+              💰 Rentang Harga
             </h3>
             <div className="flex flex-wrap gap-2">
               {[
                 { id: "all", label: "🎯 Semua" },
-                { id: "Mudah", label: "😊 Mudah" },
-                { id: "Sedang", label: "🤔 Sedang" },
-                { id: "Sulit", label: "😤 Sulit" },
-                { id: "Sangat Sulit", label: "💀 Sangat Sulit" },
+                { id: "free", label: "🆓 Gratis" },
+                { id: "cheap", label: "💰 Murah (≤50k)" },
+                { id: "expensive", label: "💎 Mahal (>50k)" },
               ].map((filter) => (
                 <button
                   key={filter.id}
-                  onClick={() => setDifficulty(filter.id)}
-                  className={`px-3 sm:px-4 py-2 font-black text-xs sm:text-sm uppercase border-2 border-slate-800 transition-all duration-200 ${
-                    difficulty === filter.id
-                      ? "bg-purple-500 text-white transform rotate-1 -translate-y-1"
+                  onClick={() => setPriceRange(filter.id)}
+                  className={`px-3 sm:px-4 py-2 font-black text-xs sm:text-sm uppercase border-2 sm:border-3 border-slate-800 transition-all duration-200 ${
+                    priceRange === filter.id
+                      ? "bg-green-500 text-white transform -rotate-1 -translate-y-1"
                       : "bg-slate-100 text-slate-900 hover:bg-slate-200"
                   }`}
                 >
