@@ -29,6 +29,7 @@ export default function DashboardPage() {
     avatar: "👨‍🎓",
     subscriptionType: "free",
     targetUniversity: "ui", // Default target university
+    targetMajor: "", // Default target major
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -329,6 +330,7 @@ export default function DashboardPage() {
               avatar: parsedData.avatar || "👨‍🎓",
               subscriptionType: parsedData.subscriptionType || "free",
               targetUniversity: parsedData.targetUniversity || "ui",
+              targetMajor: parsedData.targetMajor || "",
             });
 
             // Fetch fresh data from server to ensure sync with database
@@ -342,6 +344,7 @@ export default function DashboardPage() {
                     const server = resp.user;
                     console.log("Dashboard - server data:", server);
                     console.log("Dashboard - server.targetUniversity:", server.targetUniversity);
+                    console.log("Dashboard - server.targetMajor:", server.targetMajor);
                     
                     // Update localStorage with fresh data
                     const existing = JSON.parse(storedUserData);
@@ -361,6 +364,7 @@ export default function DashboardPage() {
                       avatar: merged.avatar || "👨‍🎓",
                       subscriptionType: merged.subscriptionType || "free",
                       targetUniversity: merged.targetUniversity || "ui",
+                      targetMajor: merged.targetMajor || "",
                     });
                   }
                 })

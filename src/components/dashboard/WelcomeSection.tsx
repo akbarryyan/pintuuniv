@@ -9,6 +9,7 @@ interface UserData {
   grade: string;
   subscriptionType: string;
   targetUniversity: string;
+  targetMajor?: string;
 }
 
 interface WelcomeSectionProps {
@@ -16,9 +17,10 @@ interface WelcomeSectionProps {
 }
 
 export default function WelcomeSection({ userData }: WelcomeSectionProps) {
-  // Debug logging untuk targetUniversity
+  // Debug logging untuk targetUniversity dan targetMajor
   console.log("WelcomeSection - userData:", userData);
   console.log("WelcomeSection - userData.targetUniversity:", userData.targetUniversity);
+  console.log("WelcomeSection - userData.targetMajor:", userData.targetMajor);
   
   // Target Universities Data dengan mapping yang lebih fleksibel
   const targetUniversities = {
@@ -172,6 +174,18 @@ export default function WelcomeSection({ userData }: WelcomeSectionProps) {
   const targetUni = findUniversity(userData.targetUniversity);
   console.log("WelcomeSection - targetUni found:", targetUni);
 
+  // Helper function untuk mendapatkan display name jurusan
+  const getMajorDisplayName = (major: string | undefined) => {
+    if (!major) return "Belum diset";
+    
+    // Jika jurusan terlalu panjang, truncate
+    if (major.length > 20) {
+      return major.substring(0, 20) + "...";
+    }
+    
+    return major;
+  };
+
   return (
     <div className="mb-6 sm:mb-8">
       <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-3 sm:p-6 md:p-8 border-3 sm:border-4 border-slate-800 shadow-brutal transform hover:rotate-1 transition-all duration-300">
@@ -206,35 +220,58 @@ export default function WelcomeSection({ userData }: WelcomeSectionProps) {
             </div>
           </div>
 
-          {/* Target University Card - Redesigned for mobile */}
+          {/* Target Cards Container */}
           <div className="flex-shrink-0 w-full sm:w-auto">
-            <div className="bg-white p-3 sm:p-4 border-3 border-slate-800 shadow-brutal transform -rotate-1 hover:-rotate-2 transition-all duration-300 mx-auto sm:mx-0 max-w-[280px] sm:max-w-[180px]">
-              <div className="flex items-center sm:flex-col sm:text-center space-x-3 sm:space-x-0 sm:space-y-2">
-                <div className="relative w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 border-2 border-slate-800 bg-white overflow-hidden">
-                  <Image
-                    src={targetUni.logo}
-                    alt={targetUni.name}
-                    width={64}
-                    height={64}
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      // Fallback jika gambar error
-                      const target = e.target as HTMLImageElement;
-                      target.src = "/university/ui.png";
-                    }}
-                  />
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              {/* Target University Card */}
+              <div className="bg-white p-3 sm:p-4 border-3 border-slate-800 shadow-brutal transform -rotate-1 hover:-rotate-2 transition-all duration-300 mx-auto sm:mx-0 max-w-[280px] sm:max-w-[180px]">
+                <div className="flex items-center sm:flex-col sm:text-center space-x-3 sm:space-x-0 sm:space-y-2">
+                  <div className="relative w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 border-2 border-slate-800 bg-white overflow-hidden">
+                    <Image
+                      src={targetUni.logo}
+                      alt={targetUni.name}
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        // Fallback jika gambar error
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/university/ui.png";
+                      }}
+                    />
+                  </div>
+                  <div className="flex-1 sm:flex-none">
+                    <p className="font-black text-xs sm:text-sm uppercase text-slate-900 mb-1">
+                      🎯 Target Kampus
+                    </p>
+                    <p className="font-black text-xs sm:text-sm text-slate-900 leading-tight mb-2">
+                      {targetUni.name.split(" ").slice(0, 2).join(" ")}
+                    </p>
+                    <div
+                      className={`px-2 py-1 border-2 border-slate-800 text-xs font-black text-white inline-block ${targetUni.color}`}
+                    >
+                      IMPIAN!
+                    </div>
+                  </div>
                 </div>
-                <div className="flex-1 sm:flex-none">
-                  <p className="font-black text-xs sm:text-sm uppercase text-slate-900 mb-1">
-                    🎯 Target Kampus
-                  </p>
-                  <p className="font-black text-xs sm:text-sm text-slate-900 leading-tight mb-2">
-                    {targetUni.name.split(" ").slice(0, 2).join(" ")}
-                  </p>
-                  <div
-                    className={`px-2 py-1 border-2 border-slate-800 text-xs font-black text-white inline-block ${targetUni.color}`}
-                  >
-                    IMPIAN!
+              </div>
+
+              {/* Target Major Card */}
+              <div className="bg-white p-3 sm:p-4 border-3 border-slate-800 shadow-brutal transform rotate-1 hover:rotate-2 transition-all duration-300 mx-auto sm:mx-0 max-w-[280px] sm:max-w-[180px]">
+                <div className="flex items-center sm:flex-col sm:text-center space-x-3 sm:space-x-0 sm:space-y-2">
+                  <div className="relative w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 border-2 border-slate-800 bg-gradient-to-br from-purple-400 to-pink-400 overflow-hidden flex items-center justify-center">
+                    <span className="text-2xl sm:text-3xl">📚</span>
+                  </div>
+                  <div className="flex-1 sm:flex-none">
+                    <p className="font-black text-xs sm:text-sm uppercase text-slate-900 mb-1">
+                      🎯 Target Jurusan
+                    </p>
+                    <p className="font-black text-xs sm:text-sm text-slate-900 leading-tight mb-2">
+                      {getMajorDisplayName(userData.targetMajor)}
+                    </p>
+                    <div className="px-2 py-1 border-2 border-slate-800 text-xs font-black text-white inline-block bg-gradient-to-r from-purple-500 to-pink-500">
+                      CITA-CITA!
+                    </div>
                   </div>
                 </div>
               </div>
