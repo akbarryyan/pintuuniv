@@ -4,12 +4,10 @@ import { useState, useEffect } from "react";
 import { 
   Settings,
   LogOut,
-  Bell,
   User,
-  Menu,
   X
 } from "lucide-react";
-import { Sidebar, StatsGrid, MainContentGrid, ChartsSection, PerformanceOverview } from "@/components/sys";
+import { Sidebar, StatsGrid, MainContentGrid, ChartsSection, PerformanceOverview, TopHeader } from "@/components/sys";
 
 interface AdminStats {
   totalUsers: number;
@@ -96,31 +94,12 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
-        <header className="bg-white border-b border-slate-200 px-4 py-4 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setSidebarOpen(true)}
-                className="lg:hidden p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg"
-              >
-                <Menu className="w-5 h-5" />
-              </button>
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-                <p className="text-sm text-slate-500">Selamat datang kembali, Admin!</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <button className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">
-                <Bell className="w-5 h-5" />
-              </button>
-              <button className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">
-                <Settings className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </header>
+        <TopHeader 
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          pageTitle="Dashboard"
+          pageDescription="Selamat datang kembali, Admin!"
+        />
 
         {/* Page Content */}
         <main className="flex-1 p-4 lg:p-8 overflow-auto">
