@@ -2,28 +2,13 @@
 
 import { useState } from "react";
 import { 
-  BookOpen, 
-  Plus, 
-  Search, 
-  Filter, 
-  MoreHorizontal,
-  Edit,
-  Trash2,
-  Eye,
-  Calendar,
-  DollarSign,
-  Users,
-  Target,
-  Clock,
-  Star,
   X,
-  ChevronDown,
-  ChevronUp,
-  Play,
-  Pause,
-  Archive
+  BookOpen,
+  Star,
+  Trash2
 } from "lucide-react";
 import { Sidebar, TopHeader } from "@/components/sys";
+import { HeaderSection, FiltersAndSearch, TryoutsTable } from "@/components/sys/tryouts";
 
 interface Tryout {
   id: number;
@@ -116,6 +101,24 @@ export default function ManageTryouts() {
     }
   };
 
+  const openModal = (type: string, tryout?: Tryout) => {
+    if (tryout) setSelectedTryout(tryout);
+    switch (type) {
+      case 'create': setShowCreateModal(true); break;
+      case 'edit': setShowEditModal(true); break;
+      case 'view': setShowViewModal(true); break;
+      case 'delete': setShowDeleteModal(true); break;
+    }
+  };
+
+  const closeModal = () => {
+    setShowCreateModal(false);
+    setShowEditModal(false);
+    setShowViewModal(false);
+    setShowDeleteModal(false);
+    setSelectedTryout(null);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'text-emerald-700 bg-emerald-50 border-emerald-200';
@@ -152,24 +155,6 @@ export default function ManageTryouts() {
     }).format(amount);
   };
 
-  const openModal = (type: string, tryout?: Tryout) => {
-    if (tryout) setSelectedTryout(tryout);
-    switch (type) {
-      case 'create': setShowCreateModal(true); break;
-      case 'edit': setShowEditModal(true); break;
-      case 'view': setShowViewModal(true); break;
-      case 'delete': setShowDeleteModal(true); break;
-    }
-  };
-
-  const closeModal = () => {
-    setShowCreateModal(false);
-    setShowEditModal(false);
-    setShowViewModal(false);
-    setShowDeleteModal(false);
-    setSelectedTryout(null);
-  };
-
   return (
     <div className="min-h-screen bg-slate-50 flex">
       {/* Mobile Sidebar Overlay */}
@@ -201,219 +186,28 @@ export default function ManageTryouts() {
         {/* Page Content */}
         <main className="flex-1 p-4 lg:p-8 overflow-auto">
           {/* Header Section */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
-            <div>
-              <h2 className="text-2xl font-bold text-slate-900">Manage Tryouts</h2>
-              <p className="text-slate-600 mt-1">Buat dan kelola tryout platform</p>
-            </div>
-            <button
-              onClick={() => openModal('create')}
-              className="mt-4 sm:mt-0 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 flex items-center space-x-2"
-            >
-              <Plus className="w-5 h-5" />
-              <span>Buat Tryout</span>
-            </button>
-          </div>
+          <HeaderSection onOpenCreateModal={() => openModal('create')} />
 
           {/* Filters & Search */}
-          <div className="bg-white rounded-2xl p-6 mb-8 shadow-sm border border-slate-200">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              {/* Search */}
-              <div className="md:col-span-2">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input
-                    type="text"
-                    placeholder="Cari tryout berdasarkan judul..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                  />
-                </div>
-              </div>
-
-              {/* Status Filter */}
-              <div>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                >
-                  <option value="all">Semua Status</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                  <option value="draft">Draft</option>
-                  <option value="archived">Archived</option>
-                </select>
-              </div>
-
-              {/* Type Filter */}
-              <div>
-                <select
-                  value={typeFilter}
-                  onChange={(e) => setTypeFilter(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                >
-                  <option value="all">Semua Tipe</option>
-                  <option value="free">Free</option>
-                  <option value="premium">Premium</option>
-                </select>
-              </div>
-
-              {/* Difficulty Filter */}
-              <div>
-                <select
-                  value={difficultyFilter}
-                  onChange={(e) => setDifficultyFilter(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                >
-                  <option value="all">Semua Level</option>
-                  <option value="Mudah">Mudah</option>
-                  <option value="Sedang">Sedang</option>
-                  <option value="Sulit">Sulit</option>
-                  <option value="Sangat Sulit">Sangat Sulit</option>
-                </select>
-              </div>
-            </div>
-          </div>
+          <FiltersAndSearch
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            typeFilter={typeFilter}
+            setTypeFilter={setTypeFilter}
+            difficultyFilter={difficultyFilter}
+            setDifficultyFilter={setDifficultyFilter}
+          />
 
           {/* Tryouts Table */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-slate-50 border-b border-slate-200">
-                  <tr>
-                    <th className="px-6 py-4 text-left">
-                      <button
-                        onClick={() => handleSort('title')}
-                        className="flex items-center space-x-1 font-semibold text-slate-700 hover:text-slate-900 transition-colors"
-                      >
-                        <span>Judul Tryout</span>
-                        {sortBy === 'title' && (
-                          sortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        )}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left">Tipe</th>
-                    <th className="px-6 py-4 text-left">Harga</th>
-                    <th className="px-6 py-4 text-left">Level</th>
-                    <th className="px-6 py-4 text-left">Peserta</th>
-                    <th className="px-6 py-4 text-left">Periode</th>
-                    <th className="px-6 py-4 text-left">Status</th>
-                    <th className="px-6 py-4 text-center">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {tryouts.map((tryout) => (
-                    <tr key={tryout.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center text-white">
-                            <BookOpen className="w-6 h-6" />
-                          </div>
-                          <div>
-                            <p className="font-medium text-slate-900">{tryout.title}</p>
-                            <p className="text-sm text-slate-500">ID: {tryout.id}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getTypeColor(tryout.type)}`}>
-                          {tryout.type === 'premium' ? (
-                            <>
-                              <Star className="w-3 h-3 mr-1" />
-                              Premium
-                            </>
-                          ) : (
-                            'Free'
-                          )}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="space-y-1">
-                          <p className="font-medium text-slate-900">
-                            {tryout.price === 0 ? 'Gratis' : formatCurrency(tryout.price)}
-                          </p>
-                          {tryout.discount > 0 && (
-                            <p className="text-sm text-slate-500 line-through">
-                              {formatCurrency(tryout.originalPrice)}
-                            </p>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(tryout.difficulty)}`}>
-                          {tryout.difficulty}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center space-x-2">
-                          <Users className="w-4 h-4 text-slate-400" />
-                          <span className="text-slate-700">{tryout.participants.toLocaleString()}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="space-y-1">
-                          <div className="flex items-center space-x-2">
-                            <Calendar className="w-4 h-4 text-slate-400" />
-                            <span className="text-sm text-slate-700">{tryout.startDate}</span>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <Clock className="w-4 h-4 text-slate-400" />
-                            <span className="text-sm text-slate-700">{tryout.endDate}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(tryout.status)}`}>
-                          {tryout.status === 'active' ? (
-                            <>
-                              <Play className="w-3 h-3 mr-1" />
-                              Active
-                            </>
-                          ) : tryout.status === 'inactive' ? (
-                            <>
-                              <Pause className="w-3 h-3 mr-1" />
-                              Inactive
-                            </>
-                          ) : tryout.status === 'draft' ? (
-                            'Draft'
-                          ) : (
-                            <>
-                              <Archive className="w-3 h-3 mr-1" />
-                              Archived
-                            </>
-                          )}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center justify-center space-x-2">
-                          <button
-                            onClick={() => openModal('view', tryout)}
-                            className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-300"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => openModal('edit', tryout)}
-                            className="p-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-all duration-300"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => openModal('delete', tryout)}
-                            className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-300"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <TryoutsTable
+            tryouts={tryouts}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSort={handleSort}
+            onOpenModal={openModal}
+          />
         </main>
       </div>
 
