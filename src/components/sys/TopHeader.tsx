@@ -41,9 +41,9 @@ export default function TopHeader({
             <Menu className="w-5 h-5" />
           </button>
           
-          {/* Page Title & Description */}
-          <div className="flex items-center space-x-4">
-            <div className="hidden sm:block w-px h-8 bg-slate-200" />
+          {/* Page Title & Description - Hidden on Mobile */}
+          <div className="hidden lg:flex items-center space-x-4">
+            <div className="w-px h-8 bg-slate-200" />
             <div>
               <h1 className="text-2xl font-bold text-slate-900 group">
                 <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
@@ -58,8 +58,8 @@ export default function TopHeader({
         </div>
         
         {/* Right Section - Actions */}
-        <div className="flex items-center space-x-3">
-          {/* Search Bar */}
+        <div className="flex items-center space-x-2 lg:space-x-3">
+          {/* Search Bar - Hidden on Mobile */}
           <div className="hidden md:flex items-center space-x-2 bg-slate-50 rounded-xl px-4 py-2.5 border border-slate-200 hover:border-slate-300 transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
             <Search className="w-4 h-4 text-slate-400" />
             <input
@@ -91,14 +91,14 @@ export default function TopHeader({
             )}
           </button>
           
-          {/* Settings */}
-          <button className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95">
+          {/* Settings - Hidden on Mobile */}
+          <button className="hidden lg:block p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95">
             <Settings className="w-5 h-5" />
           </button>
           
           {/* User Profile */}
-          <div className="flex items-center space-x-3 pl-3 border-l border-slate-200">
-            <div className="flex items-center space-x-3 group cursor-pointer p-2 rounded-xl hover:bg-slate-100 transition-all duration-300">
+          <div className="flex items-center space-x-2 lg:space-x-3 pl-2 lg:pl-3 border-l border-slate-200">
+            <div className="flex items-center space-x-2 lg:space-x-3 group cursor-pointer p-2 rounded-xl hover:bg-slate-100 transition-all duration-300">
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
                 A
               </div>
