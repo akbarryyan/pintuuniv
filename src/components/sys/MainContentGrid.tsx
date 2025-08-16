@@ -145,7 +145,7 @@ export default function MainContentGrid({ recentActivities }: MainContentGridPro
           
           {/* Scrollable Content */}
           <div className="p-6">
-            <div className="space-y-4 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+            <div className="space-y-4 max-h-96 overflow-y-auto pr-2 scroll-smooth custom-scrollbar">
               {recentActivities.map((activity, index) => (
                 <div 
                   key={activity.id} 
