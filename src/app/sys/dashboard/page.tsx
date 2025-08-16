@@ -33,7 +33,7 @@ import {
   Menu,
   X
 } from "lucide-react";
-import { Sidebar } from "@/components/sys";
+import { Sidebar, StatsGrid } from "@/components/sys";
 
 interface AdminStats {
   totalUsers: number;
@@ -150,14 +150,6 @@ export default function AdminDashboard() {
     }
   ];
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0
-    }).format(amount);
-  };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'success': return 'text-emerald-700 bg-emerald-50 border-emerald-200';
@@ -228,113 +220,7 @@ export default function AdminDashboard() {
         {/* Page Content */}
         <main className="flex-1 p-4 lg:p-8 overflow-auto">
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
-            {/* Total Users */}
-            <div className="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600 mb-1">Total Users</p>
-                  <p className="text-2xl font-bold text-slate-900">{stats.totalUsers.toLocaleString()}</p>
-                </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                  <Users className="w-6 h-6 text-blue-600" />
-                </div>
-              </div>
-              <div className="mt-4 flex items-center text-sm">
-                <TrendingUp className="w-4 h-4 text-emerald-500 mr-2" />
-                <span className="text-emerald-600 font-medium">+12%</span>
-                <span className="text-slate-500 ml-2">dari bulan lalu</span>
-              </div>
-            </div>
-
-            {/* Total Tryouts */}
-            <div className="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600 mb-1">Total Tryouts</p>
-                  <p className="text-2xl font-bold text-slate-900">{stats.totalTryouts}</p>
-                </div>
-                <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
-                  <BookOpen className="w-6 h-6 text-emerald-600" />
-                </div>
-              </div>
-              <div className="mt-4 flex items-center text-sm">
-                <TrendingUp className="w-4 h-4 text-emerald-500 mr-2" />
-                <span className="text-emerald-600 font-medium">+8%</span>
-                <span className="text-slate-500 ml-2">dari bulan lalu</span>
-              </div>
-            </div>
-
-            {/* Total Revenue */}
-            <div className="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600 mb-1">Total Revenue</p>
-                  <p className="text-2xl font-bold text-slate-900">{formatCurrency(stats.totalRevenue)}</p>
-                </div>
-                <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center">
-                  <DollarSign className="w-6 h-6 text-teal-600" />
-                </div>
-              </div>
-              <div className="mt-4 flex items-center text-sm">
-                <TrendingUp className="w-4 h-4 text-emerald-500 mr-2" />
-                <span className="text-emerald-600 font-medium">+23%</span>
-                <span className="text-slate-500 ml-2">dari bulan lalu</span>
-              </div>
-            </div>
-
-            {/* Active Users */}
-            <div className="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600 mb-1">Active Users</p>
-                  <p className="text-2xl font-bold text-slate-900">{stats.activeUsers}</p>
-                </div>
-                <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center">
-                  <Activity className="w-6 h-6 text-violet-600" />
-                </div>
-              </div>
-              <div className="mt-4 flex items-center text-sm">
-                <TrendingUp className="w-4 h-4 text-emerald-500 mr-2" />
-                <span className="text-emerald-600 font-medium">+5%</span>
-                <span className="text-slate-500 ml-2">dari bulan lalu</span>
-              </div>
-            </div>
-
-            {/* Completed Tryouts */}
-            <div className="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600 mb-1">Completed</p>
-                  <p className="text-2xl font-bold text-slate-900">{stats.completedTryouts}</p>
-                </div>
-                <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
-                  <Target className="w-6 h-6 text-amber-600" />
-                </div>
-              </div>
-              <div className="mt-4 flex items-center text-sm">
-                <TrendingUp className="w-4 h-4 text-emerald-500 mr-2" />
-                <span className="text-emerald-600 font-medium">+18%</span>
-                <span className="text-slate-500 ml-2">dari bulan lalu</span>
-              </div>
-            </div>
-
-            {/* Pending Approvals */}
-            <div className="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600 mb-1">Pending</p>
-                  <p className="text-2xl font-bold text-slate-900">{stats.pendingApprovals}</p>
-                </div>
-                <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-                  <Award className="w-6 h-6 text-red-600" />
-                </div>
-              </div>
-              <div className="mt-4 flex items-center text-sm">
-                <span className="text-red-600 font-medium">Perlu review</span>
-              </div>
-            </div>
-          </div>
+          <StatsGrid stats={stats} />
 
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
