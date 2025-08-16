@@ -2,27 +2,13 @@
 
 import { useState } from "react";
 import { 
-  Users, 
-  Plus, 
-  Search, 
-  Filter, 
-  MoreHorizontal,
-  Edit,
-  Trash2,
-  Eye,
-  Mail,
-  Phone,
-  Calendar,
-  MapPin,
-  BookOpen,
-  Crown,
-  UserCheck,
-  UserX,
   X,
-  ChevronDown,
-  ChevronUp
+  BookOpen,
+  Star,
+  Trash2
 } from "lucide-react";
 import { Sidebar, TopHeader } from "@/components/sys";
+import { HeaderSection, FiltersAndSearch, UsersTable } from "@/components/sys/users";
 
 interface User {
   id: number;
@@ -127,7 +113,7 @@ export default function ManageUsers() {
     }
   };
 
-  const getSubscriptionColor = (type: string) => {
+  const getTypeColor = (type: string) => {
     switch (type) {
       case 'premium': return 'text-amber-700 bg-amber-50 border-amber-200';
       case 'free': return 'text-slate-700 bg-slate-50 border-slate-200';
@@ -184,187 +170,26 @@ export default function ManageUsers() {
         {/* Page Content */}
         <main className="flex-1 p-4 lg:p-8 overflow-auto">
           {/* Header Section */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
-            <div>
-              <h2 className="text-2xl font-bold text-slate-900">Manage Users</h2>
-              <p className="text-slate-600 mt-1">Kelola dan pantau pengguna platform</p>
-            </div>
-            <button
-              onClick={() => openModal('create')}
-              className="mt-4 sm:mt-0 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 flex items-center space-x-2"
-            >
-              <Plus className="w-5 h-5" />
-              <span>Tambah User</span>
-            </button>
-          </div>
+          <HeaderSection onOpenCreateModal={() => openModal('create')} />
 
           {/* Filters & Search */}
-          <div className="bg-white rounded-2xl p-6 mb-8 shadow-sm border border-slate-200">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              {/* Search */}
-              <div className="md:col-span-2">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input
-                    type="text"
-                    placeholder="Cari user berdasarkan nama, email, atau sekolah..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                  />
-                </div>
-              </div>
-
-              {/* Status Filter */}
-              <div>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                >
-                  <option value="all">Semua Status</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                  <option value="suspended">Suspended</option>
-                </select>
-              </div>
-
-              {/* Subscription Filter */}
-              <div>
-                <select
-                  value={subscriptionFilter}
-                  onChange={(e) => setSubscriptionFilter(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                >
-                  <option value="all">Semua Subscription</option>
-                  <option value="free">Free</option>
-                  <option value="premium">Premium</option>
-                </select>
-              </div>
-            </div>
-          </div>
+          <FiltersAndSearch
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            subscriptionFilter={subscriptionFilter}
+            setSubscriptionFilter={setSubscriptionFilter}
+          />
 
           {/* Users Table */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-slate-50 border-b border-slate-200">
-                  <tr>
-                    <th className="px-6 py-4 text-left">
-                      <button
-                        onClick={() => handleSort('name')}
-                        className="flex items-center space-x-1 font-semibold text-slate-700 hover:text-slate-900 transition-colors"
-                      >
-                        <span>Nama</span>
-                        {sortBy === 'name' && (
-                          sortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        )}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left">Email</th>
-                    <th className="px-6 py-4 text-left">Sekolah</th>
-                    <th className="px-6 py-4 text-left">Subscription</th>
-                    <th className="px-6 py-4 text-left">Status</th>
-                    <th className="px-6 py-4 text-left">Tryouts</th>
-                    <th className="px-6 py-4 text-left">Last Active</th>
-                    <th className="px-6 py-4 text-center">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {users.map((user) => (
-                    <tr key={user.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
-                            {user.name.charAt(0)}
-                          </div>
-                          <div>
-                            <p className="font-medium text-slate-900">{user.name}</p>
-                            <p className="text-sm text-slate-500">{user.phone}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center space-x-2">
-                          <Mail className="w-4 h-4 text-slate-400" />
-                          <span className="text-slate-700">{user.email}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center space-x-2">
-                          <MapPin className="w-4 h-4 text-slate-400" />
-                          <span className="text-slate-700">{user.school}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getSubscriptionColor(user.subscriptionType)}`}>
-                          {user.subscriptionType === 'premium' ? (
-                            <>
-                              <Crown className="w-3 h-3 mr-1" />
-                              Premium
-                            </>
-                          ) : (
-                            'Free'
-                          )}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(user.status)}`}>
-                          {user.status === 'active' ? (
-                            <>
-                              <UserCheck className="w-3 h-3 mr-1" />
-                              Active
-                            </>
-                          ) : user.status === 'inactive' ? (
-                            <>
-                              <UserX className="w-3 h-3 mr-1" />
-                              Inactive
-                            </>
-                          ) : (
-                            'Suspended'
-                          )}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center space-x-2">
-                          <BookOpen className="w-4 h-4 text-slate-400" />
-                          <span className="text-slate-700">{user.tryoutsCompleted}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center space-x-2">
-                          <Calendar className="w-4 h-4 text-slate-400" />
-                          <span className="text-slate-700">{user.lastActive}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center justify-center space-x-2">
-                          <button
-                            onClick={() => openModal('view', user)}
-                            className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-300"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => openModal('edit', user)}
-                            className="p-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-all duration-300"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => openModal('delete', user)}
-                            className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-300"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <UsersTable
+            users={users}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSort={handleSort}
+            onOpenModal={openModal}
+          />
         </main>
       </div>
 
