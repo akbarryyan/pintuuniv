@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { 
-  Users, 
-  BookOpen, 
-  TrendingUp, 
-  DollarSign, 
-  Activity, 
+import {
+  Users,
+  BookOpen,
+  TrendingUp,
+  DollarSign,
+  Activity,
   Calendar,
   BarChart3,
   PieChart,
@@ -31,7 +31,7 @@ import {
   User,
   ChevronDown,
   Menu,
-  X
+  X,
 } from "lucide-react";
 
 interface SidebarItem {
@@ -49,47 +49,54 @@ interface SidebarProps {
   setActiveItem: (item: string) => void;
 }
 
-export default function Sidebar({ sidebarOpen, setSidebarOpen, activeItem, setActiveItem }: SidebarProps) {
+export default function Sidebar({
+  sidebarOpen,
+  setSidebarOpen,
+  activeItem,
+  setActiveItem,
+}: SidebarProps) {
   const sidebarItems: SidebarItem[] = [
     {
-      title: 'Dashboard',
-      href: '/sys/dashboard',
-      icon: <Home className="w-5 h-5" />
+      title: "Dashboard",
+      href: "/sys/dashboard",
+      icon: <Home className="w-5 h-5" />,
     },
     {
-      title: 'Users',
-      href: '/sys/users',
+      title: "Users",
+      href: "/sys/dashboard/users",
       icon: <Users className="w-5 h-5" />,
-      badge: '1.2k'
+      badge: "1.2k",
     },
     {
-      title: 'Tryouts',
-      href: '/sys/tryouts',
+      title: "Tryouts",
+      href: "/sys/dashboard/tryouts",
       icon: <BookOpen className="w-5 h-5" />,
-      badge: '89'
+      badge: "89",
     },
     {
-      title: 'Payments',
-      href: '/sys/payments',
+      title: "Payments",
+      href: "/sys/dashboard/payments",
       icon: <CreditCard className="w-5 h-5" />,
-      badge: 'New'
+      badge: "New",
     },
     {
-      title: 'Reports',
-      href: '/sys/reports',
-      icon: <BarChart3 className="w-5 h-5" />
+      title: "Reports",
+      href: "/sys/dashboard/reports",
+      icon: <BarChart3 className="w-5 h-5" />,
     },
     {
-      title: 'Settings',
-      href: '/sys/settings',
-      icon: <Settings className="w-5 h-5" />
-    }
+      title: "Settings",
+      href: "/sys/dashboard/settings",
+      icon: <Settings className="w-5 h-5" />,
+    },
   ];
 
   return (
-    <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white/95 backdrop-blur-md border-r border-slate-200/50 shadow-2xl transform transition-all duration-300 ease-in-out lg:sticky lg:top-0 lg:translate-x-0 lg:inset-0 lg:h-screen lg:bg-white lg:backdrop-blur-none lg:shadow-none flex flex-col ${
-      sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-    }`}>
+    <div
+      className={`fixed inset-y-0 left-0 z-50 w-64 bg-white/95 backdrop-blur-md border-r border-slate-200/50 shadow-2xl transform transition-all duration-300 ease-in-out lg:sticky lg:top-0 lg:translate-x-0 lg:inset-0 lg:h-screen lg:bg-white lg:backdrop-blur-none lg:shadow-none flex flex-col ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      }`}
+    >
       {/* Sidebar Header */}
       <div className="flex items-center justify-between h-16 px-6 border-b border-slate-200/50 flex-shrink-0 bg-white/80 backdrop-blur-sm lg:bg-white lg:backdrop-blur-none">
         <div className="flex items-center space-x-3">
@@ -115,29 +122,35 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen, activeItem, setAc
           <a
             key={item.href}
             href={item.href}
-            onClick={() => setActiveItem(item.href.split('/').pop() || 'dashboard')}
+            onClick={() =>
+              setActiveItem(item.href.split("/").pop() || "dashboard")
+            }
             className={`flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 ${
-              activeItem === (item.href.split('/').pop() || 'dashboard')
-                ? 'bg-slate-100/90 text-slate-900 shadow-sm backdrop-blur-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50/80 hover:shadow-sm backdrop-blur-sm'
+              activeItem === (item.href.split("/").pop() || "dashboard")
+                ? "bg-slate-100/90 text-slate-900 shadow-sm backdrop-blur-sm"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50/80 hover:shadow-sm backdrop-blur-sm"
             }`}
           >
             <div className="flex items-center space-x-3">
-              <div className={`p-1.5 rounded-lg transition-all duration-300 ${
-                activeItem === (item.href.split('/').pop() || 'dashboard')
-                  ? 'bg-slate-200/80 text-slate-700'
-                  : 'text-slate-500 group-hover:bg-slate-100/80 group-hover:text-slate-600'
-              }`}>
+              <div
+                className={`p-1.5 rounded-lg transition-all duration-300 ${
+                  activeItem === (item.href.split("/").pop() || "dashboard")
+                    ? "bg-slate-200/80 text-slate-700"
+                    : "text-slate-500 group-hover:bg-slate-100/80 group-hover:text-slate-600"
+                }`}
+              >
                 {item.icon}
               </div>
               <span>{item.title}</span>
             </div>
             {item.badge && (
-              <span className={`px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-300 ${
-                item.badge === 'New' 
-                  ? 'bg-red-100/90 text-red-700 backdrop-blur-sm' 
-                  : 'bg-slate-100/90 text-slate-700 backdrop-blur-sm'
-              }`}>
+              <span
+                className={`px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-300 ${
+                  item.badge === "New"
+                    ? "bg-red-100/90 text-red-700 backdrop-blur-sm"
+                    : "bg-slate-100/90 text-slate-700 backdrop-blur-sm"
+                }`}
+              >
                 {item.badge}
               </span>
             )}
