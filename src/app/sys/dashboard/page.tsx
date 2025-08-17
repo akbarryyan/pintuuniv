@@ -1,13 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  Settings,
-  LogOut,
-  User,
-  X
-} from "lucide-react";
-import { Sidebar, StatsGrid, MainContentGrid, ChartsSection, PerformanceOverview, TopHeader } from "@/components/sys";
+import { Settings, LogOut, User, X } from "lucide-react";
+import {
+  Sidebar,
+  StatsGrid,
+  MainContentGrid,
+  ChartsSection,
+  PerformanceOverview,
+  TopHeader,
+} from "@/components/sys";
+import { usePageTransition, useSmoothNavigation } from "@/lib/hooks";
+import { SmoothTransition } from "@/components/ui/loading";
 
 interface AdminStats {
   totalUsers: number;
@@ -20,71 +24,80 @@ interface AdminStats {
 
 export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState('dashboard');
+  const [activeItem, setActiveItem] = useState("dashboard");
 
+  // Use page transition and navigation hooks
+  const { isLoading } = usePageTransition();
+  const { isNavigating } = useSmoothNavigation();
   const [stats, setStats] = useState<AdminStats>({
     totalUsers: 1247,
     totalTryouts: 89,
     totalRevenue: 15420000,
     activeUsers: 892,
     completedTryouts: 2341,
-    pendingApprovals: 12
+    pendingApprovals: 12,
   });
 
-  const [recentActivities] = useState<Array<{
-    id: string;
-    type: 'user_registration' | 'tryout_completion' | 'payment' | 'system_update';
-    title: string;
-    description: string;
-    timestamp: string;
-    status: 'success' | 'warning' | 'error' | 'info';
-  }>>([
+  const [recentActivities] = useState<
+    Array<{
+      id: string;
+      type:
+        | "user_registration"
+        | "tryout_completion"
+        | "payment"
+        | "system_update";
+      title: string;
+      description: string;
+      timestamp: string;
+      status: "success" | "warning" | "error" | "info";
+    }>
+  >([
     {
-      id: '1',
-      type: 'user_registration',
-      title: 'User Baru Mendaftar',
-      description: 'Ahmad Fadillah berhasil mendaftar sebagai user premium',
-      timestamp: '2 menit yang lalu',
-      status: 'success'
+      id: "1",
+      type: "user_registration",
+      title: "User Baru Mendaftar",
+      description: "Ahmad Fadillah berhasil mendaftar sebagai user premium",
+      timestamp: "2 menit yang lalu",
+      status: "success",
     },
     {
-      id: '2',
-      type: 'tryout_completion',
-      title: 'Tryout Selesai',
-      description: 'Sarah Amanda menyelesaikan tryout Matematika Dasar',
-      timestamp: '5 menit yang lalu',
-      status: 'info'
+      id: "2",
+      type: "tryout_completion",
+      title: "Tryout Selesai",
+      description: "Sarah Amanda menyelesaikan tryout Matematika Dasar",
+      timestamp: "5 menit yang lalu",
+      status: "info",
     },
     {
-      id: '3',
-      type: 'payment',
-      title: 'Pembayaran Berhasil',
-      description: 'Pembayaran premium package Rp 299.000 diterima',
-      timestamp: '12 menit yang lalu',
-      status: 'success'
+      id: "3",
+      type: "payment",
+      title: "Pembayaran Berhasil",
+      description: "Pembayaran premium package Rp 299.000 diterima",
+      timestamp: "12 menit yang lalu",
+      status: "success",
     },
     {
-      id: '4',
-      type: 'system_update',
-      title: 'Maintenance System',
-      description: 'Update database schema berhasil dilakukan',
-      timestamp: '1 jam yang lalu',
-      status: 'warning'
-    }
+      id: "4",
+      type: "system_update",
+      title: "Maintenance System",
+      description: "Update database schema berhasil dilakukan",
+      timestamp: "1 jam yang lalu",
+      status: "warning",
+    },
   ]);
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-white/30 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar Component */}
-      <Sidebar 
+      <Sidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         activeItem={activeItem}
@@ -94,7 +107,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
-        <TopHeader 
+        <TopHeader
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           pageTitle="Dashboard"
@@ -102,19 +115,21 @@ export default function AdminDashboard() {
         />
 
         {/* Page Content */}
-        <main className="flex-1 p-4 lg:p-8 overflow-auto">
-          {/* Stats Grid */}
-          <StatsGrid stats={stats} />
+        <SmoothTransition isNavigating={isNavigating}>
+          <main className="flex-1 p-4 lg:p-8 overflow-auto" data-main-content>
+            {/* Stats Grid */}
+            <StatsGrid stats={stats} />
 
-          {/* Main Content Grid */}
-          <MainContentGrid recentActivities={recentActivities} />
+            {/* Main Content Grid */}
+            <MainContentGrid recentActivities={recentActivities} />
 
-          {/* Charts Section */}
-          <ChartsSection />
+            {/* Charts Section */}
+            <ChartsSection />
 
-          {/* Performance Overview */}
-          <PerformanceOverview />
-        </main>
+            {/* Performance Overview */}
+            <PerformanceOverview />
+          </main>
+        </SmoothTransition>
       </div>
     </div>
   );

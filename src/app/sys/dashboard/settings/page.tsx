@@ -10,10 +10,17 @@ import {
   SecuritySettings,
   SystemSettings,
 } from "@/components/sys/settings";
+import { usePageTransition, useSmoothNavigation } from "@/lib/hooks";
+import { SmoothTransition } from "@/components/ui/loading";
 
 export default function AdminSettingsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("profile");
+
+  // Use page transition and navigation hooks
+  const { isLoading: pageLoading } = usePageTransition();
+  const { isNavigating } = useSmoothNavigation();
+
   const [isLoading, setIsLoading] = useState(false);
   const [saveMessage, setSaveMessage] = useState<{
     type: "success" | "error" | "info";
@@ -108,26 +115,28 @@ export default function AdminSettingsPage() {
         )}
 
         {/* Page Content */}
-        <main className="flex-1 p-4 lg:p-8 overflow-auto">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-              {/* Settings Navigation */}
-              <div className="lg:col-span-1">
-                <SettingsNavigation
-                  activeSection={activeSection}
-                  setActiveSection={setActiveSection}
-                />
-              </div>
+        <SmoothTransition isNavigating={isNavigating}>
+          <main className="flex-1 p-4 lg:p-8 overflow-auto" data-main-content>
+            <div className="max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                {/* Settings Navigation */}
+                <div className="lg:col-span-1">
+                  <SettingsNavigation
+                    activeSection={activeSection}
+                    setActiveSection={setActiveSection}
+                  />
+                </div>
 
-              {/* Settings Content */}
-              <div className="lg:col-span-3">
-                <div className="bg-white rounded-xl shadow-sm border border-slate-200">
-                  <div className="p-6">{renderActiveSection()}</div>
+                {/* Settings Content */}
+                <div className="lg:col-span-3">
+                  <div className="bg-white rounded-xl shadow-sm border border-slate-200">
+                    <div className="p-6">{renderActiveSection()}</div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </main>
+          </main>
+        </SmoothTransition>
       </div>
     </div>
   );
