@@ -69,48 +69,55 @@ export function useSmoothNavigation() {
     // Don't navigate if already on the same page
     if (pathname === href) return;
 
+    // Prevent multiple clicks
+    if (isNavigating) return;
+
     setIsNavigating(true);
 
-    // Add smooth transition effect
-    const mainContent = document.querySelector("main");
-    const sidebar = document.querySelector("[data-sidebar]");
+    // Create and show loading overlay
+    const loadingOverlay = document.createElement("div");
+    loadingOverlay.id = "navigation-loading";
+    loadingOverlay.className =
+      "fixed inset-0 bg-white/80 backdrop-blur-sm z-[9999] flex items-center justify-center";
+    loadingOverlay.innerHTML = `
+      <div class="bg-white rounded-lg shadow-lg p-8 flex flex-col items-center space-y-4 animate-pulse">
+        <div class="relative">
+          <div class="w-8 h-8 border-4 border-blue-200 rounded-full"></div>
+          <div class="absolute inset-0 w-8 h-8 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+        </div>
+        <p class="text-gray-600 text-sm">Memuat halaman...</p>
+      </div>
+    `;
 
-    if (mainContent) {
-      // Phase 1: Fade out current content
-      mainContent.style.opacity = "0.4";
-      mainContent.style.transform = "translateX(10px) scale(0.98)";
-      mainContent.style.filter = "blur(1px)";
-      mainContent.style.transition = "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
-    }
+    document.body.appendChild(loadingOverlay);
 
-    if (sidebar) {
-      // Add subtle sidebar animation
-      sidebar.classList.add("border-r-2", "border-blue-200");
-    }
-
-    // Wait for animation to complete before navigation
-    await new Promise((resolve) => setTimeout(resolve, 150));
+    // Add fade-in animation to overlay
+    requestAnimationFrame(() => {
+      loadingOverlay.style.opacity = "0";
+      loadingOverlay.style.transition = "opacity 0.2s ease-in-out";
+      requestAnimationFrame(() => {
+        loadingOverlay.style.opacity = "1";
+      });
+    });
 
     try {
       // Navigate to new page
-      router.push(href);
+      await router.push(href);
 
-      // Wait for navigation to complete
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // Phase 2: Fade in new content
-      if (mainContent) {
-        mainContent.style.opacity = "1";
-        mainContent.style.transform = "translateX(0) scale(1)";
-        mainContent.style.filter = "blur(0)";
-      }
-
-      if (sidebar) {
-        sidebar.classList.remove("border-r-2", "border-blue-200");
-      }
+      // Ensure minimum loading time for smooth UX
+      await new Promise((resolve) => setTimeout(resolve, 300));
     } catch (error) {
       console.error("Navigation error:", error);
     } finally {
+      // Remove loading overlay
+      const overlay = document.getElementById("navigation-loading");
+      if (overlay) {
+        overlay.style.opacity = "0";
+        setTimeout(() => {
+          overlay.remove();
+        }, 200);
+      }
+
       setIsNavigating(false);
     }
   };
