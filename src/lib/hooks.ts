@@ -31,31 +31,42 @@ export function useActiveItem(setActiveItem: (item: string) => void) {
 }
 
 export function usePageTransition() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const pathname = usePathname();
 
   useEffect(() => {
+    // Reset loading state when pathname changes
+    setIsLoading(true);
+
     // Add smooth transition for page changes
     const handleRouteChange = () => {
-      const mainContent = document.querySelector("main");
+      const mainContent = document.querySelector(
+        "main[data-main-content]"
+      ) as HTMLElement;
       if (mainContent) {
-        // Start with loading state
-        setIsLoading(true);
-        mainContent.style.opacity = "0";
-        mainContent.style.transform = "translateY(20px)";
-        mainContent.style.transition = "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)";
+        // Add CSS classes for smooth transition
+        mainContent.classList.add("page-content", "page-content-enter");
 
-        // Reset after content loads
-        setTimeout(() => {
-          mainContent.style.opacity = "1";
-          mainContent.style.transform = "translateY(0)";
+        // Remove any existing blur effects
+        mainContent.style.filter = "none";
+
+        // Reveal content after ensuring it's fully rendered
+        const timer = setTimeout(() => {
+          mainContent.classList.remove("page-content-enter");
+          mainContent.classList.add("page-content-enter-active");
           setIsLoading(false);
-        }, 200);
+        }, 150); // Increased timing to ensure content is ready
+
+        return () => clearTimeout(timer);
+      } else {
+        // Fallback if no main content found
+        setIsLoading(false);
       }
     };
 
-    // Trigger transition on component mount
+    // Trigger transition
     handleRouteChange();
-  }, []);
+  }, [pathname]); // Re-run when pathname changes
 
   return { isLoading };
 }
@@ -74,45 +85,82 @@ export function useSmoothNavigation() {
 
     setIsNavigating(true);
 
-    // Create and show loading overlay
+    // Add blur effect to current content
+    const mainContent = document.querySelector(
+      "main[data-main-content]"
+    ) as HTMLElement;
+    const sidebarContent = document.querySelector(
+      "[data-sidebar]"
+    ) as HTMLElement;
+
+    if (mainContent) {
+      mainContent.style.filter = "blur(3px)";
+      mainContent.style.transition = "filter 0.3s ease-in-out";
+    }
+
+    if (sidebarContent) {
+      sidebarContent.style.filter = "blur(1px)";
+      sidebarContent.style.transition = "filter 0.3s ease-in-out";
+    }
+
+    // Create elegant loading spinner
     const loadingOverlay = document.createElement("div");
     loadingOverlay.id = "navigation-loading";
-    loadingOverlay.className =
-      "fixed inset-0 bg-white/80 backdrop-blur-sm z-[9999] flex items-center justify-center";
+    loadingOverlay.className = "navigation-loading navigation-loading-enter";
     loadingOverlay.innerHTML = `
-      <div class="bg-white rounded-lg shadow-lg p-8 flex flex-col items-center space-y-4 animate-pulse">
+      <div class="flex flex-col items-center space-y-4">
         <div class="relative">
-          <div class="w-8 h-8 border-4 border-blue-200 rounded-full"></div>
-          <div class="absolute inset-0 w-8 h-8 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+          <div class="w-12 h-12 border-4 border-blue-100 rounded-full"></div>
+          <div class="absolute inset-0 w-12 h-12 border-4 border-blue-500 rounded-full border-t-transparent loading-spinner"></div>
         </div>
-        <p class="text-gray-600 text-sm">Memuat halaman...</p>
+        <div class="bg-white/95 backdrop-blur-sm rounded-full px-5 py-2 shadow-xl border border-gray-100">
+          <p class="text-blue-600 text-sm font-semibold">Memuat halaman...</p>
+        </div>
       </div>
     `;
 
     document.body.appendChild(loadingOverlay);
 
-    // Add fade-in animation to overlay
+    // Trigger enter animation
     requestAnimationFrame(() => {
-      loadingOverlay.style.opacity = "0";
-      loadingOverlay.style.transition = "opacity 0.2s ease-in-out";
-      requestAnimationFrame(() => {
-        loadingOverlay.style.opacity = "1";
-      });
+      loadingOverlay.classList.remove("navigation-loading-enter");
+      loadingOverlay.classList.add("navigation-loading-enter-active");
     });
 
-    try {
-      // Navigate to new page
-      await router.push(href);
+    // Wait a bit for loading to be visible
+    await new Promise((resolve) => setTimeout(resolve, 200));
 
-      // Ensure minimum loading time for smooth UX
+    try {
+      // Start navigation
+      const navigationPromise = router.push(href);
+
+      // Wait for navigation to complete
+      await navigationPromise;
+
+      // Wait for new content to be rendered and ready
       await new Promise((resolve) => setTimeout(resolve, 300));
     } catch (error) {
       console.error("Navigation error:", error);
     } finally {
-      // Remove loading overlay
+      // Remove blur effects
+      if (mainContent) {
+        mainContent.style.filter = "none";
+      }
+
+      if (sidebarContent) {
+        sidebarContent.style.filter = "none";
+      }
+
+      // Remove loading overlay with fade-out
       const overlay = document.getElementById("navigation-loading");
       if (overlay) {
-        overlay.style.opacity = "0";
+        overlay.classList.remove("navigation-loading-enter-active");
+        overlay.classList.add("navigation-loading-exit");
+
+        requestAnimationFrame(() => {
+          overlay.classList.add("navigation-loading-exit-active");
+        });
+
         setTimeout(() => {
           overlay.remove();
         }, 200);
