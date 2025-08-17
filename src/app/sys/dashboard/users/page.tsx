@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { 
-  X,
-  BookOpen,
-  Star,
-  Trash2
-} from "lucide-react";
+import { X, BookOpen, Star, Trash2 } from "lucide-react";
 import { Sidebar, TopHeader } from "@/components/sys";
-import { HeaderSection, FiltersAndSearch, UsersTable } from "@/components/sys/users";
+import {
+  HeaderSection,
+  FiltersAndSearch,
+  UsersTable,
+} from "@/components/sys/users";
+import { usePageTransition } from "@/lib/hooks";
 
 interface User {
   id: number;
@@ -17,25 +17,28 @@ interface User {
   phone: string;
   school: string;
   grade: string;
-  subscriptionType: 'free' | 'premium';
+  subscriptionType: "free" | "premium";
   targetUniversity: string;
   targetMajor: string;
   joinDate: string;
   lastActive: string;
-  status: 'active' | 'inactive' | 'suspended';
+  status: "active" | "inactive" | "suspended";
   tryoutsCompleted: number;
   totalScore: number;
 }
 
 export default function ManageUsers() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState('users');
+  const [activeItem, setActiveItem] = useState("users");
+
+  // Use page transition hook
+  usePageTransition();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [subscriptionFilter, setSubscriptionFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  
+
   // Modal states
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -59,7 +62,7 @@ export default function ManageUsers() {
       lastActive: "2024-01-20",
       status: "active",
       tryoutsCompleted: 15,
-      totalScore: 1250
+      totalScore: 1250,
     },
     {
       id: 2,
@@ -75,7 +78,7 @@ export default function ManageUsers() {
       lastActive: "2024-01-19",
       status: "active",
       tryoutsCompleted: 8,
-      totalScore: 890
+      totalScore: 890,
     },
     {
       id: 3,
@@ -91,8 +94,8 @@ export default function ManageUsers() {
       lastActive: "2024-01-18",
       status: "inactive",
       tryoutsCompleted: 3,
-      totalScore: 320
-    }
+      totalScore: 320,
+    },
   ]);
 
   const handleSort = (field: string) => {
@@ -106,28 +109,43 @@ export default function ManageUsers() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'text-emerald-700 bg-emerald-50 border-emerald-200';
-      case 'inactive': return 'text-slate-700 bg-slate-50 border-slate-200';
-      case 'suspended': return 'text-red-700 bg-red-50 border-red-200';
-      default: return 'text-slate-700 bg-slate-50 border-slate-200';
+      case "active":
+        return "text-emerald-700 bg-emerald-50 border-emerald-200";
+      case "inactive":
+        return "text-slate-700 bg-slate-50 border-slate-200";
+      case "suspended":
+        return "text-red-700 bg-red-50 border-red-200";
+      default:
+        return "text-slate-700 bg-slate-50 border-slate-200";
     }
   };
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'premium': return 'text-amber-700 bg-amber-50 border-amber-200';
-      case 'free': return 'text-slate-700 bg-slate-50 border-slate-200';
-      default: return 'text-slate-700 bg-slate-50 border-slate-200';
+      case "premium":
+        return "text-amber-700 bg-amber-50 border-amber-200";
+      case "free":
+        return "text-slate-700 bg-slate-50 border-slate-200";
+      default:
+        return "text-slate-700 bg-slate-50 border-slate-200";
     }
   };
 
   const openModal = (type: string, user?: User) => {
     if (user) setSelectedUser(user);
     switch (type) {
-      case 'create': setShowCreateModal(true); break;
-      case 'edit': setShowEditModal(true); break;
-      case 'view': setShowViewModal(true); break;
-      case 'delete': setShowDeleteModal(true); break;
+      case "create":
+        setShowCreateModal(true);
+        break;
+      case "edit":
+        setShowEditModal(true);
+        break;
+      case "view":
+        setShowViewModal(true);
+        break;
+      case "delete":
+        setShowDeleteModal(true);
+        break;
     }
   };
 
@@ -143,14 +161,14 @@ export default function ManageUsers() {
     <div className="min-h-screen bg-slate-50 flex">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-white/30 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar Component */}
-      <Sidebar 
+      <Sidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         activeItem={activeItem}
@@ -160,7 +178,7 @@ export default function ManageUsers() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
-        <TopHeader 
+        <TopHeader
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           pageTitle="Manage Users"
@@ -168,9 +186,9 @@ export default function ManageUsers() {
         />
 
         {/* Page Content */}
-        <main className="flex-1 p-4 lg:p-8 overflow-auto">
+        <main className="flex-1 p-4 lg:p-8 overflow-auto" data-main-content>
           {/* Header Section */}
-          <HeaderSection onOpenCreateModal={() => openModal('create')} />
+          <HeaderSection onOpenCreateModal={() => openModal("create")} />
 
           {/* Filters & Search */}
           <FiltersAndSearch
@@ -199,7 +217,9 @@ export default function ManageUsers() {
           <div className="bg-white rounded-3xl shadow-2xl border border-white/20 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-slate-200">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold text-slate-900">Tambah User Baru</h3>
+                <h3 className="text-xl font-semibold text-slate-900">
+                  Tambah User Baru
+                </h3>
                 <button
                   onClick={closeModal}
                   className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all duration-300"
@@ -212,7 +232,9 @@ export default function ManageUsers() {
               <form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Nama Lengkap</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Nama Lengkap
+                    </label>
                     <input
                       type="text"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
@@ -220,7 +242,9 @@ export default function ManageUsers() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Email</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Email
+                    </label>
                     <input
                       type="email"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
@@ -228,7 +252,9 @@ export default function ManageUsers() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Phone</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Phone
+                    </label>
                     <input
                       type="tel"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
@@ -236,7 +262,9 @@ export default function ManageUsers() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Sekolah</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Sekolah
+                    </label>
                     <input
                       type="text"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
@@ -244,7 +272,9 @@ export default function ManageUsers() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Kelas</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Kelas
+                    </label>
                     <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
                       <option value="">Pilih kelas</option>
                       <option value="10">Kelas 10</option>
@@ -253,7 +283,9 @@ export default function ManageUsers() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Subscription</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Subscription
+                    </label>
                     <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
                       <option value="free">Free</option>
                       <option value="premium">Premium</option>
@@ -287,7 +319,9 @@ export default function ManageUsers() {
           <div className="bg-white rounded-3xl shadow-2xl border border-white/20 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-slate-200">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold text-slate-900">Edit User</h3>
+                <h3 className="text-xl font-semibold text-slate-900">
+                  Edit User
+                </h3>
                 <button
                   onClick={closeModal}
                   className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all duration-300"
@@ -300,7 +334,9 @@ export default function ManageUsers() {
               <form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Nama Lengkap</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Nama Lengkap
+                    </label>
                     <input
                       type="text"
                       defaultValue={selectedUser.name}
@@ -308,7 +344,9 @@ export default function ManageUsers() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Email</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Email
+                    </label>
                     <input
                       type="email"
                       defaultValue={selectedUser.email}
@@ -316,18 +354,47 @@ export default function ManageUsers() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Status</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Status
+                    </label>
                     <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
-                      <option value="active" selected={selectedUser.status === 'active'}>Active</option>
-                      <option value="inactive" selected={selectedUser.status === 'inactive'}>Inactive</option>
-                      <option value="suspended" selected={selectedUser.status === 'suspended'}>Suspended</option>
+                      <option
+                        value="active"
+                        selected={selectedUser.status === "active"}
+                      >
+                        Active
+                      </option>
+                      <option
+                        value="inactive"
+                        selected={selectedUser.status === "inactive"}
+                      >
+                        Inactive
+                      </option>
+                      <option
+                        value="suspended"
+                        selected={selectedUser.status === "suspended"}
+                      >
+                        Suspended
+                      </option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Subscription</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Subscription
+                    </label>
                     <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
-                      <option value="free" selected={selectedUser.subscriptionType === 'free'}>Free</option>
-                      <option value="premium" selected={selectedUser.subscriptionType === 'premium'}>Premium</option>
+                      <option
+                        value="free"
+                        selected={selectedUser.subscriptionType === "free"}
+                      >
+                        Free
+                      </option>
+                      <option
+                        value="premium"
+                        selected={selectedUser.subscriptionType === "premium"}
+                      >
+                        Premium
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -358,7 +425,9 @@ export default function ManageUsers() {
           <div className="bg-white rounded-3xl shadow-2xl border border-white/20 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-slate-200">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold text-slate-900">Detail User</h3>
+                <h3 className="text-xl font-semibold text-slate-900">
+                  Detail User
+                </h3>
                 <button
                   onClick={closeModal}
                   className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all duration-300"
@@ -374,37 +443,57 @@ export default function ManageUsers() {
                     {selectedUser.name.charAt(0)}
                   </div>
                   <div>
-                    <h4 className="text-lg font-semibold text-slate-900">{selectedUser.name}</h4>
+                    <h4 className="text-lg font-semibold text-slate-900">
+                      {selectedUser.name}
+                    </h4>
                     <p className="text-slate-600">{selectedUser.email}</p>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-slate-500 mb-1">Phone</label>
+                      <label className="block text-sm font-medium text-slate-500 mb-1">
+                        Phone
+                      </label>
                       <p className="text-slate-900">{selectedUser.phone}</p>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-500 mb-1">Sekolah</label>
+                      <label className="block text-sm font-medium text-slate-500 mb-1">
+                        Sekolah
+                      </label>
                       <p className="text-slate-900">{selectedUser.school}</p>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-500 mb-1">Kelas</label>
-                      <p className="text-slate-900">Kelas {selectedUser.grade}</p>
+                      <label className="block text-sm font-medium text-slate-500 mb-1">
+                        Kelas
+                      </label>
+                      <p className="text-slate-900">
+                        Kelas {selectedUser.grade}
+                      </p>
                     </div>
                   </div>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-slate-500 mb-1">Target University</label>
-                      <p className="text-slate-900">{selectedUser.targetUniversity}</p>
+                      <label className="block text-sm font-medium text-slate-500 mb-1">
+                        Target University
+                      </label>
+                      <p className="text-slate-900">
+                        {selectedUser.targetUniversity}
+                      </p>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-500 mb-1">Target Major</label>
-                      <p className="text-slate-900">{selectedUser.targetMajor}</p>
+                      <label className="block text-sm font-medium text-slate-500 mb-1">
+                        Target Major
+                      </label>
+                      <p className="text-slate-900">
+                        {selectedUser.targetMajor}
+                      </p>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-500 mb-1">Join Date</label>
+                      <label className="block text-sm font-medium text-slate-500 mb-1">
+                        Join Date
+                      </label>
                       <p className="text-slate-900">{selectedUser.joinDate}</p>
                     </div>
                   </div>
@@ -412,15 +501,21 @@ export default function ManageUsers() {
 
                 <div className="grid grid-cols-3 gap-4 pt-4 border-t border-slate-200">
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-blue-600">{selectedUser.tryoutsCompleted}</p>
+                    <p className="text-2xl font-bold text-blue-600">
+                      {selectedUser.tryoutsCompleted}
+                    </p>
                     <p className="text-sm text-slate-500">Tryouts Completed</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-emerald-600">{selectedUser.totalScore}</p>
+                    <p className="text-2xl font-bold text-emerald-600">
+                      {selectedUser.totalScore}
+                    </p>
                     <p className="text-sm text-slate-500">Total Score</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-amber-600">{selectedUser.lastActive}</p>
+                    <p className="text-2xl font-bold text-amber-600">
+                      {selectedUser.lastActive}
+                    </p>
                     <p className="text-sm text-slate-500">Last Active</p>
                   </div>
                 </div>
@@ -438,10 +533,13 @@ export default function ManageUsers() {
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Trash2 className="w-8 h-8 text-red-600" />
               </div>
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">Hapus User</h3>
+              <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                Hapus User
+              </h3>
               <p className="text-slate-600 mb-6">
-                Apakah Anda yakin ingin menghapus user <strong>{selectedUser.name}</strong>? 
-                Tindakan ini tidak dapat dibatalkan.
+                Apakah Anda yakin ingin menghapus user{" "}
+                <strong>{selectedUser.name}</strong>? Tindakan ini tidak dapat
+                dibatalkan.
               </p>
               <div className="flex items-center justify-center space-x-3">
                 <button

@@ -85,23 +85,31 @@ export function useSmoothNavigation() {
 
     setIsNavigating(true);
 
-    // Add blur effect to current content
+    // Add blur effect to current content - only main content, not sidebar
     const mainContent = document.querySelector(
       "main[data-main-content]"
     ) as HTMLElement;
-    const sidebarContent = document.querySelector(
-      "[data-sidebar]"
-    ) as HTMLElement;
+    const pageContent = document.querySelector(
+      ".flex-1.flex.flex-col.min-w-0"
+    ) as HTMLElement; // Main content area
+    const bodyContent = document.querySelector("body") as HTMLElement;
 
-    if (mainContent) {
-      mainContent.style.filter = "blur(3px)";
-      mainContent.style.transition = "filter 0.3s ease-in-out";
+    // Create a more specific selector for content area
+    const contentArea = mainContent || pageContent;
+
+    if (contentArea) {
+      contentArea.style.filter = "blur(2px)";
+      contentArea.style.transition = "filter 0.3s ease-in-out";
+      contentArea.style.pointerEvents = "none";
     }
 
-    if (sidebarContent) {
-      sidebarContent.style.filter = "blur(1px)";
-      sidebarContent.style.transition = "filter 0.3s ease-in-out";
-    }
+    // Add a semi-transparent overlay to prevent interactions
+    const blurOverlay = document.createElement("div");
+    blurOverlay.id = "blur-overlay";
+    blurOverlay.className =
+      "fixed inset-0 bg-white/10 z-40 pointer-events-none";
+    blurOverlay.style.backdropFilter = "blur(1px)";
+    document.body.appendChild(blurOverlay);
 
     // Create elegant loading spinner
     const loadingOverlay = document.createElement("div");
@@ -142,13 +150,24 @@ export function useSmoothNavigation() {
     } catch (error) {
       console.error("Navigation error:", error);
     } finally {
-      // Remove blur effects
-      if (mainContent) {
-        mainContent.style.filter = "none";
+      // Remove blur effects from content area
+      const mainContent = document.querySelector(
+        "main[data-main-content]"
+      ) as HTMLElement;
+      const pageContent = document.querySelector(
+        ".flex-1.flex.flex-col.min-w-0"
+      ) as HTMLElement;
+      const contentArea = mainContent || pageContent;
+
+      if (contentArea) {
+        contentArea.style.filter = "none";
+        contentArea.style.pointerEvents = "auto";
       }
 
-      if (sidebarContent) {
-        sidebarContent.style.filter = "none";
+      // Remove blur overlay
+      const blurOverlay = document.getElementById("blur-overlay");
+      if (blurOverlay) {
+        blurOverlay.remove();
       }
 
       // Remove loading overlay with fade-out

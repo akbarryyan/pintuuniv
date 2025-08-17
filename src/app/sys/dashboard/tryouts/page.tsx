@@ -1,41 +1,45 @@
 "use client";
 
 import { useState } from "react";
-import { 
-  X,
-  BookOpen,
-  Star,
-  Trash2
-} from "lucide-react";
+import { X, BookOpen, Star, Trash2 } from "lucide-react";
 import { Sidebar, TopHeader } from "@/components/sys";
-import { HeaderSection, FiltersAndSearch, TryoutsTable } from "@/components/sys/tryouts";
+import {
+  HeaderSection,
+  FiltersAndSearch,
+  TryoutsTable,
+} from "@/components/sys/tryouts";
+import { usePageTransition } from "@/lib/hooks";
 
 interface Tryout {
   id: number;
   title: string;
   price: number;
   originalPrice: number;
-  type: 'free' | 'premium';
-  difficulty: 'Mudah' | 'Sedang' | 'Sulit' | 'Sangat Sulit';
+  type: "free" | "premium";
+  difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
   participants: number;
   discount: number;
   startDate: string;
   endDate: string;
-  status: 'active' | 'inactive' | 'draft' | 'archived';
+  status: "active" | "inactive" | "draft" | "archived";
   createdAt: string;
   updatedAt: string;
 }
 
 export default function ManageTryouts() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState('tryouts');
+  const [activeItem, setActiveItem] = useState("tryouts");
+
+  // Use page transition hook
+  usePageTransition();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [difficultyFilter, setDifficultyFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("title");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  
+
   // Modal states
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -58,7 +62,7 @@ export default function ManageTryouts() {
       endDate: "2024-02-15",
       status: "active",
       createdAt: "2024-01-10",
-      updatedAt: "2024-01-15"
+      updatedAt: "2024-01-15",
     },
     {
       id: 2,
@@ -73,7 +77,7 @@ export default function ManageTryouts() {
       endDate: "2024-03-20",
       status: "active",
       createdAt: "2024-01-12",
-      updatedAt: "2024-01-18"
+      updatedAt: "2024-01-18",
     },
     {
       id: 3,
@@ -88,8 +92,8 @@ export default function ManageTryouts() {
       endDate: "2024-02-25",
       status: "draft",
       createdAt: "2024-01-15",
-      updatedAt: "2024-01-19"
-    }
+      updatedAt: "2024-01-19",
+    },
   ]);
 
   const handleSort = (field: string) => {
@@ -104,10 +108,18 @@ export default function ManageTryouts() {
   const openModal = (type: string, tryout?: Tryout) => {
     if (tryout) setSelectedTryout(tryout);
     switch (type) {
-      case 'create': setShowCreateModal(true); break;
-      case 'edit': setShowEditModal(true); break;
-      case 'view': setShowViewModal(true); break;
-      case 'delete': setShowDeleteModal(true); break;
+      case "create":
+        setShowCreateModal(true);
+        break;
+      case "edit":
+        setShowEditModal(true);
+        break;
+      case "view":
+        setShowViewModal(true);
+        break;
+      case "delete":
+        setShowDeleteModal(true);
+        break;
     }
   };
 
@@ -121,37 +133,50 @@ export default function ManageTryouts() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'text-emerald-700 bg-emerald-50 border-emerald-200';
-      case 'inactive': return 'text-slate-700 bg-slate-50 border-slate-200';
-      case 'draft': return 'text-amber-700 bg-amber-50 border-amber-200';
-      case 'archived': return 'text-red-700 bg-red-50 border-red-200';
-      default: return 'text-slate-700 bg-slate-50 border-slate-200';
+      case "active":
+        return "text-emerald-700 bg-emerald-50 border-emerald-200";
+      case "inactive":
+        return "text-slate-700 bg-slate-50 border-slate-200";
+      case "draft":
+        return "text-amber-700 bg-amber-50 border-amber-200";
+      case "archived":
+        return "text-red-700 bg-red-50 border-red-200";
+      default:
+        return "text-slate-700 bg-slate-50 border-slate-200";
     }
   };
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'premium': return 'text-amber-700 bg-amber-50 border-amber-200';
-      case 'free': return 'text-emerald-700 bg-emerald-50 border-emerald-200';
-      default: return 'text-slate-700 bg-slate-50 border-slate-200';
+      case "premium":
+        return "text-amber-700 bg-amber-50 border-amber-200";
+      case "free":
+        return "text-emerald-700 bg-emerald-50 border-emerald-200";
+      default:
+        return "text-slate-700 bg-slate-50 border-slate-200";
     }
   };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'Mudah': return 'text-emerald-700 bg-emerald-50 border-emerald-200';
-      case 'Sedang': return 'text-blue-700 bg-blue-50 border-blue-200';
-      case 'Sulit': return 'text-amber-700 bg-amber-50 border-amber-200';
-      case 'Sangat Sulit': return 'text-red-700 bg-red-50 border-red-200';
-      default: return 'text-slate-700 bg-slate-50 border-slate-200';
+      case "Mudah":
+        return "text-emerald-700 bg-emerald-50 border-emerald-200";
+      case "Sedang":
+        return "text-blue-700 bg-blue-50 border-blue-200";
+      case "Sulit":
+        return "text-amber-700 bg-amber-50 border-amber-200";
+      case "Sangat Sulit":
+        return "text-red-700 bg-red-50 border-red-200";
+      default:
+        return "text-slate-700 bg-slate-50 border-slate-200";
     }
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
     }).format(amount);
   };
 
@@ -159,14 +184,14 @@ export default function ManageTryouts() {
     <div className="min-h-screen bg-slate-50 flex">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-white/30 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar Component */}
-      <Sidebar 
+      <Sidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         activeItem={activeItem}
@@ -176,7 +201,7 @@ export default function ManageTryouts() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
-        <TopHeader 
+        <TopHeader
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           pageTitle="Manage Tryouts"
@@ -184,9 +209,9 @@ export default function ManageTryouts() {
         />
 
         {/* Page Content */}
-        <main className="flex-1 p-4 lg:p-8 overflow-auto">
+        <main className="flex-1 p-4 lg:p-8 overflow-auto" data-main-content>
           {/* Header Section */}
-          <HeaderSection onOpenCreateModal={() => openModal('create')} />
+          <HeaderSection onOpenCreateModal={() => openModal("create")} />
 
           {/* Filters & Search */}
           <FiltersAndSearch
@@ -217,7 +242,9 @@ export default function ManageTryouts() {
           <div className="bg-white rounded-3xl shadow-2xl border border-white/20 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-slate-200">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold text-slate-900">Buat Tryout Baru</h3>
+                <h3 className="text-xl font-semibold text-slate-900">
+                  Buat Tryout Baru
+                </h3>
                 <button
                   onClick={closeModal}
                   className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all duration-300"
@@ -230,7 +257,9 @@ export default function ManageTryouts() {
               <form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Judul Tryout</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Judul Tryout
+                    </label>
                     <input
                       type="text"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
@@ -238,14 +267,18 @@ export default function ManageTryouts() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Tipe</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Tipe
+                    </label>
                     <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
                       <option value="free">Free</option>
                       <option value="premium">Premium</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Level Kesulitan</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Level Kesulitan
+                    </label>
                     <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
                       <option value="Mudah">Mudah</option>
                       <option value="Sedang">Sedang</option>
@@ -254,7 +287,9 @@ export default function ManageTryouts() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Harga (IDR)</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Harga (IDR)
+                    </label>
                     <input
                       type="number"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
@@ -262,7 +297,9 @@ export default function ManageTryouts() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Harga Asli (IDR)</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Harga Asli (IDR)
+                    </label>
                     <input
                       type="number"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
@@ -270,14 +307,18 @@ export default function ManageTryouts() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Tanggal Mulai</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Tanggal Mulai
+                    </label>
                     <input
                       type="date"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Tanggal Berakhir</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Tanggal Berakhir
+                    </label>
                     <input
                       type="date"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
@@ -311,7 +352,9 @@ export default function ManageTryouts() {
           <div className="bg-white rounded-3xl shadow-2xl border border-white/20 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-slate-200">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold text-slate-900">Edit Tryout</h3>
+                <h3 className="text-xl font-semibold text-slate-900">
+                  Edit Tryout
+                </h3>
                 <button
                   onClick={closeModal}
                   className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all duration-300"
@@ -324,7 +367,9 @@ export default function ManageTryouts() {
               <form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Judul Tryout</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Judul Tryout
+                    </label>
                     <input
                       type="text"
                       defaultValue={selectedTryout.title}
@@ -332,25 +377,71 @@ export default function ManageTryouts() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Status</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Status
+                    </label>
                     <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
-                      <option value="active" selected={selectedTryout.status === 'active'}>Active</option>
-                      <option value="inactive" selected={selectedTryout.status === 'inactive'}>Inactive</option>
-                      <option value="draft" selected={selectedTryout.status === 'draft'}>Draft</option>
-                      <option value="archived" selected={selectedTryout.status === 'archived'}>Archived</option>
+                      <option
+                        value="active"
+                        selected={selectedTryout.status === "active"}
+                      >
+                        Active
+                      </option>
+                      <option
+                        value="inactive"
+                        selected={selectedTryout.status === "inactive"}
+                      >
+                        Inactive
+                      </option>
+                      <option
+                        value="draft"
+                        selected={selectedTryout.status === "draft"}
+                      >
+                        Draft
+                      </option>
+                      <option
+                        value="archived"
+                        selected={selectedTryout.status === "archived"}
+                      >
+                        Archived
+                      </option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Level Kesulitan</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Level Kesulitan
+                    </label>
                     <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
-                      <option value="Mudah" selected={selectedTryout.difficulty === 'Mudah'}>Mudah</option>
-                      <option value="Sedang" selected={selectedTryout.difficulty === 'Sedang'}>Sedang</option>
-                      <option value="Sulit" selected={selectedTryout.difficulty === 'Sulit'}>Sulit</option>
-                      <option value="Sangat Sulit" selected={selectedTryout.difficulty === 'Sangat Sulit'}>Sangat Sulit</option>
+                      <option
+                        value="Mudah"
+                        selected={selectedTryout.difficulty === "Mudah"}
+                      >
+                        Mudah
+                      </option>
+                      <option
+                        value="Sedang"
+                        selected={selectedTryout.difficulty === "Sedang"}
+                      >
+                        Sedang
+                      </option>
+                      <option
+                        value="Sulit"
+                        selected={selectedTryout.difficulty === "Sulit"}
+                      >
+                        Sulit
+                      </option>
+                      <option
+                        value="Sangat Sulit"
+                        selected={selectedTryout.difficulty === "Sangat Sulit"}
+                      >
+                        Sangat Sulit
+                      </option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Harga (IDR)</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Harga (IDR)
+                    </label>
                     <input
                       type="number"
                       defaultValue={selectedTryout.price}
@@ -358,7 +449,9 @@ export default function ManageTryouts() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Tanggal Mulai</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Tanggal Mulai
+                    </label>
                     <input
                       type="date"
                       defaultValue={selectedTryout.startDate}
@@ -366,7 +459,9 @@ export default function ManageTryouts() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Tanggal Berakhir</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Tanggal Berakhir
+                    </label>
                     <input
                       type="date"
                       defaultValue={selectedTryout.endDate}
@@ -401,7 +496,9 @@ export default function ManageTryouts() {
           <div className="bg-white rounded-3xl shadow-2xl border border-white/20 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-slate-200">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold text-slate-900">Detail Tryout</h3>
+                <h3 className="text-xl font-semibold text-slate-900">
+                  Detail Tryout
+                </h3>
                 <button
                   onClick={closeModal}
                   className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all duration-300"
@@ -417,75 +514,115 @@ export default function ManageTryouts() {
                     <BookOpen className="w-8 h-8" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-semibold text-slate-900">{selectedTryout.title}</h4>
+                    <h4 className="text-lg font-semibold text-slate-900">
+                      {selectedTryout.title}
+                    </h4>
                     <p className="text-slate-600">ID: {selectedTryout.id}</p>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-slate-500 mb-1">Tipe</label>
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getTypeColor(selectedTryout.type)}`}>
-                        {selectedTryout.type === 'premium' ? (
+                      <label className="block text-sm font-medium text-slate-500 mb-1">
+                        Tipe
+                      </label>
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getTypeColor(
+                          selectedTryout.type
+                        )}`}
+                      >
+                        {selectedTryout.type === "premium" ? (
                           <>
                             <Star className="w-3 h-3 mr-1" />
                             Premium
                           </>
                         ) : (
-                          'Free'
+                          "Free"
                         )}
                       </span>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-500 mb-1">Level</label>
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(selectedTryout.difficulty)}`}>
+                      <label className="block text-sm font-medium text-slate-500 mb-1">
+                        Level
+                      </label>
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(
+                          selectedTryout.difficulty
+                        )}`}
+                      >
                         {selectedTryout.difficulty}
                       </span>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-500 mb-1">Status</label>
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(selectedTryout.status)}`}>
+                      <label className="block text-sm font-medium text-slate-500 mb-1">
+                        Status
+                      </label>
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
+                          selectedTryout.status
+                        )}`}
+                      >
                         {selectedTryout.status}
                       </span>
                     </div>
                   </div>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-slate-500 mb-1">Harga</label>
+                      <label className="block text-sm font-medium text-slate-500 mb-1">
+                        Harga
+                      </label>
                       <p className="text-slate-900">
-                        {selectedTryout.price === 0 ? 'Gratis' : formatCurrency(selectedTryout.price)}
+                        {selectedTryout.price === 0
+                          ? "Gratis"
+                          : formatCurrency(selectedTryout.price)}
                       </p>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-500 mb-1">Peserta</label>
-                      <p className="text-slate-900">{selectedTryout.participants.toLocaleString()}</p>
+                      <label className="block text-sm font-medium text-slate-500 mb-1">
+                        Peserta
+                      </label>
+                      <p className="text-slate-900">
+                        {selectedTryout.participants.toLocaleString()}
+                      </p>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-500 mb-1">Diskon</label>
-                      <p className="text-slate-900">{selectedTryout.discount}%</p>
+                      <label className="block text-sm font-medium text-slate-500 mb-1">
+                        Diskon
+                      </label>
+                      <p className="text-slate-900">
+                        {selectedTryout.discount}%
+                      </p>
                     </div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200">
                   <div>
-                    <label className="block text-sm font-medium text-slate-500 mb-1">Tanggal Mulai</label>
+                    <label className="block text-sm font-medium text-slate-500 mb-1">
+                      Tanggal Mulai
+                    </label>
                     <p className="text-slate-900">{selectedTryout.startDate}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-500 mb-1">Tanggal Berakhir</label>
+                    <label className="block text-sm font-medium text-slate-500 mb-1">
+                      Tanggal Berakhir
+                    </label>
                     <p className="text-slate-900">{selectedTryout.endDate}</p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200">
                   <div>
-                    <label className="block text-sm font-medium text-slate-500 mb-1">Dibuat</label>
+                    <label className="block text-sm font-medium text-slate-500 mb-1">
+                      Dibuat
+                    </label>
                     <p className="text-slate-900">{selectedTryout.createdAt}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-500 mb-1">Terakhir Update</label>
+                    <label className="block text-sm font-medium text-slate-500 mb-1">
+                      Terakhir Update
+                    </label>
                     <p className="text-slate-900">{selectedTryout.updatedAt}</p>
                   </div>
                 </div>
@@ -503,10 +640,13 @@ export default function ManageTryouts() {
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Trash2 className="w-8 h-8 text-red-600" />
               </div>
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">Hapus Tryout</h3>
+              <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                Hapus Tryout
+              </h3>
               <p className="text-slate-600 mb-6">
-                Apakah Anda yakin ingin menghapus tryout <strong>{selectedTryout.title}</strong>? 
-                Tindakan ini tidak dapat dibatalkan.
+                Apakah Anda yakin ingin menghapus tryout{" "}
+                <strong>{selectedTryout.title}</strong>? Tindakan ini tidak
+                dapat dibatalkan.
               </p>
               <div className="flex items-center justify-center space-x-3">
                 <button
