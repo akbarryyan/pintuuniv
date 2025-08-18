@@ -204,22 +204,105 @@ export default function TryoutsTable({
       {/* Table Content with Fade Animation */}
       <div className={`transition-all duration-300 ${fadeClass}`}>
         {/* Sort Controls - Desktop */}
-        <div className="hidden lg:flex items-center justify-between mb-6 bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-          <h3 className="text-lg font-semibold text-slate-900">Data Tryout</h3>
+        <div className="hidden lg:flex items-center justify-between mb-6 bg-gradient-to-r from-white to-slate-50 rounded-2xl shadow-lg border border-slate-200 p-6 backdrop-blur-sm">
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-slate-600">Urutkan berdasarkan:</span>
-            <button
-              onClick={() => onSort("title")}
-              className="flex items-center space-x-2 px-4 py-2 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors"
-            >
-              <span className="text-sm font-medium text-slate-700">Judul</span>
-              {sortBy === "title" &&
-                (sortOrder === "asc" ? (
-                  <ChevronUp className="w-4 h-4" />
-                ) : (
-                  <ChevronDown className="w-4 h-4" />
-                ))}
-            </button>
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <BookOpen className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">
+                  Data Tryout
+                </h3>
+                <p className="text-sm text-slate-500">
+                  Kelola semua tryout yang tersedia
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-6">
+            <div className="text-sm text-slate-600 bg-slate-100 px-3 py-2 rounded-lg">
+              <span className="font-medium">{tryouts.length}</span> tryout
+              ditampilkan
+            </div>
+
+            <div className="flex items-center space-x-3">
+              <span className="text-sm font-medium text-slate-700">
+                Urutkan:
+              </span>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => onSort("title")}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-300 ${
+                    sortBy === "title"
+                      ? "bg-purple-100 text-purple-700 border border-purple-200 shadow-sm"
+                      : "bg-slate-50 hover:bg-slate-100 text-slate-700 border border-transparent hover:border-slate-200"
+                  }`}
+                >
+                  <span className="text-sm font-medium">Judul</span>
+                  {sortBy === "title" &&
+                    (sortOrder === "asc" ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    ))}
+                </button>
+
+                <button
+                  onClick={() => onSort("price")}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-300 ${
+                    sortBy === "price"
+                      ? "bg-purple-100 text-purple-700 border border-purple-200 shadow-sm"
+                      : "bg-slate-50 hover:bg-slate-100 text-slate-700 border border-transparent hover:border-slate-200"
+                  }`}
+                >
+                  <span className="text-sm font-medium">Harga</span>
+                  {sortBy === "price" &&
+                    (sortOrder === "asc" ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    ))}
+                </button>
+
+                <button
+                  onClick={() => onSort("participants")}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-300 ${
+                    sortBy === "participants"
+                      ? "bg-purple-100 text-purple-700 border border-purple-200 shadow-sm"
+                      : "bg-slate-50 hover:bg-slate-100 text-slate-700 border border-transparent hover:border-slate-200"
+                  }`}
+                >
+                  <Users className="w-4 h-4" />
+                  <span className="text-sm font-medium">Peserta</span>
+                  {sortBy === "participants" &&
+                    (sortOrder === "asc" ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    ))}
+                </button>
+
+                <button
+                  onClick={() => onSort("createdAt")}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-300 ${
+                    sortBy === "createdAt"
+                      ? "bg-purple-100 text-purple-700 border border-purple-200 shadow-sm"
+                      : "bg-slate-50 hover:bg-slate-100 text-slate-700 border border-transparent hover:border-slate-200"
+                  }`}
+                >
+                  <Calendar className="w-4 h-4" />
+                  <span className="text-sm font-medium">Tanggal</span>
+                  {sortBy === "createdAt" &&
+                    (sortOrder === "asc" ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    ))}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
