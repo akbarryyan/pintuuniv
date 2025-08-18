@@ -1,6 +1,6 @@
 "use client";
 
-import { 
+import {
   Bell,
   Settings,
   Menu,
@@ -8,9 +8,13 @@ import {
   User,
   ChevronDown,
   Sun,
-  Moon
+  Moon,
+  LogOut,
+  UserCircle,
+  Shield,
+  HelpCircle,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface TopHeaderProps {
   sidebarOpen: boolean;
@@ -19,14 +23,66 @@ interface TopHeaderProps {
   pageDescription?: string;
 }
 
-export default function TopHeader({ 
-  sidebarOpen, 
-  setSidebarOpen, 
+export default function TopHeader({
+  sidebarOpen,
+  setSidebarOpen,
   pageTitle = "Dashboard",
-  pageDescription = "Selamat datang kembali, Admin!"
+  pageDescription = "Selamat datang kembali, Admin!",
 }: TopHeaderProps) {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(3);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleProfileClick = () => {
+    setIsProfileDropdownOpen(!isProfileDropdownOpen);
+  };
+
+  const profileMenuItems = [
+    {
+      icon: <UserCircle className="w-4 h-4" />,
+      label: "Profil Saya",
+      action: () => console.log("Profile clicked"),
+    },
+    {
+      icon: <Settings className="w-4 h-4" />,
+      label: "Pengaturan",
+      action: () => console.log("Settings clicked"),
+    },
+    {
+      icon: <Shield className="w-4 h-4" />,
+      label: "Keamanan",
+      action: () => console.log("Security clicked"),
+    },
+    {
+      icon: <HelpCircle className="w-4 h-4" />,
+      label: "Bantuan",
+      action: () => console.log("Help clicked"),
+    },
+    {
+      icon: <LogOut className="w-4 h-4" />,
+      label: "Keluar",
+      action: () => console.log("Logout clicked"),
+      danger: true,
+    },
+  ];
 
   return (
     <header className="bg-white border-b border-slate-200 px-4 py-4 lg:px-8 shadow-sm">
@@ -40,7 +96,7 @@ export default function TopHeader({
           >
             <Menu className="w-5 h-5" />
           </button>
-          
+
           {/* Page Title & Description - Hidden on Mobile */}
           <div className="hidden lg:flex items-center space-x-4">
             <div className="w-px h-8 bg-slate-200" />
@@ -56,7 +112,7 @@ export default function TopHeader({
             </div>
           </div>
         </div>
-        
+
         {/* Right Section - Actions */}
         <div className="flex items-center space-x-2 lg:space-x-3">
           {/* Search Bar - Hidden on Mobile */}
@@ -68,9 +124,9 @@ export default function TopHeader({
               className="bg-transparent border-none outline-none text-sm text-slate-700 placeholder-slate-400 w-48"
             />
           </div>
-          
+
           {/* Theme Toggle */}
-          <button 
+          <button
             onClick={() => setIsDarkMode(!isDarkMode)}
             className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95"
           >
@@ -80,41 +136,112 @@ export default function TopHeader({
               <Moon className="w-5 h-5" />
             )}
           </button>
-          
+
           {/* Notifications */}
           <button className="relative p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95">
             <Bell className="w-5 h-5" />
             {notifications > 0 && (
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold animate-pulse">
-                {notifications > 9 ? '9+' : notifications}
+                {notifications > 9 ? "9+" : notifications}
               </span>
             )}
           </button>
-          
+
           {/* Settings - Hidden on Mobile */}
           <button className="hidden lg:block p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95">
             <Settings className="w-5 h-5" />
           </button>
-          
+
           {/* User Profile */}
-          <div className="flex items-center space-x-2 lg:space-x-3 pl-2 lg:pl-3 border-l border-slate-200">
-            <div className="flex items-center space-x-2 lg:space-x-3 group cursor-pointer p-2 rounded-xl hover:bg-slate-100 transition-all duration-300">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
-                A
+          <div className="relative" ref={dropdownRef}>
+            <div className="flex items-center space-x-2 lg:space-x-3 pl-2 lg:pl-3 border-l border-slate-200">
+              <div
+                onClick={handleProfileClick}
+                className="flex items-center space-x-2 lg:space-x-3 group cursor-pointer p-2 rounded-xl hover:bg-slate-100 transition-all duration-300"
+              >
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  A
+                </div>
+                <div className="hidden lg:block">
+                  <p className="text-sm font-semibold text-slate-900">Admin</p>
+                  <p className="text-xs text-slate-500">Super Admin</p>
+                </div>
+                <ChevronDown
+                  className={`w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-all duration-300 ${
+                    isProfileDropdownOpen ? "rotate-180" : ""
+                  }`}
+                />
               </div>
-              <div className="hidden lg:block">
-                <p className="text-sm font-semibold text-slate-900">Admin</p>
-                <p className="text-xs text-slate-500">Super Admin</p>
+            </div>
+
+            {/* Dropdown Menu */}
+            <div
+              className={`absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 transform transition-all duration-300 origin-top-right ${
+                isProfileDropdownOpen
+                  ? "opacity-100 scale-100 translate-y-0"
+                  : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
+              }`}
+            >
+              {/* User Info Header */}
+              <div className="px-4 py-3 border-b border-slate-100">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
+                    A
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">
+                      Admin
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      admin@pintuuniv.com
+                    </p>
+                  </div>
+                </div>
               </div>
-              <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
+
+              {/* Menu Items */}
+              <div className="py-2">
+                {profileMenuItems.map((item, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      item.action();
+                      setIsProfileDropdownOpen(false);
+                    }}
+                    className={`w-full flex items-center space-x-3 px-4 py-2.5 text-left transition-all duration-200 ${
+                      item.danger
+                        ? "text-red-600 hover:bg-red-50 hover:text-red-700"
+                        : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+                    }`}
+                  >
+                    <span
+                      className={`${
+                        item.danger ? "text-red-500" : "text-slate-400"
+                      }`}
+                    >
+                      {item.icon}
+                    </span>
+                    <span className="text-sm font-medium">{item.label}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Footer */}
+              <div className="px-4 py-2 border-t border-slate-100">
+                <p className="text-xs text-slate-400 text-center">
+                  PintuUniv v2.0.0
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      
+
       {/* Breadcrumb */}
       <div className="mt-4 flex items-center space-x-2 text-sm text-slate-500">
-        <span className="hover:text-slate-700 cursor-pointer transition-colors">Home</span>
+        <span className="hover:text-slate-700 cursor-pointer transition-colors">
+          Home
+        </span>
         <span>/</span>
         <span className="text-slate-700 font-medium">{pageTitle}</span>
       </div>
