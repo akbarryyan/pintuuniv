@@ -322,7 +322,8 @@ export default function ReportsPage() {
               </p>
             </div>
 
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden lg:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
@@ -384,10 +385,10 @@ export default function ReportsPage() {
                         <div className="flex items-center gap-2">
                           {report.status === "ready" && (
                             <>
-                              <button className="text-blue-600 hover:text-blue-900">
+                              <button className="text-blue-600 hover:text-blue-900 p-1 rounded-lg hover:bg-blue-50 transition-colors">
                                 <Download className="w-4 h-4" />
                               </button>
-                              <button className="text-gray-600 hover:text-gray-900">
+                              <button className="text-gray-600 hover:text-gray-900 p-1 rounded-lg hover:bg-gray-50 transition-colors">
                                 <Eye className="w-4 h-4" />
                               </button>
                             </>
@@ -396,7 +397,7 @@ export default function ReportsPage() {
                             <RefreshCw className="w-4 h-4 text-yellow-600 animate-spin" />
                           )}
                           {report.status === "error" && (
-                            <button className="text-red-600 hover:text-red-900">
+                            <button className="text-red-600 hover:text-red-900 p-1 rounded-lg hover:bg-red-50 transition-colors">
                               <RefreshCw className="w-4 h-4" />
                             </button>
                           )}
@@ -406,6 +407,79 @@ export default function ReportsPage() {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="lg:hidden divide-y divide-gray-200">
+              {filteredReports.map((report) => (
+                <div
+                  key={report.id}
+                  className="p-4 hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-medium text-gray-900 truncate">
+                        {report.title}
+                      </h4>
+                      <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                        {report.description}
+                      </p>
+                    </div>
+                    <div className="ml-3 flex items-center gap-2">
+                      {report.status === "ready" && (
+                        <>
+                          <button className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                            <Download className="w-4 h-4" />
+                          </button>
+                          <button className="text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                            <Eye className="w-4 h-4" />
+                          </button>
+                        </>
+                      )}
+                      {report.status === "generating" && (
+                        <div className="p-2">
+                          <RefreshCw className="w-4 h-4 text-yellow-600 animate-spin" />
+                        </div>
+                      )}
+                      {report.status === "error" && (
+                        <button className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors">
+                          <RefreshCw className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(
+                          report.type
+                        )}`}
+                      >
+                        {getTypeIcon(report.type)}
+                        <span className="capitalize">{report.type}</span>
+                      </div>
+                      {getStatusBadge(report.status)}
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm text-gray-900 font-medium">
+                        {report.period}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {new Date(report.generatedDate).toLocaleDateString(
+                          "id-ID"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {report.fileSize && (
+                    <div className="mt-2 text-xs text-gray-500">
+                      Ukuran file: {report.fileSize}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </main>
