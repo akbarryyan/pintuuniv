@@ -415,7 +415,8 @@ export default function PaymentsPage() {
               </p>
             </div>
 
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden lg:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
@@ -513,6 +514,102 @@ export default function PaymentsPage() {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="lg:hidden divide-y divide-gray-200">
+              {filteredPayments.map((payment) => (
+                <div
+                  key={payment.id}
+                  className="p-4 hover:bg-gray-50 transition-colors"
+                >
+                  {/* Header: User Info and Amount */}
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="text-sm font-semibold text-gray-900 truncate">
+                          {payment.userName}
+                        </h4>
+                        {getStatusBadge(payment.status)}
+                      </div>
+                      <p className="text-xs text-gray-500 truncate">
+                        {payment.userEmail}
+                      </p>
+                    </div>
+                    <div className="text-right ml-3">
+                      <p className="text-lg font-bold text-gray-900">
+                        {formatCurrency(payment.amount)}
+                      </p>
+                      {getMethodBadge(payment.method)}
+                    </div>
+                  </div>
+
+                  {/* Transaction Details */}
+                  <div className="space-y-2 mb-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-500">
+                        ID Transaksi
+                      </span>
+                      <span className="text-xs font-mono text-gray-900">
+                        {payment.transactionId}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-500">
+                        Gateway
+                      </span>
+                      <span className="text-xs text-gray-700">
+                        {payment.gateway}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-500">
+                        Tanggal
+                      </span>
+                      <span className="text-xs text-gray-700">
+                        {formatDate(payment.createdAt)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div className="mb-3">
+                    <p className="text-sm text-gray-700 bg-gray-50 rounded-lg px-3 py-2">
+                      {payment.description}
+                    </p>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center justify-end gap-3 pt-2 border-t border-gray-100">
+                    <button
+                      onClick={() => setSelectedPayment(payment)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      title="Lihat Detail"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      Detail
+                    </button>
+                    {payment.status === "completed" && (
+                      <button
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                        title="Download Invoice"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        Invoice
+                      </button>
+                    )}
+                    {payment.status === "failed" && (
+                      <button
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                        title="Retry Payment"
+                      >
+                        <RefreshCw className="w-3.5 h-3.5" />
+                        Retry
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </main>
