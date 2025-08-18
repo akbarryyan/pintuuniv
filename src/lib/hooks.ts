@@ -18,6 +18,8 @@ export function useActiveItem(setActiveItem: (item: string) => void) {
       setActiveItem("users");
     } else if (pathname.includes("/tryouts")) {
       setActiveItem("tryouts");
+    } else if (pathname.includes("/categories")) {
+      setActiveItem("categories");
     } else if (pathname.includes("/payments")) {
       setActiveItem("payments");
     } else if (pathname.includes("/reports")) {

@@ -34,6 +34,7 @@ import {
   ChevronDown,
   Menu,
   X,
+  Folder,
 } from "lucide-react";
 
 interface SidebarItem {
@@ -89,6 +90,12 @@ export default function Sidebar({
       href: "/sys/dashboard/tryouts",
       icon: <BookOpen className="w-5 h-5" />,
       badge: "89",
+    },
+    {
+      title: "Categories",
+      href: "/sys/dashboard/categories",
+      icon: <Folder className="w-5 h-5" />,
+      badge: "24",
     },
     {
       title: "Payments",
