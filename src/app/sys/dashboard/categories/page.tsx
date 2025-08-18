@@ -231,7 +231,16 @@ export default function ManageCategories() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-slate-50 flex">
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-white/30 backdrop-blur-sm lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar Component */}
       <Sidebar
         activeItem={activeItem}
         setActiveItem={setActiveItem}
@@ -239,41 +248,47 @@ export default function ManageCategories() {
         setSidebarOpen={setSidebarOpen}
       />
 
-      <div className="lg:pl-72">
-        <TopHeader sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top Header */}
+        <TopHeader
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          pageTitle="Kelola Kategori"
+          pageDescription="Manajemen kategori soal untuk setiap tryout"
+        />
 
-        <main className="py-10">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            {/* Header Section */}
-            <HeaderSection onCreateNew={() => handleOpenModal("create")} />
+        {/* Page Content */}
+        <main className="flex-1 p-4 lg:p-8 overflow-auto" data-main-content>
+          {/* Header Section */}
+          <HeaderSection onCreateNew={() => handleOpenModal("create")} />
 
-            {/* Filters and Search */}
-            <FiltersAndSearch
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              difficultyFilter={difficultyFilter}
-              setDifficultyFilter={setDifficultyFilter}
-              statusFilter={statusFilter}
-              setStatusFilter={setStatusFilter}
-              tryoutFilter={tryoutFilter}
-              setTryoutFilter={setTryoutFilter}
-            />
+          {/* Filters and Search */}
+          <FiltersAndSearch
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            difficultyFilter={difficultyFilter}
+            setDifficultyFilter={setDifficultyFilter}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            tryoutFilter={tryoutFilter}
+            setTryoutFilter={setTryoutFilter}
+          />
 
-            {/* Categories Table */}
-            <CategoriesTable
-              categories={paginatedCategories}
-              sortBy={sortBy}
-              sortOrder={sortOrder}
-              onSort={handleSort}
-              onOpenModal={handleOpenModal}
-              totalCategories={totalCategories}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              itemsPerPage={itemsPerPage}
-              onPageChange={handlePageChange}
-              onItemsPerPageChange={handleItemsPerPageChange}
-            />
-          </div>
+          {/* Categories Table */}
+          <CategoriesTable
+            categories={paginatedCategories}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSort={handleSort}
+            onOpenModal={handleOpenModal}
+            totalCategories={totalCategories}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            itemsPerPage={itemsPerPage}
+            onPageChange={handlePageChange}
+            onItemsPerPageChange={handleItemsPerPageChange}
+          />
         </main>
       </div>
 
