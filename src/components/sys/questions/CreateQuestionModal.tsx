@@ -5,10 +5,26 @@ import { X, FileText, Folder, Target, Star, Plus, Trash2 } from "lucide-react";
 
 interface Answer {
   id: number;
-  questionId: number;
+  question_id: number;
   content: string;
-  isCorrect: boolean;
+  is_correct: boolean;
   order?: number; // untuk pilihan ganda (A, B, C, D)
+}
+
+interface Question {
+  id: number;
+  title: string;
+  content: string;
+  category_id: number;
+  category_name: string;
+  tryout_title: string;
+  type: "Pilihan Ganda" | "Essay" | "Benar/Salah";
+  difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
+  weight: number; // bobot soal (1=mudah, 2=sedang, 3=sulit, 4=sangat sulit)
+  is_active: boolean;
+  answers: Answer[];
+  created_at: string;
+  updated_at: string;
 }
 
 interface CreateQuestionModalProps {
@@ -21,18 +37,18 @@ export default function CreateQuestionModal({
   const [formData, setFormData] = useState({
     title: "",
     content: "",
-    categoryId: "",
+    category_id: "",
     type: "Pilihan Ganda" as "Pilihan Ganda" | "Essay" | "Benar/Salah",
     difficulty: "Mudah" as "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit",
-    points: "",
-    isActive: true,
+    weight: "",
+    is_active: true,
   });
 
-  const [answers, setAnswers] = useState<Omit<Answer, 'id' | 'questionId'>[]>([
-    { content: "", isCorrect: false, order: 1 },
-    { content: "", isCorrect: false, order: 2 },
-    { content: "", isCorrect: false, order: 3 },
-    { content: "", isCorrect: false, order: 4 },
+  const [answers, setAnswers] = useState<Omit<Answer, 'id' | 'question_id'>[]>([
+    { content: "", is_correct: false, order: 1 },
+    { content: "", is_correct: false, order: 2 },
+    { content: "", is_correct: false, order: 3 },
+    { content: "", is_correct: false, order: 4 },
   ]);
 
   // Mock category options
@@ -68,28 +84,28 @@ export default function CreateQuestionModal({
     if (name === "type") {
       if (value === "Pilihan Ganda") {
         setAnswers([
-          { content: "", isCorrect: false, order: 1 },
-          { content: "", isCorrect: false, order: 2 },
-          { content: "", isCorrect: false, order: 3 },
-          { content: "", isCorrect: false, order: 4 },
+          { content: "", is_correct: false, order: 1 },
+          { content: "", is_correct: false, order: 2 },
+          { content: "", is_correct: false, order: 3 },
+          { content: "", is_correct: false, order: 4 },
         ]);
       } else if (value === "Benar/Salah") {
         setAnswers([
-          { content: "Benar", isCorrect: false },
-          { content: "Salah", isCorrect: false },
+          { content: "Benar", is_correct: false },
+          { content: "Salah", is_correct: false },
         ]);
       } else {
-        setAnswers([{ content: "", isCorrect: true }]);
+        setAnswers([{ content: "", is_correct: true }]);
       }
     }
   };
 
-  const handleAnswerChange = (index: number, field: keyof Omit<Answer, 'id' | 'questionId'>, value: string | boolean) => {
+  const handleAnswerChange = (index: number, field: keyof Omit<Answer, 'id' | 'question_id'>, value: string | boolean) => {
     const newAnswers = [...answers];
-    if (field === 'isCorrect') {
+    if (field === 'is_correct') {
       // For multiple choice and true/false, only one can be correct
       newAnswers.forEach((answer, i) => {
-        answer.isCorrect = i === index;
+        answer.is_correct = i === index;
       });
     } else {
       newAnswers[index] = { ...newAnswers[index], [field]: value };
@@ -99,9 +115,9 @@ export default function CreateQuestionModal({
 
   const addAnswer = () => {
     if (formData.type === "Pilihan Ganda") {
-      setAnswers([...answers, { content: "", isCorrect: false, order: answers.length + 1 }]);
+      setAnswers([...answers, { content: "", is_correct: false, order: answers.length + 1 }]);
     } else if (formData.type === "Essay") {
-      setAnswers([...answers, { content: "", isCorrect: true }]);
+      setAnswers([...answers, { content: "", is_correct: true }]);
     }
   };
 
@@ -196,8 +212,8 @@ export default function CreateQuestionModal({
                 Kategori *
               </label>
               <select
-                name="categoryId"
-                value={formData.categoryId}
+                name="category_id"
+                value={formData.category_id}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
                 required
@@ -257,15 +273,15 @@ export default function CreateQuestionModal({
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 <Star className="w-4 h-4 inline mr-1" />
-                Poin *
+                Bobot Soal *
               </label>
               <input
                 type="number"
-                name="points"
-                value={formData.points}
+                name="weight"
+                value={formData.weight}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
-                placeholder="10"
+                placeholder="1"
                 min="1"
                 required
               />
@@ -274,8 +290,8 @@ export default function CreateQuestionModal({
             <div className="flex items-center space-x-3">
               <input
                 type="checkbox"
-                name="isActive"
-                checked={formData.isActive}
+                name="is_active"
+                checked={formData.is_active}
                 onChange={handleChange}
                 className="w-4 h-4 text-purple-600 border-slate-300 rounded focus:ring-purple-500"
               />
@@ -343,8 +359,8 @@ export default function CreateQuestionModal({
                       <input
                         type="radio"
                         name="correctAnswer"
-                        checked={answer.isCorrect}
-                        onChange={() => handleAnswerChange(index, 'isCorrect', true)}
+                        checked={answer.is_correct}
+                        onChange={() => handleAnswerChange(index, 'is_correct', true)}
                         className="w-4 h-4 text-emerald-600 border-slate-300 focus:ring-emerald-500"
                       />
                       <span className="text-sm font-medium text-slate-700">

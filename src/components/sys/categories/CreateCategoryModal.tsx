@@ -3,20 +3,31 @@
 import { useState } from "react";
 import { X, Folder, Clock, BookOpen, Target } from "lucide-react";
 
+interface Category {
+  id: number;
+  name: string;
+  description: string;
+  tryout_id: number;
+  tryout_title: string;
+  duration_minutes: number;
+  total_weight: number;
+  total_questions: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 interface CreateCategoryModalProps {
   onClose: () => void;
 }
 
-export default function CreateCategoryModal({
-  onClose,
-}: CreateCategoryModalProps) {
+export default function CreateCategoryModal({ onClose }: CreateCategoryModalProps) {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    tryoutId: "",
-    duration: "",
-    difficulty: "Mudah" as "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit",
-    isActive: true,
+    tryout_id: "",
+    duration_minutes: "30",
+    is_active: true,
   });
 
   // Mock tryout options
@@ -116,8 +127,8 @@ export default function CreateCategoryModal({
                 Tryout Terkait *
               </label>
               <select
-                name="tryoutId"
-                value={formData.tryoutId}
+                name="tryout_id"
+                value={formData.tryout_id}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                 required
@@ -138,8 +149,8 @@ export default function CreateCategoryModal({
               </label>
               <input
                 type="number"
-                name="duration"
-                value={formData.duration}
+                name="duration_minutes"
+                value={formData.duration_minutes}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                 placeholder="90"

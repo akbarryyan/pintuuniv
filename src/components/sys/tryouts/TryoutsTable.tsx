@@ -24,17 +24,16 @@ import { useState } from "react";
 interface Tryout {
   id: number;
   title: string;
-  price: number;
-  originalPrice: number;
-  type: "free" | "premium";
-  difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
-  participants: number;
-  discount: number;
-  startDate: string;
-  endDate: string;
-  status: "active" | "inactive" | "draft" | "archived";
-  createdAt: string;
-  updatedAt: string;
+  description: string;
+  total_categories: number;
+  total_questions: number;
+  total_weight: number;
+  passing_score: number;
+  is_active: boolean;
+  start_date: string;
+  end_date: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface TryoutsTableProps {
@@ -138,53 +137,25 @@ export default function TryoutsTable({
 
     return pages;
   };
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: boolean) => {
     switch (status) {
-      case "active":
+      case true:
         return "text-emerald-700 bg-emerald-50 border-emerald-200";
-      case "inactive":
+      case false:
         return "text-slate-700 bg-slate-50 border-slate-200";
-      case "draft":
-        return "text-amber-700 bg-amber-50 border-amber-200";
-      case "archived":
-        return "text-red-700 bg-red-50 border-red-200";
       default:
         return "text-slate-700 bg-slate-50 border-slate-200";
     }
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "premium":
-        return "text-amber-700 bg-amber-50 border-amber-200";
-      case "free":
-        return "text-emerald-700 bg-emerald-50 border-emerald-200";
-      default:
-        return "text-slate-700 bg-slate-50 border-slate-200";
+  const getDifficultyColor = (difficulty: number) => {
+    if (difficulty <= 500) {
+      return "text-emerald-700 bg-emerald-50 border-emerald-200";
+    } else if (difficulty <= 600) {
+      return "text-blue-700 bg-blue-50 border-blue-200";
+    } else {
+      return "text-amber-700 bg-amber-50 border-amber-200";
     }
-  };
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "Mudah":
-        return "text-emerald-700 bg-emerald-50 border-emerald-200";
-      case "Sedang":
-        return "text-blue-700 bg-blue-50 border-blue-200";
-      case "Sulit":
-        return "text-amber-700 bg-amber-50 border-amber-200";
-      case "Sangat Sulit":
-        return "text-red-700 bg-red-50 border-red-200";
-      default:
-        return "text-slate-700 bg-slate-50 border-slate-200";
-    }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-    }).format(amount);
   };
 
   return (
@@ -354,78 +325,51 @@ export default function TryoutsTable({
               {/* Badges Row */}
               <div className="flex flex-wrap gap-2 mb-4">
                 <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getTypeColor(
-                    tryout.type
-                  )}`}
-                >
-                  {tryout.type === "premium" ? (
-                    <>
-                      <Star className="w-3 h-3 mr-1" />
-                      Premium
-                    </>
-                  ) : (
-                    "Free"
-                  )}
-                </span>
-                <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(
-                    tryout.difficulty
-                  )}`}
-                >
-                  {tryout.difficulty}
-                </span>
-                <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                    tryout.status
+                    tryout.is_active
                   )}`}
                 >
-                  {tryout.status === "active" ? (
+                  {tryout.is_active ? (
                     <>
                       <Play className="w-3 h-3 mr-1" />
                       Active
                     </>
-                  ) : tryout.status === "inactive" ? (
+                  ) : (
                     <>
                       <Pause className="w-3 h-3 mr-1" />
                       Inactive
                     </>
-                  ) : tryout.status === "draft" ? (
-                    "Draft"
-                  ) : (
-                    <>
-                      <Archive className="w-3 h-3 mr-1" />
-                      Archived
-                    </>
                   )}
+                </span>
+                <span
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(
+                    tryout.passing_score
+                  )}`}
+                >
+                  {tryout.passing_score <= 500 ? "Mudah" : 
+                   tryout.passing_score <= 600 ? "Sedang" : "Sulit"}
                 </span>
               </div>
 
-              {/* Price and Participants Section */}
+              {/* Stats Section */}
               <div className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-4 mb-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-slate-600 mb-1 font-medium">
-                      Harga
+                      Kategori
                     </p>
                     <p className="text-xl font-bold text-slate-900">
-                      {tryout.price === 0
-                        ? "Gratis"
-                        : formatCurrency(tryout.price)}
+                      {tryout.total_categories}
                     </p>
-                    {tryout.discount > 0 && (
-                      <p className="text-sm text-slate-500 line-through">
-                        {formatCurrency(tryout.originalPrice)}
-                      </p>
-                    )}
                   </div>
                   <div className="text-right">
                     <p className="text-sm text-slate-600 mb-1 font-medium">
-                      Peserta
+                      Soal
                     </p>
                     <div className="flex items-center justify-end space-x-2">
-                      <Users className="w-4 h-4 text-slate-400" />
+                      <Star className="w-4 h-4 text-slate-400" />
                       <span className="text-lg font-bold text-slate-900">
-                        {tryout.participants.toLocaleString()}
+                        {tryout.total_questions}
                       </span>
                     </div>
                   </div>
@@ -442,7 +386,7 @@ export default function TryoutsTable({
                     </span>
                   </div>
                   <p className="text-sm font-semibold text-slate-900">
-                    {tryout.startDate}
+                    {tryout.start_date}
                   </p>
                 </div>
                 <div className="bg-slate-50 rounded-xl p-3">
@@ -453,7 +397,7 @@ export default function TryoutsTable({
                     </span>
                   </div>
                   <p className="text-sm font-semibold text-slate-900">
-                    {tryout.endDate}
+                    {tryout.end_date}
                   </p>
                 </div>
               </div>
@@ -461,12 +405,12 @@ export default function TryoutsTable({
               {/* Footer */}
               <div className="flex items-center justify-between pt-4 border-t border-slate-200">
                 <div className="text-xs text-slate-500">
-                  <span className="font-medium">Dibuat:</span>{" "}
-                  {tryout.createdAt}
+                  <span className="font-medium">Passing Score:</span>{" "}
+                  {tryout.passing_score}
                 </div>
                 <div className="text-xs text-slate-500">
-                  <span className="font-medium">Update:</span>{" "}
-                  {tryout.updatedAt}
+                  <span className="font-medium">Total Bobot:</span>{" "}
+                  {tryout.total_weight}
                 </div>
               </div>
             </div>
@@ -518,74 +462,51 @@ export default function TryoutsTable({
               {/* Badges Row */}
               <div className="flex flex-wrap gap-2 mb-4">
                 <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getTypeColor(
-                    tryout.type
-                  )}`}
-                >
-                  {tryout.type === "premium" ? (
-                    <>
-                      <Star className="w-3 h-3 mr-1" />
-                      Premium
-                    </>
-                  ) : (
-                    "Free"
-                  )}
-                </span>
-                <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(
-                    tryout.difficulty
-                  )}`}
-                >
-                  {tryout.difficulty}
-                </span>
-                <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                    tryout.status
+                    tryout.is_active
                   )}`}
                 >
-                  {tryout.status === "active" ? (
+                  {tryout.is_active ? (
                     <>
                       <Play className="w-3 h-3 mr-1" />
                       Active
                     </>
-                  ) : tryout.status === "inactive" ? (
+                  ) : (
                     <>
                       <Pause className="w-3 h-3 mr-1" />
                       Inactive
                     </>
-                  ) : tryout.status === "draft" ? (
-                    "Draft"
-                  ) : (
-                    <>
-                      <Archive className="w-3 h-3 mr-1" />
-                      Archived
-                    </>
                   )}
+                </span>
+                <span
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(
+                    tryout.passing_score
+                  )}`}
+                >
+                  {tryout.passing_score <= 500 ? "Mudah" : 
+                   tryout.passing_score <= 600 ? "Sedang" : "Sulit"}
                 </span>
               </div>
 
-              {/* Price Section */}
+              {/* Stats Section */}
               <div className="bg-slate-50 rounded-xl p-4 mb-4">
-                <div className="flex items-center justify-between">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-slate-600 mb-1">Harga</p>
-                    <p className="text-xl font-bold text-slate-900">
-                      {tryout.price === 0
-                        ? "Gratis"
-                        : formatCurrency(tryout.price)}
+                    <p className="text-sm text-slate-600 mb-1 font-medium">
+                      Kategori
                     </p>
-                    {tryout.discount > 0 && (
-                      <p className="text-sm text-slate-500 line-through">
-                        {formatCurrency(tryout.originalPrice)}
-                      </p>
-                    )}
+                    <p className="text-xl font-bold text-slate-900">
+                      {tryout.total_categories}
+                    </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-slate-600 mb-1">Peserta</p>
-                    <div className="flex items-center space-x-2">
-                      <Users className="w-4 h-4 text-slate-400" />
-                      <span className="text-lg font-semibold text-slate-700">
-                        {tryout.participants.toLocaleString()}
+                    <p className="text-sm text-slate-600 mb-1 font-medium">
+                      Soal
+                    </p>
+                    <div className="flex items-center justify-end space-x-2">
+                      <Star className="w-4 h-4 text-slate-400" />
+                      <span className="text-lg font-bold text-slate-900">
+                        {tryout.total_questions}
                       </span>
                     </div>
                   </div>
@@ -602,7 +523,7 @@ export default function TryoutsTable({
                     </span>
                   </div>
                   <p className="text-sm font-semibold text-slate-900">
-                    {tryout.startDate}
+                    {tryout.start_date}
                   </p>
                 </div>
                 <div className="bg-slate-50 rounded-xl p-3">
@@ -613,7 +534,7 @@ export default function TryoutsTable({
                     </span>
                   </div>
                   <p className="text-sm font-semibold text-slate-900">
-                    {tryout.endDate}
+                    {tryout.end_date}
                   </p>
                 </div>
               </div>
@@ -621,10 +542,10 @@ export default function TryoutsTable({
               {/* Footer */}
               <div className="flex items-center justify-between pt-4 border-t border-slate-200">
                 <div className="text-xs text-slate-500">
-                  Dibuat: {tryout.createdAt}
+                  Dibuat: {tryout.created_at}
                 </div>
                 <div className="text-xs text-slate-500">
-                  Update: {tryout.updatedAt}
+                  Update: {tryout.updated_at}
                 </div>
               </div>
             </div>

@@ -72,21 +72,20 @@ export default function FiltersAndSearch({
         {/* Filters */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="flex flex-col sm:flex-row gap-4 flex-1">
-            {/* Difficulty Filter */}
+            {/* Duration Filter */}
             <div className="flex-1">
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Tingkat Kesulitan
+                Durasi
               </label>
               <select
                 value={difficultyFilter}
                 onChange={(e) => setDifficultyFilter(e.target.value)}
                 className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-slate-900"
               >
-                <option value="all">Semua Tingkat</option>
-                <option value="Mudah">Mudah</option>
-                <option value="Sedang">Sedang</option>
-                <option value="Sulit">Sulit</option>
-                <option value="Sangat Sulit">Sangat Sulit</option>
+                <option value="all">Semua Durasi</option>
+                <option value="Mudah">Cepat (≤20 menit)</option>
+                <option value="Sedang">Sedang (21-30 menit)</option>
+                <option value="Sulit">Lama (&gt;30 menit)</option>
               </select>
             </div>
 
@@ -158,7 +157,7 @@ export default function FiltersAndSearch({
               )}
               {difficultyFilter !== "all" && (
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                  Kesulitan: {difficultyFilter}
+                  Durasi: {difficultyFilter}
                   <button
                     onClick={() => setDifficultyFilter("all")}
                     className="ml-2 hover:text-purple-600"

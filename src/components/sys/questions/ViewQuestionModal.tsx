@@ -12,9 +12,9 @@ import {
 
 interface Answer {
   id: number;
-  questionId: number;
+  question_id: number;
   content: string;
-  isCorrect: boolean;
+  is_correct: boolean;
   order?: number; // untuk pilihan ganda (A, B, C, D)
 }
 
@@ -22,16 +22,16 @@ interface Question {
   id: number;
   title: string;
   content: string;
-  categoryId: number;
-  categoryName: string;
-  tryoutTitle: string;
+  category_id: number;
+  category_name: string;
+  tryout_title: string;
   type: "Pilihan Ganda" | "Essay" | "Benar/Salah";
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
-  points: number;
-  isActive: boolean;
+  weight: number; // bobot soal (1=mudah, 2=sedang, 3=sulit, 4=sangat sulit)
+  is_active: boolean;
   answers: Answer[];
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface ViewQuestionModalProps {
@@ -125,11 +125,11 @@ export default function ViewQuestionModal({
             </span>
             <span
               className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
-                question.isActive
+                question.is_active
               )}`}
             >
               <Activity className="w-4 h-4 mr-2" />
-              {question.isActive ? "Aktif" : "Tidak Aktif"}
+              {question.is_active ? "Aktif" : "Tidak Aktif"}
             </span>
           </div>
 
@@ -151,10 +151,10 @@ export default function ViewQuestionModal({
             </h4>
             <div className="space-y-2">
               <p className="text-slate-900 font-medium">
-                {question.categoryName}
+                {question.category_name}
               </p>
               <p className="text-sm text-slate-600">
-                {question.tryoutTitle}
+                {question.tryout_title}
               </p>
             </div>
           </div>
@@ -167,7 +167,7 @@ export default function ViewQuestionModal({
             </h4>
             <div className="space-y-2">
               <p className="text-slate-900 font-medium">
-                {question.points} poin
+                {question.weight} poin
               </p>
               <p className="text-sm text-slate-600">
                 Nilai maksimal untuk soal ini
@@ -191,18 +191,18 @@ export default function ViewQuestionModal({
                     {question.answers.map((answer) => (
                       <div key={answer.id} className="flex items-center space-x-3 p-3 bg-white rounded-lg border">
                         <span className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold ${
-                          answer.isCorrect 
+                          answer.is_correct 
                             ? "bg-emerald-500 text-white" 
                             : "bg-slate-200 text-slate-600"
                         }`}>
                           {answer.order === 1 ? "A" : answer.order === 2 ? "B" : answer.order === 3 ? "C" : "D"}
                         </span>
                         <span className={`flex-1 ${
-                          answer.isCorrect ? "text-emerald-700 font-semibold" : "text-slate-700"
+                          answer.is_correct ? "text-emerald-700 font-semibold" : "text-slate-700"
                         }`}>
                           {answer.content}
                         </span>
-                        {answer.isCorrect && (
+                        {answer.is_correct && (
                           <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-medium">
                             Benar
                           </span>
@@ -220,13 +220,13 @@ export default function ViewQuestionModal({
                     {question.answers.map((answer) => (
                       <div key={answer.id} className="flex items-center space-x-3 p-3 bg-white rounded-lg border">
                         <span className={`px-3 py-1 rounded text-sm font-bold ${
-                          answer.isCorrect 
+                          answer.is_correct 
                             ? "bg-emerald-500 text-white" 
                             : "bg-slate-200 text-slate-600"
                         }`}>
                           {answer.content}
                         </span>
-                        {answer.isCorrect && (
+                        {answer.is_correct && (
                           <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-medium">
                             Jawaban Benar
                           </span>
@@ -242,7 +242,7 @@ export default function ViewQuestionModal({
                   </p>
                   <div className="p-3 bg-white rounded-lg border">
                     <p className="text-emerald-700 font-semibold">
-                      {question.answers.find(a => a.isCorrect)?.content}
+                      {question.answers.find(a => a.is_correct)?.content}
                     </p>
                   </div>
                 </div>
@@ -260,13 +260,13 @@ export default function ViewQuestionModal({
               <div>
                 <p className="text-sm text-slate-600 mb-1">Dibuat pada</p>
                 <p className="text-sm font-semibold text-slate-900">
-                  {question.createdAt}
+                  {question.created_at}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-slate-600 mb-1">Terakhir diupdate</p>
                 <p className="text-sm font-semibold text-slate-900">
-                  {question.updatedAt}
+                  {question.updated_at}
                 </p>
               </div>
             </div>

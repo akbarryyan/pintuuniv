@@ -15,9 +15,9 @@ import { usePageTransition } from "@/lib/hooks";
 
 interface Answer {
   id: number;
-  questionId: number;
+  question_id: number;
   content: string;
-  isCorrect: boolean;
+  is_correct: boolean;
   order?: number; // untuk pilihan ganda (A, B, C, D)
 }
 
@@ -25,16 +25,16 @@ interface Question {
   id: number;
   title: string;
   content: string;
-  categoryId: number;
-  categoryName: string;
-  tryoutTitle: string;
+  category_id: number;
+  category_name: string;
+  tryout_title: string;
   type: "Pilihan Ganda" | "Essay" | "Benar/Salah";
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
-  points: number;
-  isActive: boolean;
+  weight: number; // bobot soal (1=mudah, 2=sedang, 3=sulit, 4=sangat sulit)
+  is_active: boolean;
   answers: Answer[];
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export default function ManageQuestions() {
@@ -49,8 +49,8 @@ export default function ManageQuestions() {
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [difficultyFilter, setDifficultyFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<string>("title");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortBy, setSortBy] = useState<string>("weight");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -61,9 +61,7 @@ export default function ManageQuestions() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
-    null
-  );
+  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
 
   // Mock data
   const [questions] = useState<Question[]>([
@@ -71,113 +69,129 @@ export default function ManageQuestions() {
       id: 1,
       title: "Persamaan Kuadrat",
       content: "Tentukan akar-akar dari persamaan x² - 5x + 6 = 0",
-      categoryId: 1,
-      categoryName: "Matematika Dasar",
-      tryoutTitle: "UTBK 2024 - Soshum",
+      category_id: 1,
+      category_name: "TPS Pengetahuan Kuantitatif",
+      tryout_title: "UTBK 2024 - Soshum",
       type: "Pilihan Ganda",
       difficulty: "Sedang",
-      points: 10,
-      isActive: true,
+      weight: 2,
+      is_active: true,
       answers: [
-        { id: 1, questionId: 1, content: "x = 2 dan x = 3", isCorrect: true, order: 1 },
-        { id: 2, questionId: 1, content: "x = -2 dan x = -3", isCorrect: false, order: 2 },
-        { id: 3, questionId: 1, content: "x = 1 dan x = 6", isCorrect: false, order: 3 },
-        { id: 4, questionId: 1, content: "x = -1 dan x = -6", isCorrect: false, order: 4 },
+        { id: 1, question_id: 1, content: "x = 2 dan x = 3", is_correct: true, order: 1 },
+        { id: 2, question_id: 1, content: "x = -2 dan x = -3", is_correct: false, order: 2 },
+        { id: 3, question_id: 1, content: "x = 1 dan x = 6", is_correct: false, order: 3 },
+        { id: 4, question_id: 1, content: "x = -1 dan x = -6", is_correct: false, order: 4 },
       ],
-      createdAt: "2024-01-15",
-      updatedAt: "2024-01-20",
+      created_at: "2024-01-15",
+      updated_at: "2024-01-15",
     },
     {
       id: 2,
-      title: "Analisis Wacana",
-      content: "Berdasarkan teks berikut, tentukan ide pokok paragraf pertama...",
-      categoryId: 2,
-      categoryName: "Bahasa Indonesia",
-      tryoutTitle: "UTBK 2024 - Soshum",
-      type: "Essay",
+      title: "Pemahaman Bacaan",
+      content: "Berdasarkan teks di atas, apa yang dimaksud dengan 'sustainable development'?",
+      category_id: 2,
+      category_name: "TPS Pemahaman Bacaan",
+      tryout_title: "UTBK 2024 - Soshum",
+      type: "Pilihan Ganda",
       difficulty: "Mudah",
-      points: 15,
-      isActive: true,
+      weight: 1,
+      is_active: true,
       answers: [
-        { id: 5, questionId: 2, content: "Ide pokok paragraf pertama adalah tentang pentingnya pendidikan dalam pembangunan bangsa", isCorrect: true },
+        { id: 5, question_id: 2, content: "Pembangunan yang berkelanjutan", is_correct: true, order: 1 },
+        { id: 6, question_id: 2, content: "Pembangunan yang cepat", is_correct: false, order: 2 },
+        { id: 7, question_id: 2, content: "Pembangunan yang mahal", is_correct: false, order: 3 },
+        { id: 8, question_id: 2, content: "Pembangunan yang sementara", is_correct: false, order: 4 },
       ],
-      createdAt: "2024-01-12",
-      updatedAt: "2024-01-18",
+      created_at: "2024-01-15",
+      updated_at: "2024-01-15",
     },
     {
       id: 3,
-      title: "Hukum Newton",
-      content: "Sebuah benda bermassa 2 kg ditarik dengan gaya 10 N. Berapakah percepatan benda tersebut?",
-      categoryId: 3,
-      categoryName: "Fisika Lanjutan",
-      tryoutTitle: "UTBK 2024 - Saintek",
+      title: "Logika Penalaran",
+      content: "Jika semua A adalah B, dan semua B adalah C, maka...",
+      category_id: 3,
+      category_name: "TPS Penalaran Umum",
+      tryout_title: "UTBK 2024 - Soshum",
       type: "Pilihan Ganda",
-      difficulty: "Sangat Sulit",
-      points: 20,
-      isActive: true,
+      difficulty: "Sulit",
+      weight: 3,
+      is_active: true,
       answers: [
-        { id: 6, questionId: 3, content: "5 m/s²", isCorrect: true, order: 1 },
-        { id: 7, questionId: 3, content: "10 m/s²", isCorrect: false, order: 2 },
-        { id: 8, questionId: 3, content: "2 m/s²", isCorrect: false, order: 3 },
-        { id: 9, questionId: 3, content: "20 m/s²", isCorrect: false, order: 4 },
+        { id: 9, question_id: 3, content: "Semua A adalah C", is_correct: true, order: 1 },
+        { id: 10, question_id: 3, content: "Semua C adalah A", is_correct: false, order: 2 },
+        { id: 11, question_id: 3, content: "Beberapa A adalah C", is_correct: false, order: 3 },
+        { id: 12, question_id: 3, content: "Tidak ada hubungan A dan C", is_correct: false, order: 4 },
       ],
-      createdAt: "2024-01-10",
-      updatedAt: "2024-01-19",
+      created_at: "2024-01-15",
+      updated_at: "2024-01-15",
     },
     {
       id: 4,
-      title: "Reaksi Kimia",
-      content: "Apakah benar bahwa reaksi eksoterm melepaskan panas ke lingkungan?",
-      categoryId: 4,
-      categoryName: "Kimia Organik",
-      tryoutTitle: "UTBK 2024 - Saintek",
-      type: "Benar/Salah",
-      difficulty: "Sulit",
-      points: 5,
-      isActive: false,
+      title: "Essay Matematika",
+      content: "Jelaskan langkah-langkah untuk menyelesaikan persamaan kuadrat menggunakan rumus ABC",
+      category_id: 1,
+      category_name: "TPS Pengetahuan Kuantitatif",
+      tryout_title: "UTBK 2024 - Soshum",
+      type: "Essay",
+      difficulty: "Sangat Sulit",
+      weight: 4,
+      is_active: true,
       answers: [
-        { id: 10, questionId: 4, content: "Benar", isCorrect: true },
-        { id: 11, questionId: 4, content: "Salah", isCorrect: false },
+        { id: 13, question_id: 4, content: "Langkah 1: Identifikasi nilai a, b, c. Langkah 2: Hitung diskriminan. Langkah 3: Gunakan rumus x = (-b ± √D) / 2a", is_correct: true },
       ],
-      createdAt: "2024-01-08",
-      updatedAt: "2024-01-16",
+      created_at: "2024-01-15",
+      updated_at: "2024-01-15",
     },
     {
       id: 5,
-      title: "Sejarah Kemerdekaan",
-      content: "Jelaskan peran Soekarno dalam proses kemerdekaan Indonesia pada tahun 1945",
-      categoryId: 5,
-      categoryName: "Sejarah Indonesia",
-      tryoutTitle: "Simulasi CPNS 2024",
-      type: "Essay",
-      difficulty: "Sedang",
-      points: 25,
-      isActive: true,
+      title: "Benar atau Salah",
+      content: "Indonesia adalah negara kepulauan terbesar di dunia",
+      category_id: 6,
+      category_name: "Pengetahuan dan Pemahaman Umum",
+      tryout_title: "UTBK 2024 - Soshum",
+      type: "Benar/Salah",
+      difficulty: "Mudah",
+      weight: 1,
+      is_active: true,
       answers: [
-        { id: 12, questionId: 5, content: "Soekarno berperan sebagai proklamator kemerdekaan, memimpin sidang PPKI, dan menyusun teks proklamasi bersama Hatta", isCorrect: true },
+        { id: 14, question_id: 5, content: "Benar", is_correct: true },
+        { id: 15, question_id: 5, content: "Salah", is_correct: false },
       ],
-      createdAt: "2024-01-05",
-      updatedAt: "2024-01-17",
+      created_at: "2024-01-15",
+      updated_at: "2024-01-15",
     },
   ]);
+
+  // Mock categories for form
+  const categories = [
+    { id: 1, name: "TPS Pengetahuan Kuantitatif" },
+    { id: 2, name: "TPS Pemahaman Bacaan" },
+    { id: 3, name: "TPS Penalaran Umum" },
+    { id: 4, name: "Literasi Bahasa Indonesia" },
+    { id: 5, name: "Literasi Bahasa Inggris" },
+    { id: 6, name: "Pengetahuan dan Pemahaman Umum" },
+  ];
 
   // Filter and search logic
   const filteredQuestions = questions.filter((question) => {
     const matchesSearch =
       question.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       question.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      question.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
+      question.category_name.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesCategory =
-      categoryFilter === "all" || question.categoryId.toString() === categoryFilter;
+      categoryFilter === "all" || question.category_id.toString() === categoryFilter;
+
     const matchesType =
       typeFilter === "all" || question.type === typeFilter;
+
     const matchesDifficulty =
       difficultyFilter === "all" || question.difficulty === difficultyFilter;
+
     const matchesStatus =
       statusFilter === "all" ||
-      (statusFilter === "active" && question.isActive) ||
-      (statusFilter === "inactive" && !question.isActive);
+      (statusFilter === "active" && question.is_active) ||
+      (statusFilter === "inactive" && !question.is_active);
 
     return matchesSearch && matchesCategory && matchesType && matchesDifficulty && matchesStatus;
   });
@@ -277,7 +291,7 @@ export default function ManageQuestions() {
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           pageTitle="Kelola Soal"
-          pageDescription="Manajemen soal untuk setiap kategori tryout"
+          pageDescription="Manajemen soal untuk setiap kategori"
         />
 
         {/* Page Content */}
@@ -297,6 +311,7 @@ export default function ManageQuestions() {
             setDifficultyFilter={setDifficultyFilter}
             statusFilter={statusFilter}
             setStatusFilter={setStatusFilter}
+            categories={categories}
           />
 
           {/* Questions Table */}

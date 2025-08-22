@@ -13,6 +13,7 @@ interface FiltersAndSearchProps {
   setDifficultyFilter: (filter: string) => void;
   statusFilter: string;
   setStatusFilter: (filter: string) => void;
+  categories: { id: number; name: string }[];
 }
 
 export default function FiltersAndSearch({
@@ -26,16 +27,8 @@ export default function FiltersAndSearch({
   setDifficultyFilter,
   statusFilter,
   setStatusFilter,
+  categories,
 }: FiltersAndSearchProps) {
-  // Mock category options
-  const categoryOptions = [
-    { id: "1", name: "Matematika Dasar" },
-    { id: "2", name: "Bahasa Indonesia" },
-    { id: "3", name: "Fisika Lanjutan" },
-    { id: "4", name: "Kimia Organik" },
-    { id: "5", name: "Sejarah Indonesia" },
-  ];
-
   return (
     <div className="mb-6">
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
@@ -64,7 +57,7 @@ export default function FiltersAndSearch({
                 className="appearance-none pl-4 pr-10 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-white min-w-[180px]"
               >
                 <option value="all">Semua Kategori</option>
-                {categoryOptions.map((category) => (
+                {categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}
                   </option>

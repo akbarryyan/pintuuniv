@@ -24,13 +24,14 @@ interface Category {
   id: number;
   name: string;
   description: string;
-  tryoutId: number;
-  tryoutTitle: string;
-  duration: number; // in minutes
-  difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  tryout_id: number;
+  tryout_title: string;
+  duration_minutes: number;
+  total_weight: number;
+  total_questions: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 interface CategoriesTableProps {
@@ -139,19 +140,10 @@ export default function CategoriesTable({
       : "text-slate-700 bg-slate-50 border-slate-200";
   };
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "Mudah":
-        return "text-emerald-700 bg-emerald-50 border-emerald-200";
-      case "Sedang":
-        return "text-blue-700 bg-blue-50 border-blue-200";
-      case "Sulit":
-        return "text-amber-700 bg-amber-50 border-amber-200";
-      case "Sangat Sulit":
-        return "text-red-700 bg-red-50 border-red-200";
-      default:
-        return "text-slate-700 bg-slate-50 border-slate-200";
-    }
+  const getDurationColor = (duration: number) => {
+    if (duration <= 20) return "text-emerald-700 bg-emerald-50 border-emerald-200";
+    if (duration <= 30) return "text-blue-700 bg-blue-50 border-blue-200";
+    return "text-amber-700 bg-amber-50 border-amber-200";
   };
 
   return (
@@ -287,20 +279,21 @@ export default function CategoriesTable({
               {/* Badges Row */}
               <div className="flex flex-wrap gap-2 mb-4">
                 <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(
-                    category.difficulty
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getDurationColor(
+                    category.duration_minutes
                   )}`}
                 >
-                  <Target className="w-3 h-3 mr-1" />
-                  {category.difficulty}
+                  <Clock className="w-3 h-3 mr-1" />
+                  {category.duration_minutes <= 20 ? "Cepat" : 
+                   category.duration_minutes <= 30 ? "Sedang" : "Lama"}
                 </span>
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                    category.isActive
+                    category.is_active
                   )}`}
                 >
                   <Activity className="w-3 h-3 mr-1" />
-                  {category.isActive ? "Aktif" : "Tidak Aktif"}
+                  {category.is_active ? "Aktif" : "Tidak Aktif"}
                 </span>
               </div>
 
@@ -320,10 +313,10 @@ export default function CategoriesTable({
                   </span>
                 </div>
                 <p className="text-sm font-semibold text-slate-900 mb-1">
-                  {category.tryoutTitle}
+                  {category.tryout_title}
                 </p>
                 <p className="text-xs text-slate-500">
-                  ID Tryout: {category.tryoutId}
+                  ID Tryout: {category.tryout_id}
                 </p>
               </div>
 
@@ -336,7 +329,7 @@ export default function CategoriesTable({
                   </span>
                 </div>
                 <p className="text-sm font-semibold text-slate-900">
-                  {category.duration} menit
+                  {category.duration_minutes} menit
                 </p>
               </div>
 
@@ -344,11 +337,11 @@ export default function CategoriesTable({
               <div className="flex items-center justify-between pt-4 border-t border-slate-200">
                 <div className="text-xs text-slate-500">
                   <span className="font-medium">Dibuat:</span>{" "}
-                  {category.createdAt}
+                  {category.created_at}
                 </div>
                 <div className="text-xs text-slate-500">
                   <span className="font-medium">Update:</span>{" "}
-                  {category.updatedAt}
+                  {category.updated_at}
                 </div>
               </div>
             </div>
@@ -384,7 +377,7 @@ export default function CategoriesTable({
                   </button>
                   <button
                     onClick={() => onOpenModal("edit", category)}
-                    className="p-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+                    className="p-2 text-emerald-600 hover:text-emerald-700 hover:bg-blue-50 rounded-lg transition-all duration-300"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
@@ -400,20 +393,21 @@ export default function CategoriesTable({
               {/* Badges Row */}
               <div className="flex flex-wrap gap-2 mb-4">
                 <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(
-                    category.difficulty
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getDurationColor(
+                    category.duration_minutes
                   )}`}
                 >
-                  <Target className="w-3 h-3 mr-1" />
-                  {category.difficulty}
+                  <Clock className="w-3 h-3 mr-1" />
+                  {category.duration_minutes <= 20 ? "Cepat" : 
+                   category.duration_minutes <= 30 ? "Sedang" : "Lama"}
                 </span>
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                    category.isActive
+                    category.is_active
                   )}`}
                 >
                   <Activity className="w-3 h-3 mr-1" />
-                  {category.isActive ? "Aktif" : "Tidak Aktif"}
+                  {category.is_active ? "Aktif" : "Tidak Aktif"}
                 </span>
               </div>
 
@@ -433,10 +427,10 @@ export default function CategoriesTable({
                   </span>
                 </div>
                 <p className="text-sm font-semibold text-slate-900 mb-1">
-                  {category.tryoutTitle}
+                  {category.tryout_title}
                 </p>
                 <p className="text-xs text-slate-500">
-                  ID Tryout: {category.tryoutId}
+                  ID Tryout: {category.tryout_id}
                 </p>
               </div>
 
@@ -449,19 +443,17 @@ export default function CategoriesTable({
                   </span>
                 </div>
                 <p className="text-sm font-semibold text-slate-900">
-                  {category.duration} menit
+                  {category.duration_minutes} menit
                 </p>
               </div>
 
               {/* Footer */}
               <div className="flex items-center justify-between pt-4 border-t border-slate-200">
                 <div className="text-xs text-slate-500">
-                  <span className="font-medium">Dibuat:</span>{" "}
-                  {category.createdAt}
+                  Dibuat: {category.created_at}
                 </div>
                 <div className="text-xs text-slate-500">
-                  <span className="font-medium">Update:</span>{" "}
-                  {category.updatedAt}
+                  Update: {category.updated_at}
                 </div>
               </div>
             </div>

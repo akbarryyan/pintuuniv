@@ -15,13 +15,14 @@ interface Category {
   id: number;
   name: string;
   description: string;
-  tryoutId: number;
-  tryoutTitle: string;
-  duration: number; // in minutes
-  difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  tryout_id: number;
+  tryout_title: string;
+  duration_minutes: number;
+  total_weight: number;
+  total_questions: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 interface ViewCategoryModalProps {

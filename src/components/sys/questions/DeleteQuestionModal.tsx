@@ -4,9 +4,9 @@ import { X, AlertTriangle, FileText } from "lucide-react";
 
 interface Answer {
   id: number;
-  questionId: number;
+  question_id: number;
   content: string;
-  isCorrect: boolean;
+  is_correct: boolean;
   order?: number; // untuk pilihan ganda (A, B, C, D)
 }
 
@@ -14,16 +14,16 @@ interface Question {
   id: number;
   title: string;
   content: string;
-  categoryId: number;
-  categoryName: string;
-  tryoutTitle: string;
+  category_id: number;
+  category_name: string;
+  tryout_title: string;
   type: "Pilihan Ganda" | "Essay" | "Benar/Salah";
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
-  points: number;
-  isActive: boolean;
+  weight: number; // bobot soal (1=mudah, 2=sedang, 3=sulit, 4=sangat sulit)
+  is_active: boolean;
   answers: Answer[];
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface DeleteQuestionModalProps {
@@ -55,7 +55,7 @@ export default function DeleteQuestionModal({
                 Hapus Soal
               </h3>
               <p className="text-sm text-slate-600">
-                {question.title} • {question.categoryName}
+                {question.title} • {question.category_name}
               </p>
             </div>
           </div>
@@ -98,11 +98,11 @@ export default function DeleteQuestionModal({
               </div>
               <div>
                 <span className="text-slate-600">Kategori:</span>{" "}
-                <span className="font-medium text-slate-900">{question.categoryName}</span>
+                <span className="font-medium text-slate-900">{question.category_name}</span>
               </div>
               <div>
                 <span className="text-slate-600">Poin:</span>{" "}
-                <span className="font-medium text-slate-900">{question.points} poin</span>
+                <span className="font-medium text-slate-900">{question.weight} poin</span>
               </div>
               <div>
                 <span className="text-slate-600">Jumlah Jawaban:</span>{" "}

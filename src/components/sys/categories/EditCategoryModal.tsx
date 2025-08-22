@@ -7,13 +7,14 @@ interface Category {
   id: number;
   name: string;
   description: string;
-  tryoutId: number;
-  tryoutTitle: string;
-  duration: number; // in minutes
-  difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  tryout_id: number;
+  tryout_title: string;
+  duration_minutes: number;
+  total_weight: number;
+  total_questions: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 interface EditCategoryModalProps {
@@ -28,10 +29,9 @@ export default function EditCategoryModal({
   const [formData, setFormData] = useState({
     name: category.name,
     description: category.description,
-    tryoutId: category.tryoutId.toString(),
-    duration: category.duration.toString(),
-    difficulty: category.difficulty,
-    isActive: category.isActive,
+    tryout_id: category.tryout_id.toString(),
+    duration_minutes: category.duration_minutes.toString(),
+    is_active: category.is_active,
   });
 
   // Mock tryout options
@@ -131,8 +131,8 @@ export default function EditCategoryModal({
                 Tryout Terkait *
               </label>
               <select
-                name="tryoutId"
-                value={formData.tryoutId}
+                name="tryout_id"
+                value={formData.tryout_id}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200"
                 required
@@ -153,8 +153,8 @@ export default function EditCategoryModal({
               </label>
               <input
                 type="number"
-                name="duration"
-                value={formData.duration}
+                name="duration_minutes"
+                value={formData.duration_minutes}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200"
                 placeholder="90"
@@ -171,28 +171,11 @@ export default function EditCategoryModal({
               <span>Konfigurasi</span>
             </h4>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Tingkat Kesulitan
-              </label>
-              <select
-                name="difficulty"
-                value={formData.difficulty}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200"
-              >
-                <option value="Mudah">Mudah</option>
-                <option value="Sedang">Sedang</option>
-                <option value="Sulit">Sulit</option>
-                <option value="Sangat Sulit">Sangat Sulit</option>
-              </select>
-            </div>
-
             <div className="flex items-center space-x-3">
               <input
                 type="checkbox"
-                name="isActive"
-                checked={formData.isActive}
+                name="is_active"
+                checked={formData.is_active}
                 onChange={handleChange}
                 className="w-4 h-4 text-emerald-600 border-slate-300 rounded focus:ring-emerald-500"
               />

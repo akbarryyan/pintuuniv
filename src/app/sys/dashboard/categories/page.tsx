@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { X, Folder, Clock, BookOpen, Plus, Search, Filter } from "lucide-react";
 import { Sidebar, TopHeader } from "@/components/sys";
 import {
   HeaderSection,
@@ -18,13 +17,14 @@ interface Category {
   id: number;
   name: string;
   description: string;
-  tryoutId: number;
-  tryoutTitle: string;
-  duration: number; // in minutes
-  difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  tryout_id: number;
+  tryout_title: string;
+  duration_minutes: number;
+  total_weight: number;
+  total_questions: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export default function ManageCategories() {
@@ -35,9 +35,9 @@ export default function ManageCategories() {
   usePageTransition();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [tryoutFilter, setTryoutFilter] = useState<string>("all");
   const [difficultyFilter, setDifficultyFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [tryoutFilter, setTryoutFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
@@ -50,76 +50,87 @@ export default function ManageCategories() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null
-  );
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
   // Mock data
   const [categories] = useState<Category[]>([
     {
       id: 1,
-      name: "Matematika Dasar",
-      description:
-        "Kategori untuk soal-soal matematika tingkat dasar mencakup aljabar, geometri, dan aritmatika",
-      tryoutId: 1,
-      tryoutTitle: "UTBK 2024 - Soshum",
-      duration: 90,
-      difficulty: "Sedang",
-      isActive: true,
-      createdAt: "2024-01-15",
-      updatedAt: "2024-01-20",
+      name: "TPS Penalaran Umum",
+      description: "Tes Potensi Skolastik - Penalaran Umum",
+      tryout_id: 1,
+      tryout_title: "UTBK 2024 - Soshum",
+      duration_minutes: 25,
+      total_weight: 40,
+      total_questions: 20,
+      is_active: true,
+      created_at: "2024-01-10",
+      updated_at: "2024-01-15",
     },
     {
       id: 2,
-      name: "Bahasa Indonesia",
-      description:
-        "Kategori untuk soal-soal bahasa Indonesia meliputi tata bahasa, sastra, dan pemahaman bacaan",
-      tryoutId: 1,
-      tryoutTitle: "UTBK 2024 - Soshum",
-      duration: 60,
-      difficulty: "Mudah",
-      isActive: true,
-      createdAt: "2024-01-12",
-      updatedAt: "2024-01-18",
+      name: "TPS Pemahaman Bacaan",
+      description: "Tes Potensi Skolastik - Pemahaman Bacaan",
+      tryout_id: 1,
+      tryout_title: "UTBK 2024 - Soshum",
+      duration_minutes: 30,
+      total_weight: 35,
+      total_questions: 18,
+      is_active: true,
+      created_at: "2024-01-10",
+      updated_at: "2024-01-15",
     },
     {
       id: 3,
-      name: "Fisika Lanjutan",
-      description:
-        "Kategori untuk soal-soal fisika tingkat lanjutan mencakup mekanika, termodinamika, dan elektromagnetik",
-      tryoutId: 2,
-      tryoutTitle: "UTBK 2024 - Saintek",
-      duration: 120,
-      difficulty: "Sangat Sulit",
-      isActive: true,
-      createdAt: "2024-01-10",
-      updatedAt: "2024-01-19",
+      name: "TPS Pengetahuan Kuantitatif",
+      description: "Tes Potensi Skolastik - Pengetahuan Kuantitatif",
+      tryout_id: 1,
+      tryout_title: "UTBK 2024 - Soshum",
+      duration_minutes: 35,
+      total_weight: 45,
+      total_questions: 22,
+      is_active: true,
+      created_at: "2024-01-10",
+      updated_at: "2024-01-15",
     },
     {
       id: 4,
-      name: "Kimia Organik",
-      description:
-        "Kategori untuk soal-soal kimia organik dengan fokus pada struktur molekul dan reaksi",
-      tryoutId: 2,
-      tryoutTitle: "UTBK 2024 - Saintek",
-      duration: 75,
-      difficulty: "Sulit",
-      isActive: false,
-      createdAt: "2024-01-08",
-      updatedAt: "2024-01-16",
+      name: "Literasi Bahasa Indonesia",
+      description: "Literasi dalam Bahasa Indonesia",
+      tryout_id: 1,
+      tryout_title: "UTBK 2024 - Soshum",
+      duration_minutes: 20,
+      total_weight: 25,
+      total_questions: 15,
+      is_active: true,
+      created_at: "2024-01-10",
+      updated_at: "2024-01-15",
     },
     {
       id: 5,
-      name: "Sejarah Indonesia",
-      description:
-        "Kategori untuk soal-soal sejarah Indonesia dari masa pra-kemerdekaan hingga modern",
-      tryoutId: 3,
-      tryoutTitle: "Simulasi CPNS 2024",
-      duration: 45,
-      difficulty: "Sedang",
-      isActive: true,
-      createdAt: "2024-01-05",
-      updatedAt: "2024-01-17",
+      name: "Literasi Bahasa Inggris",
+      description: "Literasi dalam Bahasa Inggris",
+      tryout_id: 1,
+      tryout_title: "UTBK 2024 - Soshum",
+      duration_minutes: 20,
+      total_weight: 25,
+      total_questions: 15,
+      is_active: false,
+      created_at: "2024-01-10",
+      updated_at: "2024-01-15",
+    },
+    {
+      id: 6,
+      name: "Pengetahuan dan Pemahaman Umum",
+      description: "Pengetahuan dan Pemahaman Umum",
+      tryout_id: 1,
+      tryout_title: "UTBK 2024 - Soshum",
+      duration_minutes: 30,
+      total_weight: 30,
+      total_questions: 15,
+      is_active: true,
+      created_at: "2024-01-10",
+      updated_at: "2024-01-15",
     },
   ]);
 
@@ -128,18 +139,23 @@ export default function ManageCategories() {
     const matchesSearch =
       category.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       category.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      category.tryoutTitle.toLowerCase().includes(searchQuery.toLowerCase());
+      category.tryout_title.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesTryout =
+      tryoutFilter === "all" || category.tryout_id.toString() === tryoutFilter;
 
     const matchesDifficulty =
-      difficultyFilter === "all" || category.difficulty === difficultyFilter;
+      difficultyFilter === "all" || 
+      (difficultyFilter === "Mudah" && category.duration_minutes <= 20) ||
+      (difficultyFilter === "Sedang" && category.duration_minutes > 20 && category.duration_minutes <= 30) ||
+      (difficultyFilter === "Sulit" && category.duration_minutes > 30);
+
     const matchesStatus =
       statusFilter === "all" ||
-      (statusFilter === "active" && category.isActive) ||
-      (statusFilter === "inactive" && !category.isActive);
-    const matchesTryout =
-      tryoutFilter === "all" || category.tryoutId.toString() === tryoutFilter;
+      (statusFilter === "active" && category.is_active) ||
+      (statusFilter === "inactive" && !category.is_active);
 
-    return matchesSearch && matchesDifficulty && matchesStatus && matchesTryout;
+    return matchesSearch && matchesTryout && matchesDifficulty && matchesStatus;
   });
 
   // Sort logic

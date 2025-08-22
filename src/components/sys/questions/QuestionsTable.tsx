@@ -22,9 +22,9 @@ import { useState } from "react";
 
 interface Answer {
   id: number;
-  questionId: number;
+  question_id: number;
   content: string;
-  isCorrect: boolean;
+  is_correct: boolean;
   order?: number; // untuk pilihan ganda (A, B, C, D)
 }
 
@@ -32,16 +32,16 @@ interface Question {
   id: number;
   title: string;
   content: string;
-  categoryId: number;
-  categoryName: string;
-  tryoutTitle: string;
+  category_id: number;
+  category_name: string;
+  tryout_title: string;
   type: "Pilihan Ganda" | "Essay" | "Benar/Salah";
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
-  points: number;
-  isActive: boolean;
+  weight: number; // bobot soal (1=mudah, 2=sedang, 3=sulit, 4=sangat sulit)
+  is_active: boolean;
   answers: Answer[];
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface QuestionsTableProps {
@@ -241,16 +241,16 @@ export default function QuestionsTable({
                 </button>
 
                 <button
-                  onClick={() => onSort("points")}
+                  onClick={() => onSort("weight")}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-300 ${
-                    sortBy === "points"
+                    sortBy === "weight"
                       ? "bg-purple-100 text-purple-700 border border-purple-200 shadow-sm"
                       : "bg-slate-50 hover:bg-slate-100 text-slate-700 border border-transparent hover:border-slate-200"
                   }`}
                 >
                   <Star className="w-4 h-4" />
                   <span className="text-sm font-medium">Poin</span>
-                  {sortBy === "points" &&
+                  {sortBy === "weight" &&
                     (sortOrder === "asc" ? (
                       <ChevronUp className="w-4 h-4" />
                     ) : (
@@ -327,11 +327,11 @@ export default function QuestionsTable({
                 </span>
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                    question.isActive
+                    question.is_active
                   )}`}
                 >
                   <Activity className="w-3 h-3 mr-1" />
-                  {question.isActive ? "Aktif" : "Tidak Aktif"}
+                  {question.is_active ? "Aktif" : "Tidak Aktif"}
                 </span>
               </div>
 
@@ -351,24 +351,32 @@ export default function QuestionsTable({
                   </span>
                 </div>
                 <p className="text-sm font-semibold text-slate-900 mb-1">
-                  {question.categoryName}
+                  {question.category_name}
                 </p>
                 <p className="text-xs text-slate-500">
-                  {question.tryoutTitle}
+                  {question.tryout_title}
                 </p>
               </div>
 
-              {/* Points Info */}
+              {/* Weight Info */}
               <div className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-xl p-4 mb-4">
                 <div className="flex items-center space-x-2 mb-2">
                   <Star className="w-4 h-4 text-amber-500" />
                   <span className="text-sm font-medium text-slate-700">
-                    Poin
+                    Bobot Soal
                   </span>
                 </div>
-                <p className="text-sm font-semibold text-slate-900">
-                  {question.points} poin
-                </p>
+                <div className="space-y-1">
+                  <p className="text-sm font-semibold text-slate-900">
+                    {question.weight} bobot
+                  </p>
+                  <p className="text-xs text-amber-600">
+                    {question.difficulty === "Mudah" && "1 = Mudah"}
+                    {question.difficulty === "Sedang" && "2 = Sedang"}
+                    {question.difficulty === "Sulit" && "3 = Sulit"}
+                    {question.difficulty === "Sangat Sulit" && "4 = Sangat Sulit"}
+                  </p>
+                </div>
               </div>
 
               {/* Answers Info */}
@@ -384,14 +392,14 @@ export default function QuestionsTable({
                     question.answers.map((answer) => (
                       <div key={answer.id} className="flex items-center space-x-2">
                         <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold ${
-                          answer.isCorrect 
+                          answer.is_correct 
                             ? "bg-emerald-500 text-white" 
                             : "bg-slate-200 text-slate-600"
                         }`}>
                           {answer.order === 1 ? "A" : answer.order === 2 ? "B" : answer.order === 3 ? "C" : "D"}
                         </span>
                         <span className={`text-xs ${
-                          answer.isCorrect ? "text-emerald-700 font-semibold" : "text-slate-600"
+                          answer.is_correct ? "text-emerald-700 font-semibold" : "text-slate-600"
                         }`}>
                           {answer.content}
                         </span>
@@ -401,7 +409,7 @@ export default function QuestionsTable({
                     question.answers.map((answer) => (
                       <div key={answer.id} className="flex items-center space-x-2">
                         <span className={`px-2 py-1 rounded text-xs font-bold ${
-                          answer.isCorrect 
+                          answer.is_correct 
                             ? "bg-emerald-500 text-white" 
                             : "bg-slate-200 text-slate-600"
                         }`}>
@@ -411,7 +419,7 @@ export default function QuestionsTable({
                     ))
                   ) : (
                     <div className="text-xs text-emerald-700 font-semibold">
-                      {question.answers.find(a => a.isCorrect)?.content}
+                      {question.answers.find(a => a.is_correct)?.content}
                     </div>
                   )}
                 </div>
@@ -421,11 +429,11 @@ export default function QuestionsTable({
               <div className="flex items-center justify-between pt-4 border-t border-slate-200">
                 <div className="text-xs text-slate-500">
                   <span className="font-medium">Dibuat:</span>{" "}
-                  {question.createdAt}
+                  {question.created_at}
                 </div>
                 <div className="text-xs text-slate-500">
                   <span className="font-medium">Update:</span>{" "}
-                  {question.updatedAt}
+                  {question.updated_at}
                 </div>
               </div>
             </div>
@@ -494,11 +502,11 @@ export default function QuestionsTable({
                 </span>
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                    question.isActive
+                    question.is_active
                   )}`}
                 >
                   <Activity className="w-3 h-3 mr-1" />
-                  {question.isActive ? "Aktif" : "Tidak Aktif"}
+                  {question.is_active ? "Aktif" : "Tidak Aktif"}
                 </span>
               </div>
 
@@ -518,24 +526,32 @@ export default function QuestionsTable({
                   </span>
                 </div>
                 <p className="text-sm font-semibold text-slate-900 mb-1">
-                  {question.categoryName}
+                  {question.category_name}
                 </p>
                 <p className="text-xs text-slate-500">
-                  {question.tryoutTitle}
+                  {question.tryout_title}
                 </p>
               </div>
 
-              {/* Points Info */}
+              {/* Weight Info */}
               <div className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-xl p-4 mb-4">
                 <div className="flex items-center space-x-2 mb-2">
                   <Star className="w-4 h-4 text-amber-500" />
                   <span className="text-sm font-medium text-slate-700">
-                    Poin
+                    Bobot Soal
                   </span>
                 </div>
-                <p className="text-sm font-semibold text-slate-900">
-                  {question.points} poin
-                </p>
+                <div className="space-y-1">
+                  <p className="text-sm font-semibold text-slate-900">
+                    {question.weight} bobot
+                  </p>
+                  <p className="text-xs text-amber-600">
+                    {question.difficulty === "Mudah" && "1 = Mudah"}
+                    {question.difficulty === "Sedang" && "2 = Sedang"}
+                    {question.difficulty === "Sulit" && "3 = Sulit"}
+                    {question.difficulty === "Sangat Sulit" && "4 = Sangat Sulit"}
+                  </p>
+                </div>
               </div>
 
               {/* Answers Info */}
@@ -551,14 +567,14 @@ export default function QuestionsTable({
                     question.answers.map((answer) => (
                       <div key={answer.id} className="flex items-center space-x-2">
                         <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold ${
-                          answer.isCorrect 
+                          answer.is_correct 
                             ? "bg-emerald-500 text-white" 
                             : "bg-slate-200 text-slate-600"
                         }`}>
                           {answer.order === 1 ? "A" : answer.order === 2 ? "B" : answer.order === 3 ? "C" : "D"}
                         </span>
                         <span className={`text-xs ${
-                          answer.isCorrect ? "text-emerald-700 font-semibold" : "text-slate-600"
+                          answer.is_correct ? "text-emerald-700 font-semibold" : "text-slate-600"
                         }`}>
                           {answer.content}
                         </span>
@@ -568,7 +584,7 @@ export default function QuestionsTable({
                     question.answers.map((answer) => (
                       <div key={answer.id} className="flex items-center space-x-2">
                         <span className={`px-2 py-1 rounded text-xs font-bold ${
-                          answer.isCorrect 
+                          answer.is_correct 
                             ? "bg-emerald-500 text-white" 
                             : "bg-slate-200 text-slate-600"
                         }`}>
@@ -578,7 +594,7 @@ export default function QuestionsTable({
                     ))
                   ) : (
                     <div className="text-xs text-emerald-700 font-semibold">
-                      {question.answers.find(a => a.isCorrect)?.content}
+                      {question.answers.find(a => a.is_correct)?.content}
                     </div>
                   )}
                 </div>
@@ -588,11 +604,11 @@ export default function QuestionsTable({
               <div className="flex items-center justify-between pt-4 border-t border-slate-200">
                 <div className="text-xs text-slate-500">
                   <span className="font-medium">Dibuat:</span>{" "}
-                  {question.createdAt}
+                  {question.created_at}
                 </div>
                 <div className="text-xs text-slate-500">
                   <span className="font-medium">Update:</span>{" "}
-                  {question.updatedAt}
+                  {question.updated_at}
                 </div>
               </div>
             </div>
