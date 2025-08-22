@@ -14,6 +14,17 @@ const dbConfig = {
 // Create connection pool
 const pool = mysql.createPool(dbConfig);
 
+// Helper function untuk menjalankan query
+export async function query(sql: string, params?: any[]) {
+  try {
+    const [rows] = await pool.execute(sql, params);
+    return rows;
+  } catch (error) {
+    console.error("Database query error:", error);
+    throw error;
+  }
+}
+
 // Test connection function
 export async function testConnection() {
   try {

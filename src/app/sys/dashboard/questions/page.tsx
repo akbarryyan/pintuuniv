@@ -1,41 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sidebar, TopHeader } from "@/components/sys";
 import {
   HeaderSection,
   FiltersAndSearch,
   QuestionsTable,
-  CreateQuestionModal,
-  EditQuestionModal,
-  ViewQuestionModal,
-  DeleteQuestionModal,
 } from "@/components/sys/questions";
 import { usePageTransition } from "@/lib/hooks";
-
-interface Answer {
-  id: number;
-  question_id: number;
-  content: string;
-  is_correct: boolean;
-  order?: number; // untuk pilihan ganda (A, B, C, D)
-}
-
-interface Question {
-  id: number;
-  title: string;
-  content: string;
-  category_id: number;
-  category_name: string;
-  tryout_title: string;
-  type: "Pilihan Ganda" | "Essay" | "Benar/Salah";
-  difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
-  weight: number; // bobot soal (1=mudah, 2=sedang, 3=sulit, 4=sangat sulit)
-  is_active: boolean;
-  answers: Answer[];
-  created_at: string;
-  updated_at: string;
-}
+import { questionService, Question, QuestionFilters, QuestionCreateData } from "@/lib/services/questionService";
+import { categoryService } from "@/lib/services/categoryService";
+import { toast } from "sonner";
 
 export default function ManageQuestions() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -52,9 +27,16 @@ export default function ManageQuestions() {
   const [sortBy, setSortBy] = useState<string>("weight");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  // Pagination states
+  // Data states
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [totalQuestions, setTotalQuestions] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // Options states
+  const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
 
   // Modal states
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -62,142 +44,181 @@ export default function ManageQuestions() {
   const [showViewModal, setShowViewModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
-
-  // Mock data
-  const [questions] = useState<Question[]>([
-    {
-      id: 1,
-      title: "Persamaan Kuadrat",
-      content: "Tentukan akar-akar dari persamaan x² - 5x + 6 = 0",
-      category_id: 1,
-      category_name: "TPS Pengetahuan Kuantitatif",
-      tryout_title: "UTBK 2024 - Soshum",
-      type: "Pilihan Ganda",
-      difficulty: "Sedang",
-      weight: 2,
-      is_active: true,
-      answers: [
-        { id: 1, question_id: 1, content: "x = 2 dan x = 3", is_correct: true, order: 1 },
-        { id: 2, question_id: 1, content: "x = -2 dan x = -3", is_correct: false, order: 2 },
-        { id: 3, question_id: 1, content: "x = 1 dan x = 6", is_correct: false, order: 3 },
-        { id: 4, question_id: 1, content: "x = -1 dan x = -6", is_correct: false, order: 4 },
-      ],
-      created_at: "2024-01-15",
-      updated_at: "2024-01-15",
-    },
-    {
-      id: 2,
-      title: "Pemahaman Bacaan",
-      content: "Berdasarkan teks di atas, apa yang dimaksud dengan 'sustainable development'?",
-      category_id: 2,
-      category_name: "TPS Pemahaman Bacaan",
-      tryout_title: "UTBK 2024 - Soshum",
-      type: "Pilihan Ganda",
-      difficulty: "Mudah",
-      weight: 1,
-      is_active: true,
-      answers: [
-        { id: 5, question_id: 2, content: "Pembangunan yang berkelanjutan", is_correct: true, order: 1 },
-        { id: 6, question_id: 2, content: "Pembangunan yang cepat", is_correct: false, order: 2 },
-        { id: 7, question_id: 2, content: "Pembangunan yang mahal", is_correct: false, order: 3 },
-        { id: 8, question_id: 2, content: "Pembangunan yang sementara", is_correct: false, order: 4 },
-      ],
-      created_at: "2024-01-15",
-      updated_at: "2024-01-15",
-    },
-    {
-      id: 3,
-      title: "Logika Penalaran",
-      content: "Jika semua A adalah B, dan semua B adalah C, maka...",
-      category_id: 3,
-      category_name: "TPS Penalaran Umum",
-      tryout_title: "UTBK 2024 - Soshum",
-      type: "Pilihan Ganda",
-      difficulty: "Sulit",
-      weight: 3,
-      is_active: true,
-      answers: [
-        { id: 9, question_id: 3, content: "Semua A adalah C", is_correct: true, order: 1 },
-        { id: 10, question_id: 3, content: "Semua C adalah A", is_correct: false, order: 2 },
-        { id: 11, question_id: 3, content: "Beberapa A adalah C", is_correct: false, order: 3 },
-        { id: 12, question_id: 3, content: "Tidak ada hubungan A dan C", is_correct: false, order: 4 },
-      ],
-      created_at: "2024-01-15",
-      updated_at: "2024-01-15",
-    },
-    {
-      id: 4,
-      title: "Essay Matematika",
-      content: "Jelaskan langkah-langkah untuk menyelesaikan persamaan kuadrat menggunakan rumus ABC",
-      category_id: 1,
-      category_name: "TPS Pengetahuan Kuantitatif",
-      tryout_title: "UTBK 2024 - Soshum",
-      type: "Essay",
-      difficulty: "Sangat Sulit",
-      weight: 4,
-      is_active: true,
-      answers: [
-        { id: 13, question_id: 4, content: "Langkah 1: Identifikasi nilai a, b, c. Langkah 2: Hitung diskriminan. Langkah 3: Gunakan rumus x = (-b ± √D) / 2a", is_correct: true },
-      ],
-      created_at: "2024-01-15",
-      updated_at: "2024-01-15",
-    },
-    {
-      id: 5,
-      title: "Benar atau Salah",
-      content: "Indonesia adalah negara kepulauan terbesar di dunia",
-      category_id: 6,
-      category_name: "Pengetahuan dan Pemahaman Umum",
-      tryout_title: "UTBK 2024 - Soshum",
-      type: "Benar/Salah",
-      difficulty: "Mudah",
-      weight: 1,
-      is_active: true,
-      answers: [
-        { id: 14, question_id: 5, content: "Benar", is_correct: true },
-        { id: 15, question_id: 5, content: "Salah", is_correct: false },
-      ],
-      created_at: "2024-01-15",
-      updated_at: "2024-01-15",
-    },
-  ]);
-
-  // Mock categories for form
-  const categories = [
-    { id: 1, name: "TPS Pengetahuan Kuantitatif" },
-    { id: 2, name: "TPS Pemahaman Bacaan" },
-    { id: 3, name: "TPS Penalaran Umum" },
-    { id: 4, name: "Literasi Bahasa Indonesia" },
-    { id: 5, name: "Literasi Bahasa Inggris" },
-    { id: 6, name: "Pengetahuan dan Pemahaman Umum" },
-  ];
-
-  // Filter and search logic
-  const filteredQuestions = questions.filter((question) => {
-    const matchesSearch =
-      question.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      question.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      question.category_name.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesCategory =
-      categoryFilter === "all" || question.category_id.toString() === categoryFilter;
-
-    const matchesType =
-      typeFilter === "all" || question.type === typeFilter;
-
-    const matchesDifficulty =
-      difficultyFilter === "all" || question.difficulty === difficultyFilter;
-
-    const matchesStatus =
-      statusFilter === "all" ||
-      (statusFilter === "active" && question.is_active) ||
-      (statusFilter === "inactive" && !question.is_active);
-
-    return matchesSearch && matchesCategory && matchesType && matchesDifficulty && matchesStatus;
+  const [formData, setFormData] = useState<QuestionCreateData>({
+    title: "",
+    content: "",
+    category_id: 0,
+    type: "Pilihan Ganda",
+    difficulty: "Mudah",
+    weight: 1,
+    is_active: true,
+    answers: [
+      { content: "", is_correct: false, order: 1 },
+      { content: "", is_correct: false, order: 2 },
+      { content: "", is_correct: false, order: 3 },
+      { content: "", is_correct: false, order: 4 },
+    ],
   });
 
-  // Sort logic
-  const sortedQuestions = [...filteredQuestions].sort((a, b) => {
+  // Fetch questions from database
+  const fetchQuestions = async () => {
+    try {
+      setLoading(true);
+      const filters: QuestionFilters = {
+        page: currentPage,
+        limit: itemsPerPage,
+        search: searchQuery,
+        category: categoryFilter === "all" ? undefined : categoryFilter,
+        type: typeFilter === "all" ? undefined : typeFilter,
+        difficulty: difficultyFilter === "all" ? undefined : difficultyFilter,
+        status: statusFilter === "all" ? undefined : statusFilter,
+      };
+
+      const response = await questionService.getQuestions(filters);
+      
+      if (response.success && response.data) {
+        setQuestions(response.data);
+        if (response.pagination) {
+          setTotalQuestions(response.pagination.total);
+          setTotalPages(response.pagination.totalPages);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+      toast.error("Gagal mengambil data questions");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch category options
+  const fetchCategoryOptions = async () => {
+    try {
+      const response = await categoryService.getCategoryOptions();
+      if (response.success && response.data) {
+        setCategories(response.data.map(cat => ({ id: cat.id, name: cat.name })));
+      }
+    } catch (error) {
+      console.error("Error fetching category options:", error);
+    }
+  };
+
+  // Load data on component mount and when filters change
+  useEffect(() => {
+    fetchCategoryOptions();
+  }, []);
+
+  useEffect(() => {
+    fetchQuestions();
+  }, [currentPage, itemsPerPage, searchQuery, categoryFilter, typeFilter, difficultyFilter, statusFilter]);
+
+  const handleSort = (field: string) => {
+    if (sortBy === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(field);
+      setSortOrder("asc");
+    }
+  };
+
+  const openModal = (type: string, question?: Question) => {
+    if (type === "create") {
+      setFormData({
+        title: "",
+        content: "",
+        category_id: 0,
+        type: "Pilihan Ganda",
+        difficulty: "Mudah",
+        weight: 1,
+        is_active: true,
+        answers: [
+          { content: "", is_correct: false, order: 1 },
+          { content: "", is_correct: false, order: 2 },
+          { content: "", is_correct: false, order: 3 },
+          { content: "", is_correct: false, order: 4 },
+        ],
+      });
+      setShowCreateModal(true);
+    } else if (question) {
+      setSelectedQuestion(question);
+      setFormData({
+        title: question.title,
+        content: question.content,
+        category_id: question.category_id,
+        type: question.type,
+        difficulty: question.difficulty,
+        weight: question.weight,
+        is_active: question.is_active,
+        answers: question.answers.map(answer => ({
+          content: answer.content,
+          is_correct: answer.is_correct,
+          order: answer.order,
+        })),
+      });
+      
+      if (type === "edit") {
+        setShowEditModal(true);
+      } else if (type === "view") {
+        setShowViewModal(true);
+      } else if (type === "delete") {
+        setShowDeleteModal(true);
+      }
+    }
+  };
+
+  const closeModal = () => {
+    setShowCreateModal(false);
+    setShowEditModal(false);
+    setShowViewModal(false);
+    setShowDeleteModal(false);
+    setSelectedQuestion(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent, type: "create" | "edit") => {
+    e.preventDefault();
+    
+    try {
+      if (type === "create") {
+        await questionService.createQuestion(formData);
+        toast.success("Question berhasil dibuat");
+      } else if (selectedQuestion) {
+        await questionService.updateQuestion(selectedQuestion.id, formData);
+        toast.success("Question berhasil diupdate");
+      }
+      
+      closeModal();
+      fetchQuestions(); // Refresh data
+    } catch (error: any) {
+      console.error("Error submitting question:", error);
+      toast.error(error.message || "Gagal menyimpan question");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!selectedQuestion) return;
+    
+    try {
+      await questionService.deleteQuestion(selectedQuestion.id);
+      toast.success("Question berhasil dihapus");
+      closeModal();
+      fetchQuestions(); // Refresh data
+    } catch (error: any) {
+      console.error("Error deleting question:", error);
+      toast.error(error.message || "Gagal menghapus question");
+    }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (items: number) => {
+    setItemsPerPage(items);
+    setCurrentPage(1);
+  };
+
+  // Sort questions
+  const sortedQuestions = [...questions].sort((a, b) => {
     let aValue: any = a[sortBy as keyof Question];
     let bValue: any = b[sortBy as keyof Question];
 
@@ -212,59 +233,6 @@ export default function ManageQuestions() {
       return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
     }
   });
-
-  // Pagination logic
-  const totalQuestions = sortedQuestions.length;
-  const totalPages = Math.ceil(totalQuestions / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedQuestions = sortedQuestions.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
-
-  const handleSort = (field: string) => {
-    if (sortBy === field) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortBy(field);
-      setSortOrder("asc");
-    }
-  };
-
-  const handleOpenModal = (type: string, question?: Question) => {
-    setSelectedQuestion(question || null);
-    switch (type) {
-      case "create":
-        setShowCreateModal(true);
-        break;
-      case "edit":
-        setShowEditModal(true);
-        break;
-      case "view":
-        setShowViewModal(true);
-        break;
-      case "delete":
-        setShowDeleteModal(true);
-        break;
-    }
-  };
-
-  const handleCloseModal = () => {
-    setShowCreateModal(false);
-    setShowEditModal(false);
-    setShowViewModal(false);
-    setShowDeleteModal(false);
-    setSelectedQuestion(null);
-  };
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const handleItemsPerPageChange = (items: number) => {
-    setItemsPerPage(items);
-    setCurrentPage(1);
-  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
@@ -297,7 +265,7 @@ export default function ManageQuestions() {
         {/* Page Content */}
         <main className="flex-1 p-4 lg:p-8 overflow-auto" data-main-content>
           {/* Header Section */}
-          <HeaderSection onCreateNew={() => handleOpenModal("create")} />
+          <HeaderSection onCreateNew={() => openModal("create")} />
 
           {/* Filters and Search */}
           <FiltersAndSearch
@@ -316,11 +284,11 @@ export default function ManageQuestions() {
 
           {/* Questions Table */}
           <QuestionsTable
-            questions={paginatedQuestions}
+            questions={sortedQuestions}
             sortBy={sortBy}
             sortOrder={sortOrder}
             onSort={handleSort}
-            onOpenModal={handleOpenModal}
+            onOpenModal={openModal}
             totalQuestions={totalQuestions}
             currentPage={currentPage}
             totalPages={totalPages}
@@ -331,28 +299,230 @@ export default function ManageQuestions() {
         </main>
       </div>
 
-      {/* Modals */}
-      {showCreateModal && <CreateQuestionModal onClose={handleCloseModal} />}
+      {/* Create/Edit Modal */}
+      {(showCreateModal || showEditModal) && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-slate-200">
+              <h3 className="text-xl font-bold text-slate-900">
+                {showCreateModal ? "Buat Soal Baru" : "Edit Soal"}
+              </h3>
+              <button
+                onClick={closeModal}
+                className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                <span className="text-2xl">&times;</span>
+              </button>
+            </div>
 
-      {showEditModal && selectedQuestion && (
-        <EditQuestionModal
-          question={selectedQuestion}
-          onClose={handleCloseModal}
-        />
+            <form onSubmit={(e) => handleSubmit(e, showCreateModal ? "create" : "edit")} className="p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Judul Soal *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
+                    placeholder="Contoh: Persamaan Kuadrat"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Kategori *
+                  </label>
+                  <select
+                    value={formData.category_id || ""}
+                    onChange={(e) => setFormData({ ...formData, category_id: parseInt(e.target.value) })}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
+                    required
+                  >
+                    <option value="">Pilih Kategori</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Konten Soal *
+                </label>
+                <textarea
+                  value={formData.content}
+                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                  rows={4}
+                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
+                  placeholder="Tulis soal lengkap di sini..."
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Tipe Soal *
+                  </label>
+                  <select
+                    value={formData.type}
+                    onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
+                    required
+                  >
+                    <option value="Pilihan Ganda">Pilihan Ganda</option>
+                    <option value="Essay">Essay</option>
+                    <option value="Benar/Salah">Benar/Salah</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Tingkat Kesulitan *
+                  </label>
+                  <select
+                    value={formData.difficulty}
+                    onChange={(e) => setFormData({ ...formData, difficulty: e.target.value as any })}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
+                    required
+                  >
+                    <option value="Mudah">Mudah</option>
+                    <option value="Sedang">Sedang</option>
+                    <option value="Sulit">Sulit</option>
+                    <option value="Sangat Sulit">Sangat Sulit</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Bobot Soal *
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.weight}
+                    onChange={(e) => setFormData({ ...formData, weight: parseInt(e.target.value) })}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
+                    min="1"
+                    max="4"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  checked={formData.is_active}
+                  onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
+                  className="w-4 h-4 text-purple-600 border-slate-300 rounded focus:ring-purple-500"
+                />
+                <label className="text-sm font-medium text-slate-700">
+                  Aktifkan soal ini
+                </label>
+              </div>
+
+              {/* Answers Section */}
+              <div className="space-y-4">
+                <h4 className="text-lg font-semibold text-slate-900">Jawaban</h4>
+                
+                {formData.answers.map((answer, index) => (
+                  <div key={index} className="flex items-center space-x-3 p-4 border border-slate-200 rounded-lg">
+                    <input
+                      type="radio"
+                      name="correctAnswer"
+                      checked={answer.is_correct}
+                      onChange={() => {
+                        const newAnswers = formData.answers.map((a, i) => ({
+                          ...a,
+                          is_correct: i === index
+                        }));
+                        setFormData({ ...formData, answers: newAnswers });
+                      }}
+                      className="w-4 h-4 text-emerald-600 border-slate-300 focus:ring-emerald-500"
+                    />
+                    <input
+                      type="text"
+                      value={answer.content}
+                      onChange={(e) => {
+                        const newAnswers = [...formData.answers];
+                        newAnswers[index].content = e.target.value;
+                        setFormData({ ...formData, answers: newAnswers });
+                      }}
+                      className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                      placeholder={`Jawaban ${index + 1}`}
+                      required
+                    />
+                    {formData.type === "Pilihan Ganda" && (
+                      <span className="text-sm font-medium text-slate-500 w-8 text-center">
+                        {String.fromCharCode(65 + index)}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-center justify-end space-x-3 pt-6 border-t border-slate-200">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="px-6 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all duration-200 font-medium"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all duration-200 font-medium"
+                >
+                  {showCreateModal ? "Buat Soal" : "Simpan Perubahan"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
 
-      {showViewModal && selectedQuestion && (
-        <ViewQuestionModal
-          question={selectedQuestion}
-          onClose={handleCloseModal}
-        />
-      )}
-
+      {/* Delete Confirmation Modal */}
       {showDeleteModal && selectedQuestion && (
-        <DeleteQuestionModal
-          question={selectedQuestion}
-          onClose={handleCloseModal}
-        />
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+            <div className="p-6">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                  <span className="text-2xl text-red-600">🗑️</span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900">Hapus Soal</h3>
+                  <p className="text-sm text-slate-600">Tindakan ini tidak dapat dibatalkan</p>
+                </div>
+              </div>
+              
+              <p className="text-slate-700 mb-6">
+                Apakah Anda yakin ingin menghapus soal <strong>"{selectedQuestion.title}"</strong>?
+              </p>
+
+              <div className="flex items-center justify-end space-x-3">
+                <button
+                  onClick={closeModal}
+                  className="px-4 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all duration-200"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-200"
+                >
+                  Hapus
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
