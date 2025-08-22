@@ -20,6 +20,14 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
+interface Answer {
+  id: number;
+  questionId: number;
+  content: string;
+  isCorrect: boolean;
+  order?: number; // untuk pilihan ganda (A, B, C, D)
+}
+
 interface Question {
   id: number;
   title: string;
@@ -31,6 +39,7 @@ interface Question {
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
   points: number;
   isActive: boolean;
+  answers: Answer[];
   createdAt: string;
   updatedAt: string;
 }
@@ -362,6 +371,52 @@ export default function QuestionsTable({
                 </p>
               </div>
 
+              {/* Answers Info */}
+              <div className="bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-xl p-4 mb-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Target className="w-4 h-4 text-emerald-500" />
+                  <span className="text-sm font-medium text-slate-700">
+                    Jawaban
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  {question.type === "Pilihan Ganda" ? (
+                    question.answers.map((answer) => (
+                      <div key={answer.id} className="flex items-center space-x-2">
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold ${
+                          answer.isCorrect 
+                            ? "bg-emerald-500 text-white" 
+                            : "bg-slate-200 text-slate-600"
+                        }`}>
+                          {answer.order === 1 ? "A" : answer.order === 2 ? "B" : answer.order === 3 ? "C" : "D"}
+                        </span>
+                        <span className={`text-xs ${
+                          answer.isCorrect ? "text-emerald-700 font-semibold" : "text-slate-600"
+                        }`}>
+                          {answer.content}
+                        </span>
+                      </div>
+                    ))
+                  ) : question.type === "Benar/Salah" ? (
+                    question.answers.map((answer) => (
+                      <div key={answer.id} className="flex items-center space-x-2">
+                        <span className={`px-2 py-1 rounded text-xs font-bold ${
+                          answer.isCorrect 
+                            ? "bg-emerald-500 text-white" 
+                            : "bg-slate-200 text-slate-600"
+                        }`}>
+                          {answer.content}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-xs text-emerald-700 font-semibold">
+                      {question.answers.find(a => a.isCorrect)?.content}
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {/* Footer */}
               <div className="flex items-center justify-between pt-4 border-t border-slate-200">
                 <div className="text-xs text-slate-500">
@@ -481,6 +536,52 @@ export default function QuestionsTable({
                 <p className="text-sm font-semibold text-slate-900">
                   {question.points} poin
                 </p>
+              </div>
+
+              {/* Answers Info */}
+              <div className="bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-xl p-4 mb-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Target className="w-4 h-4 text-emerald-500" />
+                  <span className="text-sm font-medium text-slate-700">
+                    Jawaban
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  {question.type === "Pilihan Ganda" ? (
+                    question.answers.map((answer) => (
+                      <div key={answer.id} className="flex items-center space-x-2">
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold ${
+                          answer.isCorrect 
+                            ? "bg-emerald-500 text-white" 
+                            : "bg-slate-200 text-slate-600"
+                        }`}>
+                          {answer.order === 1 ? "A" : answer.order === 2 ? "B" : answer.order === 3 ? "C" : "D"}
+                        </span>
+                        <span className={`text-xs ${
+                          answer.isCorrect ? "text-emerald-700 font-semibold" : "text-slate-600"
+                        }`}>
+                          {answer.content}
+                        </span>
+                      </div>
+                    ))
+                  ) : question.type === "Benar/Salah" ? (
+                    question.answers.map((answer) => (
+                      <div key={answer.id} className="flex items-center space-x-2">
+                        <span className={`px-2 py-1 rounded text-xs font-bold ${
+                          answer.isCorrect 
+                            ? "bg-emerald-500 text-white" 
+                            : "bg-slate-200 text-slate-600"
+                        }`}>
+                          {answer.content}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-xs text-emerald-700 font-semibold">
+                      {question.answers.find(a => a.isCorrect)?.content}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Footer */}

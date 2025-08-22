@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { X, FileText, Folder, Target, Star } from "lucide-react";
+import { X, FileText, Folder, Target, Star, Plus, Trash2 } from "lucide-react";
+
+interface Answer {
+  id: number;
+  questionId: number;
+  content: string;
+  isCorrect: boolean;
+  order?: number; // untuk pilihan ganda (A, B, C, D)
+}
 
 interface CreateQuestionModalProps {
   onClose: () => void;
@@ -20,6 +28,13 @@ export default function CreateQuestionModal({
     isActive: true,
   });
 
+  const [answers, setAnswers] = useState<Omit<Answer, 'id' | 'questionId'>[]>([
+    { content: "", isCorrect: false, order: 1 },
+    { content: "", isCorrect: false, order: 2 },
+    { content: "", isCorrect: false, order: 3 },
+    { content: "", isCorrect: false, order: 4 },
+  ]);
+
   // Mock category options
   const categoryOptions = [
     { id: "1", name: "Matematika Dasar", tryout: "UTBK 2024 - Soshum" },
@@ -33,6 +48,7 @@ export default function CreateQuestionModal({
     e.preventDefault();
     // Handle form submission logic here
     console.log("Form submitted:", formData);
+    console.log("Answers:", answers);
     onClose();
   };
 
@@ -47,11 +63,71 @@ export default function CreateQuestionModal({
       [name]:
         type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
     }));
+
+    // Reset answers when type changes
+    if (name === "type") {
+      if (value === "Pilihan Ganda") {
+        setAnswers([
+          { content: "", isCorrect: false, order: 1 },
+          { content: "", isCorrect: false, order: 2 },
+          { content: "", isCorrect: false, order: 3 },
+          { content: "", isCorrect: false, order: 4 },
+        ]);
+      } else if (value === "Benar/Salah") {
+        setAnswers([
+          { content: "Benar", isCorrect: false },
+          { content: "Salah", isCorrect: false },
+        ]);
+      } else {
+        setAnswers([{ content: "", isCorrect: true }]);
+      }
+    }
+  };
+
+  const handleAnswerChange = (index: number, field: keyof Omit<Answer, 'id' | 'questionId'>, value: string | boolean) => {
+    const newAnswers = [...answers];
+    if (field === 'isCorrect') {
+      // For multiple choice and true/false, only one can be correct
+      newAnswers.forEach((answer, i) => {
+        answer.isCorrect = i === index;
+      });
+    } else {
+      newAnswers[index] = { ...newAnswers[index], [field]: value };
+    }
+    setAnswers(newAnswers);
+  };
+
+  const addAnswer = () => {
+    if (formData.type === "Pilihan Ganda") {
+      setAnswers([...answers, { content: "", isCorrect: false, order: answers.length + 1 }]);
+    } else if (formData.type === "Essay") {
+      setAnswers([...answers, { content: "", isCorrect: true }]);
+    }
+  };
+
+  const removeAnswer = (index: number) => {
+    if (answers.length > 1) {
+      const newAnswers = answers.filter((_, i) => i !== index);
+      // Reorder if it's multiple choice
+      if (formData.type === "Pilihan Ganda") {
+        newAnswers.forEach((answer, i) => {
+          answer.order = i + 1;
+        });
+      }
+      setAnswers(newAnswers);
+    }
+  };
+
+  const getAnswerLabel = (index: number) => {
+    if (formData.type === "Pilihan Ganda") {
+      return String.fromCharCode(65 + index); // A, B, C, D, etc.
+    }
+    return `${index + 1}`;
   };
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
           <div className="flex items-center space-x-3">
@@ -206,6 +282,98 @@ export default function CreateQuestionModal({
               <label className="text-sm font-medium text-slate-700">
                 Aktifkan soal ini
               </label>
+            </div>
+          </div>
+
+          {/* Answers Section */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="text-lg font-semibold text-slate-900 flex items-center space-x-2">
+                <Target className="w-5 h-5 text-emerald-600" />
+                <span>Jawaban</span>
+              </h4>
+              {(formData.type === "Pilihan Ganda" || formData.type === "Essay") && (
+                <button
+                  type="button"
+                  onClick={addAnswer}
+                  className="inline-flex items-center space-x-2 px-3 py-2 bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 transition-all duration-200 text-sm font-medium"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Tambah Jawaban</span>
+                </button>
+              )}
+            </div>
+
+            <div className="space-y-3">
+              {answers.map((answer, index) => (
+                <div key={index} className="flex items-center space-x-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                  {/* Answer Label */}
+                  <div className="flex-shrink-0">
+                    <span className="w-8 h-8 bg-emerald-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                      {getAnswerLabel(index)}
+                    </span>
+                  </div>
+
+                  {/* Answer Content */}
+                  <div className="flex-1">
+                    {formData.type === "Essay" ? (
+                      <textarea
+                        value={answer.content}
+                        onChange={(e) => handleAnswerChange(index, 'content', e.target.value)}
+                        placeholder="Tuliskan jawaban essay..."
+                        rows={3}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 text-sm"
+                        required
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        value={answer.content}
+                        onChange={(e) => handleAnswerChange(index, 'content', e.target.value)}
+                        placeholder={`Jawaban ${getAnswerLabel(index)}`}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 text-sm"
+                        required
+                      />
+                    )}
+                  </div>
+
+                  {/* Correct Answer Toggle */}
+                  <div className="flex-shrink-0">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="correctAnswer"
+                        checked={answer.isCorrect}
+                        onChange={() => handleAnswerChange(index, 'isCorrect', true)}
+                        className="w-4 h-4 text-emerald-600 border-slate-300 focus:ring-emerald-500"
+                      />
+                      <span className="text-sm font-medium text-slate-700">
+                        Benar
+                      </span>
+                    </label>
+                  </div>
+
+                  {/* Remove Button */}
+                  {(formData.type === "Pilihan Ganda" || formData.type === "Essay") && answers.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeAnswer(index)}
+                      className="flex-shrink-0 p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Answer Type Info */}
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+              <p className="text-sm text-blue-700">
+                {formData.type === "Pilihan Ganda" && "Pilih satu jawaban yang benar dari pilihan yang tersedia."}
+                {formData.type === "Essay" && "Tuliskan jawaban yang benar untuk soal essay."}
+                {formData.type === "Benar/Salah" && "Pilih jawaban yang benar antara 'Benar' atau 'Salah'."}
+              </p>
             </div>
           </div>
 

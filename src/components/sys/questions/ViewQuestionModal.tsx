@@ -10,6 +10,14 @@ import {
   Calendar,
 } from "lucide-react";
 
+interface Answer {
+  id: number;
+  questionId: number;
+  content: string;
+  isCorrect: boolean;
+  order?: number; // untuk pilihan ganda (A, B, C, D)
+}
+
 interface Question {
   id: number;
   title: string;
@@ -21,6 +29,7 @@ interface Question {
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
   points: number;
   isActive: boolean;
+  answers: Answer[];
   createdAt: string;
   updatedAt: string;
 }
@@ -163,6 +172,81 @@ export default function ViewQuestionModal({
               <p className="text-sm text-slate-600">
                 Nilai maksimal untuk soal ini
               </p>
+            </div>
+          </div>
+
+          {/* Answers Info */}
+          <div className="bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-xl p-4">
+            <h4 className="text-lg font-semibold text-slate-900 mb-3 flex items-center">
+              <Target className="w-5 h-5 mr-2 text-emerald-600" />
+              Jawaban
+            </h4>
+            <div className="space-y-3">
+              {question.type === "Pilihan Ganda" ? (
+                <div>
+                  <p className="text-sm text-slate-600 mb-3">
+                    Pilihan jawaban untuk soal pilihan ganda:
+                  </p>
+                  <div className="space-y-2">
+                    {question.answers.map((answer) => (
+                      <div key={answer.id} className="flex items-center space-x-3 p-3 bg-white rounded-lg border">
+                        <span className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold ${
+                          answer.isCorrect 
+                            ? "bg-emerald-500 text-white" 
+                            : "bg-slate-200 text-slate-600"
+                        }`}>
+                          {answer.order === 1 ? "A" : answer.order === 2 ? "B" : answer.order === 3 ? "C" : "D"}
+                        </span>
+                        <span className={`flex-1 ${
+                          answer.isCorrect ? "text-emerald-700 font-semibold" : "text-slate-700"
+                        }`}>
+                          {answer.content}
+                        </span>
+                        {answer.isCorrect && (
+                          <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-medium">
+                            Benar
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : question.type === "Benar/Salah" ? (
+                <div>
+                  <p className="text-sm text-slate-600 mb-3">
+                    Pilihan jawaban untuk soal benar/salah:
+                  </p>
+                  <div className="space-y-2">
+                    {question.answers.map((answer) => (
+                      <div key={answer.id} className="flex items-center space-x-3 p-3 bg-white rounded-lg border">
+                        <span className={`px-3 py-1 rounded text-sm font-bold ${
+                          answer.isCorrect 
+                            ? "bg-emerald-500 text-white" 
+                            : "bg-slate-200 text-slate-600"
+                        }`}>
+                          {answer.content}
+                        </span>
+                        {answer.isCorrect && (
+                          <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-medium">
+                            Jawaban Benar
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-sm text-slate-600 mb-3">
+                    Jawaban untuk soal essay:
+                  </p>
+                  <div className="p-3 bg-white rounded-lg border">
+                    <p className="text-emerald-700 font-semibold">
+                      {question.answers.find(a => a.isCorrect)?.content}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

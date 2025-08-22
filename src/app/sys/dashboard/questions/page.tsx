@@ -13,6 +13,14 @@ import {
 } from "@/components/sys/questions";
 import { usePageTransition } from "@/lib/hooks";
 
+interface Answer {
+  id: number;
+  questionId: number;
+  content: string;
+  isCorrect: boolean;
+  order?: number; // untuk pilihan ganda (A, B, C, D)
+}
+
 interface Question {
   id: number;
   title: string;
@@ -24,6 +32,7 @@ interface Question {
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
   points: number;
   isActive: boolean;
+  answers: Answer[];
   createdAt: string;
   updatedAt: string;
 }
@@ -69,6 +78,12 @@ export default function ManageQuestions() {
       difficulty: "Sedang",
       points: 10,
       isActive: true,
+      answers: [
+        { id: 1, questionId: 1, content: "x = 2 dan x = 3", isCorrect: true, order: 1 },
+        { id: 2, questionId: 1, content: "x = -2 dan x = -3", isCorrect: false, order: 2 },
+        { id: 3, questionId: 1, content: "x = 1 dan x = 6", isCorrect: false, order: 3 },
+        { id: 4, questionId: 1, content: "x = -1 dan x = -6", isCorrect: false, order: 4 },
+      ],
       createdAt: "2024-01-15",
       updatedAt: "2024-01-20",
     },
@@ -83,6 +98,9 @@ export default function ManageQuestions() {
       difficulty: "Mudah",
       points: 15,
       isActive: true,
+      answers: [
+        { id: 5, questionId: 2, content: "Ide pokok paragraf pertama adalah tentang pentingnya pendidikan dalam pembangunan bangsa", isCorrect: true },
+      ],
       createdAt: "2024-01-12",
       updatedAt: "2024-01-18",
     },
@@ -97,6 +115,12 @@ export default function ManageQuestions() {
       difficulty: "Sangat Sulit",
       points: 20,
       isActive: true,
+      answers: [
+        { id: 6, questionId: 3, content: "5 m/s²", isCorrect: true, order: 1 },
+        { id: 7, questionId: 3, content: "10 m/s²", isCorrect: false, order: 2 },
+        { id: 8, questionId: 3, content: "2 m/s²", isCorrect: false, order: 3 },
+        { id: 9, questionId: 3, content: "20 m/s²", isCorrect: false, order: 4 },
+      ],
       createdAt: "2024-01-10",
       updatedAt: "2024-01-19",
     },
@@ -111,6 +135,10 @@ export default function ManageQuestions() {
       difficulty: "Sulit",
       points: 5,
       isActive: false,
+      answers: [
+        { id: 10, questionId: 4, content: "Benar", isCorrect: true },
+        { id: 11, questionId: 4, content: "Salah", isCorrect: false },
+      ],
       createdAt: "2024-01-08",
       updatedAt: "2024-01-16",
     },
@@ -125,6 +153,9 @@ export default function ManageQuestions() {
       difficulty: "Sedang",
       points: 25,
       isActive: true,
+      answers: [
+        { id: 12, questionId: 5, content: "Soekarno berperan sebagai proklamator kemerdekaan, memimpin sidang PPKI, dan menyusun teks proklamasi bersama Hatta", isCorrect: true },
+      ],
       createdAt: "2024-01-05",
       updatedAt: "2024-01-17",
     },

@@ -2,6 +2,14 @@
 
 import { X, AlertTriangle, FileText } from "lucide-react";
 
+interface Answer {
+  id: number;
+  questionId: number;
+  content: string;
+  isCorrect: boolean;
+  order?: number; // untuk pilihan ganda (A, B, C, D)
+}
+
 interface Question {
   id: number;
   title: string;
@@ -13,6 +21,7 @@ interface Question {
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
   points: number;
   isActive: boolean;
+  answers: Answer[];
   createdAt: string;
   updatedAt: string;
 }
@@ -69,9 +78,35 @@ export default function DeleteQuestionModal({
                   Peringatan!
                 </h4>
                 <p className="text-sm text-red-700">
-                  Anda akan menghapus soal <strong>{question.title}</strong> secara permanen. 
+                  Anda akan menghapus soal <strong>{question.title}</strong> secara permanen.
                   Semua data yang terkait akan hilang dan tidak dapat dipulihkan.
                 </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Question Info */}
+          <div className="bg-slate-50 rounded-xl p-4">
+            <h4 className="text-sm font-semibold text-slate-900 mb-2 flex items-center">
+              <FileText className="w-4 h-4 mr-2" />
+              Informasi Soal
+            </h4>
+            <div className="space-y-2 text-sm">
+              <div>
+                <span className="text-slate-600">Tipe:</span>{" "}
+                <span className="font-medium text-slate-900">{question.type}</span>
+              </div>
+              <div>
+                <span className="text-slate-600">Kategori:</span>{" "}
+                <span className="font-medium text-slate-900">{question.categoryName}</span>
+              </div>
+              <div>
+                <span className="text-slate-600">Poin:</span>{" "}
+                <span className="font-medium text-slate-900">{question.points} poin</span>
+              </div>
+              <div>
+                <span className="text-slate-600">Jumlah Jawaban:</span>{" "}
+                <span className="font-medium text-slate-900">{question.answers.length} jawaban</span>
               </div>
             </div>
           </div>
