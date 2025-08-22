@@ -17,6 +17,7 @@ interface Category {
   description: string;
   tryoutId: number;
   tryoutTitle: string;
+  duration: number; // in minutes
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
   isActive: boolean;
   createdAt: string;
@@ -111,26 +112,42 @@ export default function ViewCategoryModal({
             </p>
           </div>
 
-          {/* Tryout Info */}
-          <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-4">
-            <h4 className="text-lg font-semibold text-slate-900 mb-3 flex items-center">
-              <BookOpen className="w-5 h-5 mr-2 text-blue-600" />
-              Tryout Terkait
-            </h4>
-            <div className="space-y-2">
-              <p className="text-slate-900 font-medium">
-                {category.tryoutTitle}
-              </p>
-              <p className="text-sm text-slate-600">
-                ID Tryout: {category.tryoutId}
-              </p>
-            </div>
-          </div>
+                     {/* Tryout Info */}
+           <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-4">
+             <h4 className="text-lg font-semibold text-slate-900 mb-3 flex items-center">
+               <BookOpen className="w-5 h-5 mr-2 text-blue-600" />
+               Tryout Terkait
+             </h4>
+             <div className="space-y-2">
+               <p className="text-slate-900 font-medium">
+                 {category.tryoutTitle}
+               </p>
+               <p className="text-sm text-slate-600">
+                 ID Tryout: {category.tryoutId}
+               </p>
+             </div>
+           </div>
 
-          {/* Configuration Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           {/* Duration Info */}
+           <div className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-xl p-4">
+             <h4 className="text-lg font-semibold text-slate-900 mb-3 flex items-center">
+               <Clock className="w-5 h-5 mr-2 text-amber-600" />
+               Durasi
+             </h4>
+             <div className="space-y-2">
+               <p className="text-slate-900 font-medium">
+                 {category.duration} menit
+               </p>
+               <p className="text-sm text-slate-600">
+                 Waktu pengerjaan untuk kategori ini
+               </p>
+             </div>
+           </div>
 
-          </div>
+           {/* Configuration Stats */}
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+           </div>
 
           {/* Timestamps */}
           <div className="bg-slate-50 rounded-xl p-4">

@@ -26,6 +26,7 @@ interface Category {
   description: string;
   tryoutId: number;
   tryoutTitle: string;
+  duration: number; // in minutes
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
   isActive: boolean;
   createdAt: string;
@@ -215,8 +216,23 @@ export default function CategoriesTable({
                     ))}
                 </button>
 
-
-
+                <button
+                  onClick={() => onSort("duration")}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-300 ${
+                    sortBy === "duration"
+                      ? "bg-blue-100 text-blue-700 border border-blue-200 shadow-sm"
+                      : "bg-slate-50 hover:bg-slate-100 text-slate-700 border border-transparent hover:border-slate-200"
+                  }`}
+                >
+                  <Clock className="w-4 h-4" />
+                  <span className="text-sm font-medium">Durasi</span>
+                  {sortBy === "duration" &&
+                    (sortOrder === "asc" ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    ))}
+                </button>
 
               </div>
             </div>
@@ -311,7 +327,18 @@ export default function CategoriesTable({
                 </p>
               </div>
 
-
+              {/* Duration Info */}
+              <div className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-xl p-4 mb-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Clock className="w-4 h-4 text-amber-500" />
+                  <span className="text-sm font-medium text-slate-700">
+                    Durasi
+                  </span>
+                </div>
+                <p className="text-sm font-semibold text-slate-900">
+                  {category.duration} menit
+                </p>
+              </div>
 
               {/* Footer */}
               <div className="flex items-center justify-between pt-4 border-t border-slate-200">
@@ -370,8 +397,73 @@ export default function CategoriesTable({
                 </div>
               </div>
 
-              {/* Mobile content would go here - similar to desktop but optimized for mobile */}
-              {/* I'll abbreviate this for space but it would follow the same pattern */}
+              {/* Badges Row */}
+              <div className="flex flex-wrap gap-2 mb-4">
+                <span
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(
+                    category.difficulty
+                  )}`}
+                >
+                  <Target className="w-3 h-3 mr-1" />
+                  {category.difficulty}
+                </span>
+                <span
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
+                    category.isActive
+                  )}`}
+                >
+                  <Activity className="w-3 h-3 mr-1" />
+                  {category.isActive ? "Aktif" : "Tidak Aktif"}
+                </span>
+              </div>
+
+              {/* Description */}
+              <div className="mb-4">
+                <p className="text-sm text-slate-600 line-clamp-2">
+                  {category.description}
+                </p>
+              </div>
+
+              {/* Tryout Info */}
+              <div className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-4 mb-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <BookOpen className="w-4 h-4 text-blue-500" />
+                  <span className="text-sm font-medium text-slate-700">
+                    Tryout Terkait
+                  </span>
+                </div>
+                <p className="text-sm font-semibold text-slate-900 mb-1">
+                  {category.tryoutTitle}
+                </p>
+                <p className="text-xs text-slate-500">
+                  ID Tryout: {category.tryoutId}
+                </p>
+              </div>
+
+              {/* Duration Info */}
+              <div className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-xl p-4 mb-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Clock className="w-4 h-4 text-amber-500" />
+                  <span className="text-sm font-medium text-slate-700">
+                    Durasi
+                  </span>
+                </div>
+                <p className="text-sm font-semibold text-slate-900">
+                  {category.duration} menit
+                </p>
+              </div>
+
+              {/* Footer */}
+              <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+                <div className="text-xs text-slate-500">
+                  <span className="font-medium">Dibuat:</span>{" "}
+                  {category.createdAt}
+                </div>
+                <div className="text-xs text-slate-500">
+                  <span className="font-medium">Update:</span>{" "}
+                  {category.updatedAt}
+                </div>
+              </div>
             </div>
           ))}
         </div>

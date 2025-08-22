@@ -20,6 +20,7 @@ interface Category {
   description: string;
   tryoutId: number;
   tryoutTitle: string;
+  duration: number; // in minutes
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
   isActive: boolean;
   createdAt: string;
@@ -62,6 +63,7 @@ export default function ManageCategories() {
         "Kategori untuk soal-soal matematika tingkat dasar mencakup aljabar, geometri, dan aritmatika",
       tryoutId: 1,
       tryoutTitle: "UTBK 2024 - Soshum",
+      duration: 90,
       difficulty: "Sedang",
       isActive: true,
       createdAt: "2024-01-15",
@@ -74,6 +76,7 @@ export default function ManageCategories() {
         "Kategori untuk soal-soal bahasa Indonesia meliputi tata bahasa, sastra, dan pemahaman bacaan",
       tryoutId: 1,
       tryoutTitle: "UTBK 2024 - Soshum",
+      duration: 60,
       difficulty: "Mudah",
       isActive: true,
       createdAt: "2024-01-12",
@@ -86,6 +89,7 @@ export default function ManageCategories() {
         "Kategori untuk soal-soal fisika tingkat lanjutan mencakup mekanika, termodinamika, dan elektromagnetik",
       tryoutId: 2,
       tryoutTitle: "UTBK 2024 - Saintek",
+      duration: 120,
       difficulty: "Sangat Sulit",
       isActive: true,
       createdAt: "2024-01-10",
@@ -98,6 +102,7 @@ export default function ManageCategories() {
         "Kategori untuk soal-soal kimia organik dengan fokus pada struktur molekul dan reaksi",
       tryoutId: 2,
       tryoutTitle: "UTBK 2024 - Saintek",
+      duration: 75,
       difficulty: "Sulit",
       isActive: false,
       createdAt: "2024-01-08",
@@ -110,6 +115,7 @@ export default function ManageCategories() {
         "Kategori untuk soal-soal sejarah Indonesia dari masa pra-kemerdekaan hingga modern",
       tryoutId: 3,
       tryoutTitle: "Simulasi CPNS 2024",
+      duration: 45,
       difficulty: "Sedang",
       isActive: true,
       createdAt: "2024-01-05",

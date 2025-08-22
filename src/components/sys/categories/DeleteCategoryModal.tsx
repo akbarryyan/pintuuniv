@@ -8,6 +8,7 @@ interface Category {
   description: string;
   tryoutId: number;
   tryoutTitle: string;
+  duration: number; // in minutes
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
   isActive: boolean;
   createdAt: string;
@@ -92,6 +93,12 @@ export default function DeleteCategoryModal({
                 <span className="text-slate-600">Tryout:</span>
                 <span className="text-slate-900 font-medium">
                   {category.tryoutTitle}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-600">Durasi:</span>
+                <span className="text-slate-900 font-medium">
+                  {category.duration} menit
                 </span>
               </div>
 

@@ -9,6 +9,7 @@ interface Category {
   description: string;
   tryoutId: number;
   tryoutTitle: string;
+  duration: number; // in minutes
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
   isActive: boolean;
   createdAt: string;
@@ -28,6 +29,7 @@ export default function EditCategoryModal({
     name: category.name,
     description: category.description,
     tryoutId: category.tryoutId.toString(),
+    duration: category.duration.toString(),
     difficulty: category.difficulty,
     isActive: category.isActive,
   });
@@ -143,6 +145,23 @@ export default function EditCategoryModal({
                 ))}
               </select>
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                <Clock className="w-4 h-4 inline mr-1" />
+                Durasi (menit) *
+              </label>
+              <input
+                type="number"
+                name="duration"
+                value={formData.duration}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200"
+                placeholder="90"
+                min="1"
+                required
+              />
+            </div>
           </div>
 
           {/* Configuration */}
@@ -151,8 +170,6 @@ export default function EditCategoryModal({
               <Target className="w-5 h-5 text-purple-600" />
               <span>Konfigurasi</span>
             </h4>
-
-
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
