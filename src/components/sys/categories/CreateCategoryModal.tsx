@@ -14,8 +14,6 @@ export default function CreateCategoryModal({
     name: "",
     description: "",
     tryoutId: "",
-    duration: "",
-    questionsCount: "",
     difficulty: "Mudah" as "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit",
     isActive: true,
   });
@@ -140,41 +138,7 @@ export default function CreateCategoryModal({
               <span>Konfigurasi</span>
             </h4>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  <Clock className="w-4 h-4 inline mr-1" />
-                  Durasi (menit) *
-                </label>
-                <input
-                  type="number"
-                  name="duration"
-                  value={formData.duration}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                  placeholder="90"
-                  min="1"
-                  required
-                />
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  <BookOpen className="w-4 h-4 inline mr-1" />
-                  Jumlah Soal *
-                </label>
-                <input
-                  type="number"
-                  name="questionsCount"
-                  value={formData.questionsCount}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                  placeholder="25"
-                  min="1"
-                  required
-                />
-              </div>
-            </div>
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">

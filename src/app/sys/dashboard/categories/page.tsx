@@ -20,14 +20,10 @@ interface Category {
   description: string;
   tryoutId: number;
   tryoutTitle: string;
-  duration: number; // in minutes
-  questionsCount: number;
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  completedBy: number;
-  averageScore: number;
 }
 
 export default function ManageCategories() {
@@ -66,14 +62,10 @@ export default function ManageCategories() {
         "Kategori untuk soal-soal matematika tingkat dasar mencakup aljabar, geometri, dan aritmatika",
       tryoutId: 1,
       tryoutTitle: "UTBK 2024 - Soshum",
-      duration: 90,
-      questionsCount: 25,
       difficulty: "Sedang",
       isActive: true,
       createdAt: "2024-01-15",
       updatedAt: "2024-01-20",
-      completedBy: 1234,
-      averageScore: 78.5,
     },
     {
       id: 2,
@@ -82,14 +74,10 @@ export default function ManageCategories() {
         "Kategori untuk soal-soal bahasa Indonesia meliputi tata bahasa, sastra, dan pemahaman bacaan",
       tryoutId: 1,
       tryoutTitle: "UTBK 2024 - Soshum",
-      duration: 60,
-      questionsCount: 20,
       difficulty: "Mudah",
       isActive: true,
       createdAt: "2024-01-12",
       updatedAt: "2024-01-18",
-      completedBy: 1456,
-      averageScore: 82.3,
     },
     {
       id: 3,
@@ -98,14 +86,10 @@ export default function ManageCategories() {
         "Kategori untuk soal-soal fisika tingkat lanjutan mencakup mekanika, termodinamika, dan elektromagnetik",
       tryoutId: 2,
       tryoutTitle: "UTBK 2024 - Saintek",
-      duration: 120,
-      questionsCount: 30,
       difficulty: "Sangat Sulit",
       isActive: true,
       createdAt: "2024-01-10",
       updatedAt: "2024-01-19",
-      completedBy: 892,
-      averageScore: 65.7,
     },
     {
       id: 4,
@@ -114,14 +98,10 @@ export default function ManageCategories() {
         "Kategori untuk soal-soal kimia organik dengan fokus pada struktur molekul dan reaksi",
       tryoutId: 2,
       tryoutTitle: "UTBK 2024 - Saintek",
-      duration: 75,
-      questionsCount: 20,
       difficulty: "Sulit",
       isActive: false,
       createdAt: "2024-01-08",
       updatedAt: "2024-01-16",
-      completedBy: 567,
-      averageScore: 71.2,
     },
     {
       id: 5,
@@ -130,14 +110,10 @@ export default function ManageCategories() {
         "Kategori untuk soal-soal sejarah Indonesia dari masa pra-kemerdekaan hingga modern",
       tryoutId: 3,
       tryoutTitle: "Simulasi CPNS 2024",
-      duration: 45,
-      questionsCount: 15,
       difficulty: "Sedang",
       isActive: true,
       createdAt: "2024-01-05",
       updatedAt: "2024-01-17",
-      completedBy: 2341,
-      averageScore: 75.8,
     },
   ]);
 

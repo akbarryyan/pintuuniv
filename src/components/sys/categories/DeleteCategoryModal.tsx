@@ -8,14 +8,10 @@ interface Category {
   description: string;
   tryoutId: number;
   tryoutTitle: string;
-  duration: number;
-  questionsCount: number;
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  completedBy: number;
-  averageScore: number;
 }
 
 interface DeleteCategoryModalProps {
@@ -98,18 +94,7 @@ export default function DeleteCategoryModal({
                   {category.tryoutTitle}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-600">Jumlah Soal:</span>
-                <span className="text-slate-900 font-medium">
-                  {category.questionsCount} soal
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-600">Total Peserta:</span>
-                <span className="text-slate-900 font-medium">
-                  {category.completedBy.toLocaleString()} orang
-                </span>
-              </div>
+
             </div>
           </div>
 
@@ -119,13 +104,8 @@ export default function DeleteCategoryModal({
               Data yang akan terhapus:
             </h4>
             <ul className="text-sm text-amber-700 space-y-1">
-              <li>
-                • Semua soal dalam kategori ini ({category.questionsCount} soal)
-              </li>
-              <li>
-                • Riwayat jawaban peserta (
-                {category.completedBy.toLocaleString()} records)
-              </li>
+              <li>• Semua soal dalam kategori ini</li>
+              <li>• Riwayat jawaban peserta</li>
               <li>• Statistik dan laporan terkait</li>
               <li>• Konfigurasi dan pengaturan kategori</li>
             </ul>

@@ -17,14 +17,10 @@ interface Category {
   description: string;
   tryoutId: number;
   tryoutTitle: string;
-  duration: number;
-  questionsCount: number;
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  completedBy: number;
-  averageScore: number;
 }
 
 interface ViewCategoryModalProps {
@@ -133,71 +129,7 @@ export default function ViewCategoryModal({
 
           {/* Configuration Stats */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <h4 className="text-lg font-semibold text-slate-900 flex items-center">
-                <Target className="w-5 h-5 mr-2 text-purple-600" />
-                Konfigurasi
-              </h4>
 
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <Clock className="w-4 h-4 text-amber-500" />
-                    <span className="text-sm font-medium text-slate-700">
-                      Durasi
-                    </span>
-                  </div>
-                  <span className="text-sm font-semibold text-slate-900">
-                    {category.duration} menit
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <BookOpen className="w-4 h-4 text-blue-500" />
-                    <span className="text-sm font-medium text-slate-700">
-                      Jumlah Soal
-                    </span>
-                  </div>
-                  <span className="text-sm font-semibold text-slate-900">
-                    {category.questionsCount} soal
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h4 className="text-lg font-semibold text-slate-900 flex items-center">
-                <Users className="w-5 h-5 mr-2 text-emerald-600" />
-                Statistik
-              </h4>
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <Users className="w-4 h-4 text-emerald-500" />
-                    <span className="text-sm font-medium text-slate-700">
-                      Total Peserta
-                    </span>
-                  </div>
-                  <span className="text-sm font-semibold text-slate-900">
-                    {category.completedBy.toLocaleString()}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <Target className="w-4 h-4 text-purple-500" />
-                    <span className="text-sm font-medium text-slate-700">
-                      Rata-rata Nilai
-                    </span>
-                  </div>
-                  <span className="text-sm font-semibold text-slate-900">
-                    {category.averageScore.toFixed(1)}
-                  </span>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Timestamps */}
@@ -222,37 +154,7 @@ export default function ViewCategoryModal({
             </div>
           </div>
 
-          {/* Performance Insights */}
-          <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-4">
-            <h4 className="text-lg font-semibold text-slate-900 mb-3 flex items-center">
-              <Activity className="w-5 h-5 mr-2 text-purple-600" />
-              Insight Performa
-            </h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-purple-700">
-                  {Math.round(
-                    (category.duration / category.questionsCount) * 10
-                  ) / 10}
-                </p>
-                <p className="text-sm text-slate-600">Menit per soal</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-purple-700">
-                  {Math.round(
-                    (category.averageScore / 100) * category.questionsCount
-                  )}
-                </p>
-                <p className="text-sm text-slate-600">Soal benar rata-rata</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-purple-700">
-                  {Math.round((category.completedBy / 1000) * 10) / 10}K
-                </p>
-                <p className="text-sm text-slate-600">Peserta (ribuan)</p>
-              </div>
-            </div>
-          </div>
+
         </div>
 
         {/* Footer */}

@@ -26,14 +26,10 @@ interface Category {
   description: string;
   tryoutId: number;
   tryoutTitle: string;
-  duration: number;
-  questionsCount: number;
   difficulty: "Mudah" | "Sedang" | "Sulit" | "Sangat Sulit";
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  completedBy: number;
-  averageScore: number;
 }
 
 interface CategoriesTableProps {
@@ -219,59 +215,9 @@ export default function CategoriesTable({
                     ))}
                 </button>
 
-                <button
-                  onClick={() => onSort("duration")}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-300 ${
-                    sortBy === "duration"
-                      ? "bg-blue-100 text-blue-700 border border-blue-200 shadow-sm"
-                      : "bg-slate-50 hover:bg-slate-100 text-slate-700 border border-transparent hover:border-slate-200"
-                  }`}
-                >
-                  <Clock className="w-4 h-4" />
-                  <span className="text-sm font-medium">Durasi</span>
-                  {sortBy === "duration" &&
-                    (sortOrder === "asc" ? (
-                      <ChevronUp className="w-4 h-4" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4" />
-                    ))}
-                </button>
 
-                <button
-                  onClick={() => onSort("questionsCount")}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-300 ${
-                    sortBy === "questionsCount"
-                      ? "bg-blue-100 text-blue-700 border border-blue-200 shadow-sm"
-                      : "bg-slate-50 hover:bg-slate-100 text-slate-700 border border-transparent hover:border-slate-200"
-                  }`}
-                >
-                  <BookOpen className="w-4 h-4" />
-                  <span className="text-sm font-medium">Soal</span>
-                  {sortBy === "questionsCount" &&
-                    (sortOrder === "asc" ? (
-                      <ChevronUp className="w-4 h-4" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4" />
-                    ))}
-                </button>
 
-                <button
-                  onClick={() => onSort("completedBy")}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-300 ${
-                    sortBy === "completedBy"
-                      ? "bg-blue-100 text-blue-700 border border-blue-200 shadow-sm"
-                      : "bg-slate-50 hover:bg-slate-100 text-slate-700 border border-transparent hover:border-slate-200"
-                  }`}
-                >
-                  <Users className="w-4 h-4" />
-                  <span className="text-sm font-medium">Peserta</span>
-                  {sortBy === "completedBy" &&
-                    (sortOrder === "asc" ? (
-                      <ChevronUp className="w-4 h-4" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4" />
-                    ))}
-                </button>
+
               </div>
             </div>
           </div>
@@ -365,57 +311,7 @@ export default function CategoriesTable({
                 </p>
               </div>
 
-              {/* Stats Section */}
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="bg-slate-50 rounded-xl p-3">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Clock className="w-4 h-4 text-amber-500" />
-                    <span className="text-xs font-medium text-slate-600 uppercase tracking-wide">
-                      Durasi
-                    </span>
-                  </div>
-                  <p className="text-sm font-semibold text-slate-900">
-                    {category.duration} menit
-                  </p>
-                </div>
-                <div className="bg-slate-50 rounded-xl p-3">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <BookOpen className="w-4 h-4 text-blue-500" />
-                    <span className="text-xs font-medium text-slate-600 uppercase tracking-wide">
-                      Soal
-                    </span>
-                  </div>
-                  <p className="text-sm font-semibold text-slate-900">
-                    {category.questionsCount} soal
-                  </p>
-                </div>
-              </div>
 
-              {/* Performance Section */}
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="bg-slate-50 rounded-xl p-3">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Users className="w-4 h-4 text-emerald-500" />
-                    <span className="text-xs font-medium text-slate-600 uppercase tracking-wide">
-                      Peserta
-                    </span>
-                  </div>
-                  <p className="text-sm font-semibold text-slate-900">
-                    {category.completedBy.toLocaleString()}
-                  </p>
-                </div>
-                <div className="bg-slate-50 rounded-xl p-3">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Target className="w-4 h-4 text-purple-500" />
-                    <span className="text-xs font-medium text-slate-600 uppercase tracking-wide">
-                      Avg Score
-                    </span>
-                  </div>
-                  <p className="text-sm font-semibold text-slate-900">
-                    {category.averageScore.toFixed(1)}
-                  </p>
-                </div>
-              </div>
 
               {/* Footer */}
               <div className="flex items-center justify-between pt-4 border-t border-slate-200">
