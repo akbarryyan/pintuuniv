@@ -98,6 +98,12 @@ export default function Sidebar({
       badge: "24",
     },
     {
+      title: "Questions",
+      href: "/sys/dashboard/questions",
+      icon: <FileText className="w-5 h-5" />,
+      badge: "156",
+    },
+    {
       title: "Payments",
       href: "/sys/dashboard/payments",
       icon: <CreditCard className="w-5 h-5" />,
