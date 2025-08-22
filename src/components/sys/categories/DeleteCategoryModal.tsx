@@ -39,14 +39,14 @@ export default function DeleteCategoryModal({
             <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center">
               <AlertTriangle className="w-5 h-5 text-white" />
             </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900">
-                Hapus Kategori
-              </h3>
-              <p className="text-sm text-slate-600">
-                Tindakan ini tidak dapat dibatalkan
-              </p>
-            </div>
+                         <div>
+               <h3 className="text-xl font-bold text-slate-900">
+                 Hapus Kategori
+               </h3>
+               <p className="text-sm text-slate-600">
+                 {category.name} • {category.tryoutTitle}
+               </p>
+             </div>
           </div>
           <button
             onClick={onClose}
@@ -67,55 +67,11 @@ export default function DeleteCategoryModal({
                   Peringatan!
                 </h4>
                 <p className="text-sm text-red-700">
-                  Anda akan menghapus kategori ini secara permanen. Semua data
-                  yang terkait akan hilang dan tidak dapat dipulihkan.
+                  Anda akan menghapus kategori <strong>{category.name}</strong> secara permanen. 
+                  Semua data yang terkait akan hilang dan tidak dapat dipulihkan.
                 </p>
               </div>
             </div>
-          </div>
-
-          {/* Category Info */}
-          <div className="bg-slate-50 rounded-xl p-4">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
-                <Folder className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-slate-900">
-                  {category.name}
-                </h4>
-                <p className="text-sm text-slate-600">ID: {category.id}</p>
-              </div>
-            </div>
-
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-slate-600">Tryout:</span>
-                <span className="text-slate-900 font-medium">
-                  {category.tryoutTitle}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-600">Durasi:</span>
-                <span className="text-slate-900 font-medium">
-                  {category.duration} menit
-                </span>
-              </div>
-
-            </div>
-          </div>
-
-          {/* Impact Warning */}
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-            <h4 className="text-sm font-semibold text-amber-800 mb-2">
-              Data yang akan terhapus:
-            </h4>
-            <ul className="text-sm text-amber-700 space-y-1">
-              <li>• Semua soal dalam kategori ini</li>
-              <li>• Riwayat jawaban peserta</li>
-              <li>• Statistik dan laporan terkait</li>
-              <li>• Konfigurasi dan pengaturan kategori</li>
-            </ul>
           </div>
 
           {/* Confirmation */}
