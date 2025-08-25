@@ -10,6 +10,7 @@ import {
 import { usePageTransition } from "@/lib/hooks";
 import { tryoutService, Tryout, TryoutFilters, TryoutCreateData } from "@/lib/services/tryoutService";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 export default function ManageTryouts() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -44,6 +45,10 @@ export default function ManageTryouts() {
     start_date: "",
     end_date: "",
   });
+
+  // Loading states
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Fetch tryouts from database
   const fetchTryouts = async () => {
@@ -127,19 +132,16 @@ export default function ManageTryouts() {
     setShowEditModal(false);
     setShowDeleteModal(false);
     setSelectedTryout(null);
+    setIsSubmitting(false);
+    setIsDeleting(false);
   };
 
   const handleSubmit = async (e: React.FormEvent, type: "create" | "edit") => {
     e.preventDefault();
     
-    // Debug logging untuk form data (remove in production)
-    // console.log("Form data being submitted:", formData);
-    // console.log("Form data types:", {
-    //   start_date: typeof formData.start_date,
-    //   end_date: typeof formData.end_date,
-    //   start_date_value: formData.start_date,
-    //   end_date_value: formData.end_date
-    // });
+    if (isSubmitting) return; // Prevent double submission
+    
+    setIsSubmitting(true);
     
     try {
       if (type === "create") {
@@ -155,11 +157,15 @@ export default function ManageTryouts() {
     } catch (error: any) {
       console.error("Error submitting tryout:", error);
       toast.error(error.message || "Gagal menyimpan tryout");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!selectedTryout) return;
+    if (!selectedTryout || isDeleting) return;
+    
+    setIsDeleting(true);
     
     try {
       await tryoutService.deleteTryout(selectedTryout.id);
@@ -169,6 +175,8 @@ export default function ManageTryouts() {
     } catch (error: any) {
       console.error("Error deleting tryout:", error);
       toast.error(error.message || "Gagal menghapus tryout");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -263,7 +271,16 @@ export default function ManageTryouts() {
       {/* Create/Edit Modal */}
       {(showCreateModal || showEditModal) && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+            {/* Loading Overlay */}
+            {isSubmitting && (
+              <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10">
+                <div className="flex items-center space-x-3">
+                  <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+                  <span className="text-slate-700 font-medium">Menyimpan data...</span>
+                </div>
+              </div>
+            )}
             <div className="flex items-center justify-between p-6 border-b border-slate-200">
               <h3 className="text-xl font-bold text-slate-900">
                 {showCreateModal ? "Buat Tryout Baru" : "Edit Tryout"}
@@ -285,7 +302,8 @@ export default function ManageTryouts() {
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                  disabled={isSubmitting}
+                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="Contoh: UTBK 2024 - Soshum"
                   required
                 />
@@ -298,8 +316,9 @@ export default function ManageTryouts() {
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  disabled={isSubmitting}
                   rows={3}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="Deskripsi tryout..."
                   required
                 />
@@ -314,7 +333,8 @@ export default function ManageTryouts() {
                     type="number"
                     value={formData.passing_score}
                     onChange={(e) => setFormData({ ...formData, passing_score: parseInt(e.target.value) })}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     min="0"
                     max="1000"
                     required
@@ -328,7 +348,8 @@ export default function ManageTryouts() {
                   <select
                     value={formData.is_active ? "active" : "inactive"}
                     onChange={(e) => setFormData({ ...formData, is_active: e.target.value === "active" })}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <option value="active">Aktif</option>
                     <option value="inactive">Tidak Aktif</option>
@@ -345,7 +366,8 @@ export default function ManageTryouts() {
                     type="date"
                     value={formData.start_date}
                     onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
 
@@ -357,7 +379,8 @@ export default function ManageTryouts() {
                     type="date"
                     value={formData.end_date}
                     onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -366,15 +389,24 @@ export default function ManageTryouts() {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-6 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all duration-200 font-medium"
+                  disabled={isSubmitting}
+                  className="px-6 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 font-medium"
+                  disabled={isSubmitting}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                 >
-                  {showCreateModal ? "Buat Tryout" : "Simpan Perubahan"}
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Menyimpan...</span>
+                    </>
+                  ) : (
+                    <span>{showCreateModal ? "Buat Tryout" : "Simpan Perubahan"}</span>
+                  )}
                 </button>
               </div>
             </form>
@@ -385,7 +417,16 @@ export default function ManageTryouts() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && selectedTryout && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative">
+            {/* Loading Overlay */}
+            {isDeleting && (
+              <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10">
+                <div className="flex items-center space-x-3">
+                  <Loader2 className="w-6 h-6 animate-spin text-red-600" />
+                  <span className="text-slate-700 font-medium">Menghapus data...</span>
+                </div>
+              </div>
+            )}
             <div className="p-6">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
@@ -405,15 +446,24 @@ export default function ManageTryouts() {
               <div className="flex items-center justify-end space-x-3">
                 <button
                   onClick={closeModal}
-                  className="px-4 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all duration-200"
+                  disabled={isDeleting}
+                  className="px-4 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Batal
                 </button>
                 <button
                   onClick={handleDelete}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-200"
+                  disabled={isDeleting}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                 >
-                  Hapus
+                  {isDeleting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Menghapus...</span>
+                    </>
+                  ) : (
+                    <span>Hapus</span>
+                  )}
                 </button>
               </div>
             </div>
