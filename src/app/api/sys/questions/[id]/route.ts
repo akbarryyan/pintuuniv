@@ -47,10 +47,10 @@ export async function GET(
     
     // Ambil answers untuk question ini
     const answersQuery = `
-      SELECT id, question_id, content, is_correct, \`order\`
+      SELECT id, question_id, content, is_correct
       FROM answers 
       WHERE question_id = ?
-      ORDER BY \`order\`
+      ORDER BY id
     `;
     const answers = await query(answersQuery, [id]) as any[];
     
@@ -169,16 +169,15 @@ export async function PUT(
       
       // Insert answers baru
       const answerQuery = `
-        INSERT INTO answers (question_id, content, is_correct, \`order\`) 
-        VALUES (?, ?, ?, ?)
+        INSERT INTO answers (question_id, content, is_correct) 
+        VALUES (?, ?, ?)
       `;
       
       for (const answer of answers) {
         await connection.execute(answerQuery, [
           id,
           answer.content,
-          answer.is_correct ? 1 : 0,
-          answer.order || 1
+          answer.is_correct ? 1 : 0
         ]);
       }
       

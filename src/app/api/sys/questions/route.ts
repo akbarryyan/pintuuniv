@@ -83,10 +83,10 @@ export async function GET(request: NextRequest) {
     const questionsWithAnswers = await Promise.all(
       questions.map(async (question) => {
         const answersQuery = `
-          SELECT id, question_id, content, is_correct, \`order\`
+          SELECT id, question_id, content, is_correct
           FROM answers 
           WHERE question_id = ?
-          ORDER BY \`order\`
+          ORDER BY id
         `;
         const answers = await query(answersQuery, [question.id]) as any[];
         return { ...question, answers };
@@ -178,16 +178,15 @@ export async function POST(request: NextRequest) {
       
       // Insert answers
       const answerQuery = `
-        INSERT INTO answers (question_id, content, is_correct, \`order\`) 
-        VALUES (?, ?, ?, ?)
+        INSERT INTO answers (question_id, content, is_correct) 
+        VALUES (?, ?, ?)
       `;
       
       for (const answer of answers) {
         await connection.execute(answerQuery, [
           questionId,
           answer.content,
-          answer.is_correct ? 1 : 0,
-          answer.order || 1
+          answer.is_correct ? 1 : 0
         ]);
       }
       

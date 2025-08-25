@@ -3,7 +3,6 @@ export interface Answer {
   question_id: number;
   content: string;
   is_correct: boolean;
-  order?: number;
 }
 
 export interface Question {

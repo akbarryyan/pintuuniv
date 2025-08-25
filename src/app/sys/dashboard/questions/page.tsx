@@ -11,6 +11,7 @@ import { usePageTransition } from "@/lib/hooks";
 import { questionService, Question, QuestionFilters, QuestionCreateData } from "@/lib/services/questionService";
 import { categoryService } from "@/lib/services/categoryService";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 export default function ManageQuestions() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -44,6 +45,10 @@ export default function ManageQuestions() {
   const [showViewModal, setShowViewModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
+
+  // Loading states
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [formData, setFormData] = useState<QuestionCreateData>({
     title: "",
     content: "",
@@ -53,10 +58,10 @@ export default function ManageQuestions() {
     weight: 1,
     is_active: true,
     answers: [
-      { content: "", is_correct: false, order: 1 },
-      { content: "", is_correct: false, order: 2 },
-      { content: "", is_correct: false, order: 3 },
-      { content: "", is_correct: false, order: 4 },
+      { content: "", is_correct: false },
+      { content: "", is_correct: false },
+      { content: "", is_correct: false },
+      { content: "", is_correct: false },
     ],
   });
 
@@ -132,10 +137,10 @@ export default function ManageQuestions() {
         weight: 1,
         is_active: true,
         answers: [
-          { content: "", is_correct: false, order: 1 },
-          { content: "", is_correct: false, order: 2 },
-          { content: "", is_correct: false, order: 3 },
-          { content: "", is_correct: false, order: 4 },
+          { content: "", is_correct: false },
+          { content: "", is_correct: false },
+          { content: "", is_correct: false },
+          { content: "", is_correct: false },
         ],
       });
       setShowCreateModal(true);
@@ -152,7 +157,6 @@ export default function ManageQuestions() {
         answers: question.answers.map(answer => ({
           content: answer.content,
           is_correct: answer.is_correct,
-          order: answer.order,
         })),
       });
       
@@ -172,10 +176,16 @@ export default function ManageQuestions() {
     setShowViewModal(false);
     setShowDeleteModal(false);
     setSelectedQuestion(null);
+    setIsSubmitting(false);
+    setIsDeleting(false);
   };
 
   const handleSubmit = async (e: React.FormEvent, type: "create" | "edit") => {
     e.preventDefault();
+    
+    if (isSubmitting) return; // Prevent double submission
+    
+    setIsSubmitting(true);
     
     try {
       if (type === "create") {
@@ -191,11 +201,15 @@ export default function ManageQuestions() {
     } catch (error: any) {
       console.error("Error submitting question:", error);
       toast.error(error.message || "Gagal menyimpan question");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!selectedQuestion) return;
+    if (!selectedQuestion || isDeleting) return;
+    
+    setIsDeleting(true);
     
     try {
       await questionService.deleteQuestion(selectedQuestion.id);
@@ -205,6 +219,8 @@ export default function ManageQuestions() {
     } catch (error: any) {
       console.error("Error deleting question:", error);
       toast.error(error.message || "Gagal menghapus question");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -302,7 +318,16 @@ export default function ManageQuestions() {
       {/* Create/Edit Modal */}
       {(showCreateModal || showEditModal) && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
+            {/* Loading Overlay */}
+            {isSubmitting && (
+              <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10">
+                <div className="flex items-center space-x-3">
+                  <Loader2 className="w-6 h-6 animate-spin text-purple-600" />
+                  <span className="text-slate-700 font-medium">Menyimpan data...</span>
+                </div>
+              </div>
+            )}
             <div className="flex items-center justify-between p-6 border-b border-slate-200">
               <h3 className="text-xl font-bold text-slate-900">
                 {showCreateModal ? "Buat Soal Baru" : "Edit Soal"}
@@ -325,7 +350,8 @@ export default function ManageQuestions() {
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="Contoh: Persamaan Kuadrat"
                     required
                   />
@@ -338,7 +364,8 @@ export default function ManageQuestions() {
                   <select
                     value={formData.category_id || ""}
                     onChange={(e) => setFormData({ ...formData, category_id: parseInt(e.target.value) })}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     required
                   >
                     <option value="">Pilih Kategori</option>
@@ -358,8 +385,9 @@ export default function ManageQuestions() {
                 <textarea
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                  disabled={isSubmitting}
                   rows={4}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="Tulis soal lengkap di sini..."
                   required
                 />
@@ -471,15 +499,24 @@ export default function ManageQuestions() {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-6 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all duration-200 font-medium"
+                  disabled={isSubmitting}
+                  className="px-6 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all duration-200 font-medium"
+                  disabled={isSubmitting}
+                  className="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                 >
-                  {showCreateModal ? "Buat Soal" : "Simpan Perubahan"}
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Menyimpan...</span>
+                    </>
+                  ) : (
+                    <span>{showCreateModal ? "Buat Soal" : "Simpan Perubahan"}</span>
+                  )}
                 </button>
               </div>
             </form>
@@ -490,7 +527,16 @@ export default function ManageQuestions() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && selectedQuestion && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative">
+            {/* Loading Overlay */}
+            {isDeleting && (
+              <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10">
+                <div className="flex items-center space-x-3">
+                  <Loader2 className="w-6 h-6 animate-spin text-red-600" />
+                  <span className="text-slate-700 font-medium">Menghapus data...</span>
+                </div>
+              </div>
+            )}
             <div className="p-6">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
@@ -509,15 +555,24 @@ export default function ManageQuestions() {
               <div className="flex items-center justify-end space-x-3">
                 <button
                   onClick={closeModal}
-                  className="px-4 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all duration-200"
+                  disabled={isDeleting}
+                  className="px-4 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Batal
                 </button>
                 <button
                   onClick={handleDelete}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-200"
+                  disabled={isDeleting}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                 >
-                  Hapus
+                  {isDeleting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Menghapus...</span>
+                    </>
+                  ) : (
+                    <span>Hapus</span>
+                  )}
                 </button>
               </div>
             </div>
