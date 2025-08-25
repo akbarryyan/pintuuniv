@@ -4,10 +4,11 @@ import { query } from "@/lib/db";
 // GET - Ambil tryout berdasarkan ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const { id: idParam } = await params;
+    const id = parseInt(idParam);
     
     if (isNaN(id)) {
       return NextResponse.json(
@@ -60,10 +61,11 @@ export async function GET(
 // PUT - Update tryout
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const { id: idParam } = await params;
+    const id = parseInt(idParam);
     
     if (isNaN(id)) {
       return NextResponse.json(
@@ -72,7 +74,25 @@ export async function PUT(
       );
     }
     
-    const body = await request.json();
+    // Cek apakah request body ada dan valid
+    const contentType = request.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      return NextResponse.json(
+        { success: false, message: "Content-Type harus application/json" },
+        { status: 400 }
+      );
+    }
+    
+    let body;
+    try {
+      body = await request.json();
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+      return NextResponse.json(
+        { success: false, message: "Request body tidak valid" },
+        { status: 400 }
+      );
+    }
     const {
       title,
       description,
@@ -130,10 +150,11 @@ export async function PUT(
 // DELETE - Hapus tryout
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const { id: idParam } = await params;
+    const id = parseInt(idParam);
     
     if (isNaN(id)) {
       return NextResponse.json(
