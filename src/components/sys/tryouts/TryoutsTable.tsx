@@ -66,6 +66,47 @@ export default function TryoutsTable({
   const [isLoading, setIsLoading] = useState(false);
   const [fadeClass, setFadeClass] = useState("opacity-100");
 
+  // Debug logging (remove in production)
+  // console.log("TryoutsTable received tryouts:", tryouts);
+  // console.log("Sample tryout data:", tryouts[0]);
+
+  // Helper function untuk format tanggal tanpa timezone issues
+  const formatDate = (dateString: string | null | undefined) => {
+    if (!dateString) return 'Belum ditentukan';
+    
+    try {
+      // Jika format YYYY-MM-DD, langsung format tanpa parsing Date
+      if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const [year, month, day] = dateString.split('-').map(Number);
+        
+        // Array nama bulan dalam bahasa Indonesia
+        const monthNames = [
+          'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
+          'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'
+        ];
+        
+        // Format: "24 Agu 2025"
+        return `${day.toString().padStart(2, '0')} ${monthNames[month - 1]} ${year}`;
+      }
+      
+      // Fallback untuk format lain
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        console.error('Invalid date string:', dateString);
+        return 'Format tidak valid';
+      }
+      
+      return date.toLocaleDateString('id-ID', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+    } catch (error) {
+      console.error('Error formatting date:', dateString, error);
+      return 'Format tidak valid';
+    }
+  };
+
   // Handle page change with loading animation
   const handlePageChange = async (page: number) => {
     if (page === currentPage || isLoading || !onPageChange) return;
@@ -386,7 +427,7 @@ export default function TryoutsTable({
                     </span>
                   </div>
                   <p className="text-sm font-semibold text-slate-900">
-                    {tryout.start_date}
+                    {formatDate(tryout.start_date)}
                   </p>
                 </div>
                 <div className="bg-slate-50 rounded-xl p-3">
@@ -397,7 +438,7 @@ export default function TryoutsTable({
                     </span>
                   </div>
                   <p className="text-sm font-semibold text-slate-900">
-                    {tryout.end_date}
+                    {formatDate(tryout.end_date)}
                   </p>
                 </div>
               </div>
@@ -523,7 +564,7 @@ export default function TryoutsTable({
                     </span>
                   </div>
                   <p className="text-sm font-semibold text-slate-900">
-                    {tryout.start_date}
+                    {formatDate(tryout.start_date)}
                   </p>
                 </div>
                 <div className="bg-slate-50 rounded-xl p-3">
@@ -534,7 +575,7 @@ export default function TryoutsTable({
                     </span>
                   </div>
                   <p className="text-sm font-semibold text-slate-900">
-                    {tryout.end_date}
+                    {formatDate(tryout.end_date)}
                   </p>
                 </div>
               </div>

@@ -1,6 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query } from "@/lib/db";
 
+// Helper function untuk format tanggal tanpa timezone issues
+function formatDateToYYYYMMDD(dateInput: string | Date): string {
+  if (typeof dateInput === 'string') {
+    // Data sudah dalam format DATE dari MySQL, return langsung
+    if (dateInput.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      return dateInput;
+    } else {
+      // Fallback untuk format lain - gunakan string manipulation
+      const dateStr = dateInput.toString();
+      if (dateStr.includes(' ')) {
+        // Jika ada spasi, ambil bagian sebelum spasi (YYYY-MM-DD)
+        return dateStr.split(' ')[0];
+      }
+      return dateStr;
+    }
+  } else {
+    // Jika input adalah Date object, gunakan string manipulation
+    const year = dateInput.getFullYear();
+    const month = String(dateInput.getMonth() + 1).padStart(2, '0');
+    const day = String(dateInput.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+}
+
 // GET - Ambil semua tryouts
 export async function GET(request: NextRequest) {
   try {
@@ -41,8 +65,8 @@ export async function GET(request: NextRequest) {
         t.total_weight,
         t.passing_score,
         t.is_active,
-        t.start_date,
-        t.end_date,
+        DATE(t.start_date) as start_date,
+        DATE(t.end_date) as end_date,
         t.created_at,
         t.updated_at
       FROM tryouts t
@@ -51,11 +75,20 @@ export async function GET(request: NextRequest) {
       LIMIT ? OFFSET ?
     `;
     
-    const tryouts = await query(selectQuery, [...params, limit, offset]);
+    const tryouts = await query(selectQuery, [...params, limit, offset]) as any[];
+    
+    // Format tanggal untuk konsistensi - menggunakan UTC untuk menghindari timezone issues
+    const formattedTryouts = tryouts.map(tryout => ({
+      ...tryout,
+      start_date: tryout.start_date ? formatDateToYYYYMMDD(tryout.start_date) : null,
+      end_date: tryout.end_date ? formatDateToYYYYMMDD(tryout.end_date) : null,
+      created_at: tryout.created_at ? new Date(tryout.created_at).toISOString() : null,
+      updated_at: tryout.updated_at ? new Date(tryout.updated_at).toISOString() : null,
+    }));
     
     return NextResponse.json({
       success: true,
-      data: tryouts,
+      data: formattedTryouts,
       pagination: {
         page,
         limit,

@@ -59,6 +59,11 @@ export default function ManageTryouts() {
       const response = await tryoutService.getTryouts(filters);
       
       if (response.success && response.data) {
+        // Debug logging (remove in production)
+        // console.log("API Response:", response);
+        // console.log("Tryouts data:", response.data);
+        // console.log("Sample tryout:", response.data[0]);
+        
         setTryouts(response.data);
         if (response.pagination) {
           setTotalTryouts(response.pagination.total);
@@ -126,6 +131,15 @@ export default function ManageTryouts() {
 
   const handleSubmit = async (e: React.FormEvent, type: "create" | "edit") => {
     e.preventDefault();
+    
+    // Debug logging untuk form data (remove in production)
+    // console.log("Form data being submitted:", formData);
+    // console.log("Form data types:", {
+    //   start_date: typeof formData.start_date,
+    //   end_date: typeof formData.end_date,
+    //   start_date_value: formData.start_date,
+    //   end_date_value: formData.end_date
+    // });
     
     try {
       if (type === "create") {
