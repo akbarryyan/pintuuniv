@@ -1,6 +1,58 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query } from "@/lib/db";
 
+// Helper function untuk update statistik tryout
+async function updateTryoutStats(tryoutId: number) {
+  try {
+    const statsQuery = `
+      SELECT 
+        COALESCE(cat_count.category_count, 0) as total_categories,
+        COALESCE(q_stats.question_count, 0) as total_questions,
+        COALESCE(q_stats.total_weight, 0) as total_weight
+      FROM tryouts t
+      LEFT JOIN (
+        SELECT 
+          c.tryout_id,
+          COUNT(c.id) as category_count
+        FROM categories c
+        WHERE c.tryout_id = ?
+        GROUP BY c.tryout_id
+      ) cat_count ON t.id = cat_count.tryout_id
+      LEFT JOIN (
+        SELECT 
+          c.tryout_id,
+          COUNT(q.id) as question_count,
+          COALESCE(SUM(q.weight), 0) as total_weight
+        FROM categories c
+        LEFT JOIN questions q ON c.id = q.category_id
+        WHERE c.tryout_id = ?
+        GROUP BY c.tryout_id
+      ) q_stats ON t.id = q_stats.tryout_id
+      WHERE t.id = ?
+    `;
+    
+    const stats = await query(statsQuery, [tryoutId, tryoutId, tryoutId]) as any[];
+    
+    if (stats.length > 0) {
+      const { total_categories, total_questions, total_weight } = stats[0];
+      
+      const updateQuery = `
+        UPDATE tryouts 
+        SET 
+          total_categories = ?,
+          total_questions = ?,
+          total_weight = ?,
+          updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+      `;
+      
+      await query(updateQuery, [total_categories, total_questions, total_weight, tryoutId]);
+    }
+  } catch (error) {
+    console.error("Error updating tryout stats:", error);
+  }
+}
+
 // GET - Ambil semua categories
 export async function GET(request: NextRequest) {
   try {
@@ -133,6 +185,9 @@ export async function POST(request: NextRequest) {
       duration_minutes,
       is_active ? 1 : 0
     ]) as any;
+    
+    // Update statistik tryout setelah category dibuat
+    await updateTryoutStats(tryout_id);
     
     return NextResponse.json({
       success: true,

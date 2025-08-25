@@ -25,6 +25,58 @@ function formatDateToYYYYMMDD(dateInput: string | Date): string {
   }
 }
 
+// Helper function untuk update statistik tryout
+async function updateTryoutStats(tryoutId: number) {
+  try {
+    const statsQuery = `
+      SELECT 
+        COALESCE(cat_count.category_count, 0) as total_categories,
+        COALESCE(q_stats.question_count, 0) as total_questions,
+        COALESCE(q_stats.total_weight, 0) as total_weight
+      FROM tryouts t
+      LEFT JOIN (
+        SELECT 
+          c.tryout_id,
+          COUNT(c.id) as category_count
+        FROM categories c
+        WHERE c.tryout_id = ?
+        GROUP BY c.tryout_id
+      ) cat_count ON t.id = cat_count.tryout_id
+      LEFT JOIN (
+        SELECT 
+          c.tryout_id,
+          COUNT(q.id) as question_count,
+          COALESCE(SUM(q.weight), 0) as total_weight
+        FROM categories c
+        LEFT JOIN questions q ON c.id = q.category_id
+        WHERE c.tryout_id = ?
+        GROUP BY c.tryout_id
+      ) q_stats ON t.id = q_stats.tryout_id
+      WHERE t.id = ?
+    `;
+    
+    const stats = await query(statsQuery, [tryoutId, tryoutId, tryoutId]) as any[];
+    
+    if (stats.length > 0) {
+      const { total_categories, total_questions, total_weight } = stats[0];
+      
+      const updateQuery = `
+        UPDATE tryouts 
+        SET 
+          total_categories = ?,
+          total_questions = ?,
+          total_weight = ?,
+          updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+      `;
+      
+      await query(updateQuery, [total_categories, total_questions, total_weight, tryoutId]);
+    }
+  } catch (error) {
+    console.error("Error updating tryout stats:", error);
+  }
+}
+
 // GET - Ambil semua tryouts
 export async function GET(request: NextRequest) {
   try {
@@ -54,15 +106,15 @@ export async function GET(request: NextRequest) {
     const countResult = await query(countQuery, params) as any[];
     const total = countResult[0]?.total || 0;
     
-    // Ambil data tryouts dengan pagination
+    // Ambil data tryouts dengan pagination dan hitung total categories/questions secara real-time
     const selectQuery = `
       SELECT 
         t.id,
         t.title,
         t.description,
-        t.total_categories,
-        t.total_questions,
-        t.total_weight,
+        COALESCE(cat_stats.category_count, 0) as total_categories,
+        COALESCE(q_stats.question_count, 0) as total_questions,
+        COALESCE(q_stats.total_weight, 0) as total_weight,
         t.passing_score,
         t.is_active,
         DATE(t.start_date) as start_date,
@@ -70,6 +122,22 @@ export async function GET(request: NextRequest) {
         t.created_at,
         t.updated_at
       FROM tryouts t
+      LEFT JOIN (
+        SELECT 
+          c.tryout_id,
+          COUNT(c.id) as category_count
+        FROM categories c
+        GROUP BY c.tryout_id
+      ) cat_stats ON t.id = cat_stats.tryout_id
+      LEFT JOIN (
+        SELECT 
+          c.tryout_id,
+          COUNT(q.id) as question_count,
+          COALESCE(SUM(q.weight), 0) as total_weight
+        FROM categories c
+        LEFT JOIN questions q ON c.id = q.category_id
+        GROUP BY c.tryout_id
+      ) q_stats ON t.id = q_stats.tryout_id
       ${whereClause}
       ORDER BY t.created_at DESC
       LIMIT ? OFFSET ?
@@ -143,6 +211,9 @@ export async function POST(request: NextRequest) {
       end_date || null
     ]) as any;
     
+    // Update statistik tryout setelah pembuatan
+    await updateTryoutStats(result.insertId);
+
     return NextResponse.json({
       success: true,
       message: "Tryout berhasil dibuat",
@@ -153,6 +224,42 @@ export async function POST(request: NextRequest) {
     console.error("Error creating tryout:", error);
     return NextResponse.json(
       { success: false, message: "Gagal membuat tryout" },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH - Update statistik semua tryout (untuk maintenance)
+export async function PATCH(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const action = searchParams.get("action");
+    
+    if (action === "update-stats") {
+      // Ambil semua tryout
+      const tryoutsQuery = "SELECT id FROM tryouts";
+      const tryouts = await query(tryoutsQuery) as any[];
+      
+      // Update statistik untuk setiap tryout
+      for (const tryout of tryouts) {
+        await updateTryoutStats(tryout.id);
+      }
+      
+      return NextResponse.json({
+        success: true,
+        message: `Statistik berhasil diupdate untuk ${tryouts.length} tryout`
+      });
+    }
+    
+    return NextResponse.json(
+      { success: false, message: "Action tidak valid" },
+      { status: 400 }
+    );
+    
+  } catch (error) {
+    console.error("Error updating tryout stats:", error);
+    return NextResponse.json(
+      { success: false, message: "Gagal mengupdate statistik tryout" },
       { status: 500 }
     );
   }

@@ -22,9 +22,9 @@ export async function GET(
         t.id,
         t.title,
         t.description,
-        t.total_categories,
-        t.total_questions,
-        t.total_weight,
+        COALESCE(cat_stats.category_count, 0) as total_categories,
+        COALESCE(q_stats.question_count, 0) as total_questions,
+        COALESCE(q_stats.total_weight, 0) as total_weight,
         t.passing_score,
         t.is_active,
         t.start_date,
@@ -32,6 +32,22 @@ export async function GET(
         t.created_at,
         t.updated_at
       FROM tryouts t
+      LEFT JOIN (
+        SELECT 
+          c.tryout_id,
+          COUNT(c.id) as category_count
+        FROM categories c
+        GROUP BY c.tryout_id
+      ) cat_stats ON t.id = cat_stats.tryout_id
+      LEFT JOIN (
+        SELECT 
+          c.tryout_id,
+          COUNT(q.id) as question_count,
+          COALESCE(SUM(q.weight), 0) as total_weight
+        FROM categories c
+        LEFT JOIN questions q ON c.id = q.category_id
+        GROUP BY c.tryout_id
+      ) q_stats ON t.id = q_stats.tryout_id
       WHERE t.id = ?
     `;
     
