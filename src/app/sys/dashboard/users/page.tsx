@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, BookOpen, Star, Trash2 } from "lucide-react";
 import { Sidebar, TopHeader } from "@/components/sys";
 import {
@@ -9,6 +9,7 @@ import {
   UsersTable,
 } from "@/components/sys/users";
 import { usePageTransition } from "@/lib/hooks";
+import { toast } from "sonner";
 
 interface User {
   id: number;
@@ -17,14 +18,21 @@ interface User {
   phone: string;
   school: string;
   grade: string;
-  subscriptionType: "free" | "premium";
-  targetUniversity: string;
-  targetMajor: string;
-  joinDate: string;
-  lastActive: string;
-  status: "active" | "inactive" | "suspended";
-  tryoutsCompleted: number;
-  totalScore: number;
+  subscription_type: "free" | "premium";
+  target_university: string;
+  target_major: string;
+  join_date: string;
+  last_active: string;
+  status: "active" | "inactive" | "suspended" | "deleted";
+  tryouts_completed: number;
+  total_score: number;
+}
+
+interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
 }
 
 export default function ManageUsers() {
@@ -33,11 +41,23 @@ export default function ManageUsers() {
 
   // Use page transition hook
   usePageTransition();
+  
+  // State untuk data dan loading
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState<Pagination>({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0
+  });
+
+  // State untuk filter dan search
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [subscriptionFilter, setSubscriptionFilter] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<string>("name");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortBy, setSortBy] = useState<string>("created_at");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   // Modal states
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -46,57 +66,60 @@ export default function ManageUsers() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  // Mock data
-  const [users] = useState<User[]>([
-    {
-      id: 1,
-      name: "Ahmad Fadillah",
-      email: "ahmad@email.com",
-      phone: "+62 812-3456-7890",
-      school: "SMAN 1 Jakarta",
-      grade: "12",
-      subscriptionType: "premium",
-      targetUniversity: "Universitas Indonesia",
-      targetMajor: "Teknik Informatika",
-      joinDate: "2024-01-15",
-      lastActive: "2024-01-20",
-      status: "active",
-      tryoutsCompleted: 15,
-      totalScore: 1250,
-    },
-    {
-      id: 2,
-      name: "Sarah Amanda",
-      email: "sarah@email.com",
-      phone: "+62 813-9876-5432",
-      school: "SMAN 2 Bandung",
-      grade: "12",
-      subscriptionType: "free",
-      targetUniversity: "Institut Teknologi Bandung",
-      targetMajor: "Teknik Kimia",
-      joinDate: "2024-01-10",
-      lastActive: "2024-01-19",
-      status: "active",
-      tryoutsCompleted: 8,
-      totalScore: 890,
-    },
-    {
-      id: 3,
-      name: "Budi Santoso",
-      email: "budi@email.com",
-      phone: "+62 814-1111-2222",
-      school: "SMAN 3 Surabaya",
-      grade: "11",
-      subscriptionType: "premium",
-      targetUniversity: "Universitas Airlangga",
-      targetMajor: "Kedokteran",
-      joinDate: "2024-01-05",
-      lastActive: "2024-01-18",
-      status: "inactive",
-      tryoutsCompleted: 3,
-      totalScore: 320,
-    },
-  ]);
+  // Form states untuk create/edit
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    school: "",
+    grade: "",
+    subscription_type: "free" as "free" | "premium",
+    target_university: "",
+    target_major: "",
+    password: "",
+    status: "active" as "active" | "inactive" | "suspended"
+  });
+
+  // Fetch users dari API
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams({
+        page: pagination.page.toString(),
+        limit: pagination.limit.toString(),
+        search: searchQuery,
+        status: statusFilter,
+        subscription: subscriptionFilter,
+        sortBy,
+        sortOrder
+      });
+
+      const response = await fetch(`/api/sys/users?${params}`);
+      const result = await response.json();
+
+      if (result.success) {
+        setUsers(result.data);
+        setPagination(result.pagination);
+      } else {
+        toast.error(result.message || "Gagal mengambil data users");
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      toast.error("Gagal mengambil data users");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load users saat komponen mount atau filter berubah
+  useEffect(() => {
+    fetchUsers();
+  }, [pagination.page, searchQuery, statusFilter, subscriptionFilter, sortBy, sortOrder]);
+
+  // Reset pagination saat filter berubah
+  useEffect(() => {
+    setPagination(prev => ({ ...prev, page: 1 }));
+  }, [searchQuery, statusFilter, subscriptionFilter, sortBy, sortOrder]);
 
   const handleSort = (field: string) => {
     if (sortBy === field) {
@@ -136,9 +159,35 @@ export default function ManageUsers() {
     switch (type) {
       case "create":
         setShowCreateModal(true);
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          school: "",
+          grade: "",
+          subscription_type: "free",
+          target_university: "",
+          target_major: "",
+          password: "",
+          status: "active" as "active" | "inactive" | "suspended"
+        });
         break;
       case "edit":
         setShowEditModal(true);
+        if (user) {
+          setFormData({
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            school: user.school,
+            grade: user.grade,
+            subscription_type: user.subscription_type,
+            target_university: user.target_university,
+            target_major: user.target_major,
+            password: "",
+            status: user.status as "active" | "inactive" | "suspended"
+          });
+        }
         break;
       case "view":
         setShowViewModal(true);
@@ -155,6 +204,98 @@ export default function ManageUsers() {
     setShowViewModal(false);
     setShowDeleteModal(false);
     setSelectedUser(null);
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      school: "",
+      grade: "",
+      subscription_type: "free",
+      target_university: "",
+      target_major: "",
+      password: "",
+      status: "active" as "active" | "inactive" | "suspended"
+    });
+  };
+
+  // Handle form submission untuk create user
+  const handleCreateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/sys/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success('User berhasil dibuat');
+        closeModal();
+        fetchUsers(); // Refresh data
+      } else {
+        toast.error(result.message || 'Gagal membuat user');
+      }
+    } catch (error) {
+      console.error('Error creating user:', error);
+      toast.error('Gagal membuat user');
+    }
+  };
+
+  // Handle form submission untuk update user
+  const handleUpdateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedUser) return;
+
+    try {
+      const response = await fetch(`/api/sys/users/${selectedUser.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success('User berhasil diupdate');
+        closeModal();
+        fetchUsers(); // Refresh data
+      } else {
+        toast.error(result.message || 'Gagal mengupdate user');
+      }
+    } catch (error) {
+      console.error('Error updating user:', error);
+      toast.error('Gagal mengupdate user');
+    }
+  };
+
+  // Handle delete user
+  const handleDeleteUser = async () => {
+    if (!selectedUser) return;
+
+    try {
+      const response = await fetch(`/api/sys/users/${selectedUser.id}`, {
+        method: 'DELETE',
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success('User berhasil dihapus');
+        closeModal();
+        fetchUsers(); // Refresh data
+      } else {
+        toast.error(result.message || 'Gagal menghapus user');
+      }
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      toast.error('Gagal menghapus user');
+    }
   };
 
   return (
@@ -200,14 +341,23 @@ export default function ManageUsers() {
             setSubscriptionFilter={setSubscriptionFilter}
           />
 
-          {/* Users Table */}
-          <UsersTable
-            users={users}
-            sortBy={sortBy}
-            sortOrder={sortOrder}
-            onSort={handleSort}
-            onOpenModal={openModal}
-          />
+                     {/* Users Table */}
+           {loading ? (
+             <div className="bg-white rounded-2xl shadow-lg border border-white/20 p-8">
+               <div className="flex items-center justify-center">
+                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                 <span className="ml-3 text-slate-600">Loading users...</span>
+               </div>
+             </div>
+           ) : (
+             <UsersTable
+               users={users}
+               sortBy={sortBy}
+               sortOrder={sortOrder}
+               onSort={handleSort}
+               onOpenModal={openModal}
+             />
+           )}
         </main>
       </div>
 
@@ -228,87 +378,121 @@ export default function ManageUsers() {
                 </button>
               </div>
             </div>
-            <div className="p-6">
-              <form className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Nama Lengkap
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                      placeholder="Masukkan nama lengkap"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                      placeholder="Masukkan email"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Phone
-                    </label>
-                    <input
-                      type="tel"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                      placeholder="Masukkan nomor telepon"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Sekolah
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                      placeholder="Masukkan nama sekolah"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Kelas
-                    </label>
-                    <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
-                      <option value="">Pilih kelas</option>
-                      <option value="10">Kelas 10</option>
-                      <option value="11">Kelas 11</option>
-                      <option value="12">Kelas 12</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Subscription
-                    </label>
-                    <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
-                      <option value="free">Free</option>
-                      <option value="premium">Premium</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="flex items-center justify-end space-x-3 pt-6 border-t border-slate-200">
-                  <button
-                    type="button"
-                    onClick={closeModal}
-                    className="px-6 py-3 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl font-medium transition-all duration-300"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
-                  >
-                    Tambah User
-                  </button>
-                </div>
-              </form>
-            </div>
+                         <div className="p-6">
+               <form onSubmit={handleCreateUser} className="space-y-6">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                   <div>
+                     <label className="block text-sm font-medium text-slate-700 mb-2">
+                       Nama Lengkap
+                     </label>
+                     <input
+                       type="text"
+                       value={formData.name}
+                       onChange={(e) => setFormData({...formData, name: e.target.value})}
+                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                       placeholder="Masukkan nama lengkap"
+                       required
+                     />
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium text-slate-700 mb-2">
+                       Email
+                     </label>
+                     <input
+                       type="email"
+                       value={formData.email}
+                       onChange={(e) => setFormData({...formData, email: e.target.value})}
+                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                       placeholder="Masukkan email"
+                       required
+                     />
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium text-slate-700 mb-2">
+                       Phone
+                     </label>
+                     <input
+                       type="tel"
+                       value={formData.phone}
+                       onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                       placeholder="Masukkan nomor telepon"
+                       required
+                     />
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium text-slate-700 mb-2">
+                       Sekolah
+                     </label>
+                     <input
+                       type="text"
+                       value={formData.school}
+                       onChange={(e) => setFormData({...formData, school: e.target.value})}
+                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                       placeholder="Masukkan nama sekolah"
+                       required
+                     />
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium text-slate-700 mb-2">
+                       Kelas
+                     </label>
+                     <select 
+                       value={formData.grade}
+                       onChange={(e) => setFormData({...formData, grade: e.target.value})}
+                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                       required
+                     >
+                       <option value="">Pilih kelas</option>
+                       <option value="10">Kelas 10</option>
+                       <option value="11">Kelas 11</option>
+                       <option value="12">Kelas 12</option>
+                     </select>
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium text-slate-700 mb-2">
+                       Subscription
+                     </label>
+                     <select 
+                       value={formData.subscription_type}
+                       onChange={(e) => setFormData({...formData, subscription_type: e.target.value as "free" | "premium"})}
+                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                     >
+                       <option value="free">Free</option>
+                       <option value="premium">Premium</option>
+                     </select>
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium text-slate-700 mb-2">
+                       Password
+                     </label>
+                     <input
+                       type="password"
+                       value={formData.password}
+                       onChange={(e) => setFormData({...formData, password: e.target.value})}
+                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                       placeholder="Masukkan password"
+                       required
+                     />
+                   </div>
+                 </div>
+                 <div className="flex items-center justify-end space-x-3 pt-6 border-t border-slate-200">
+                   <button
+                     type="button"
+                     onClick={closeModal}
+                     className="px-6 py-3 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl font-medium transition-all duration-300"
+                   >
+                     Batal
+                   </button>
+                   <button
+                     type="submit"
+                     className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+                   >
+                     Tambah User
+                   </button>
+                 </div>
+               </form>
+             </div>
           </div>
         </div>
       )}
@@ -330,91 +514,118 @@ export default function ManageUsers() {
                 </button>
               </div>
             </div>
-            <div className="p-6">
-              <form className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Nama Lengkap
-                    </label>
-                    <input
-                      type="text"
-                      defaultValue={selectedUser.name}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      defaultValue={selectedUser.email}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Status
-                    </label>
-                    <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
-                      <option
-                        value="active"
-                        selected={selectedUser.status === "active"}
-                      >
-                        Active
-                      </option>
-                      <option
-                        value="inactive"
-                        selected={selectedUser.status === "inactive"}
-                      >
-                        Inactive
-                      </option>
-                      <option
-                        value="suspended"
-                        selected={selectedUser.status === "suspended"}
-                      >
-                        Suspended
-                      </option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Subscription
-                    </label>
-                    <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
-                      <option
-                        value="free"
-                        selected={selectedUser.subscriptionType === "free"}
-                      >
-                        Free
-                      </option>
-                      <option
-                        value="premium"
-                        selected={selectedUser.subscriptionType === "premium"}
-                      >
-                        Premium
-                      </option>
-                    </select>
-                  </div>
-                </div>
-                <div className="flex items-center justify-end space-x-3 pt-6 border-t border-slate-200">
-                  <button
-                    type="button"
-                    onClick={closeModal}
-                    className="px-6 py-3 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl font-medium transition-all duration-300"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
-                  >
-                    Update User
-                  </button>
-                </div>
-              </form>
-            </div>
+                         <div className="p-6">
+               <form onSubmit={handleUpdateUser} className="space-y-6">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                   <div>
+                     <label className="block text-sm font-medium text-slate-700 mb-2">
+                       Nama Lengkap
+                     </label>
+                     <input
+                       type="text"
+                       value={formData.name}
+                       onChange={(e) => setFormData({...formData, name: e.target.value})}
+                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                       required
+                     />
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium text-slate-700 mb-2">
+                       Email
+                     </label>
+                     <input
+                       type="email"
+                       value={formData.email}
+                       onChange={(e) => setFormData({...formData, email: e.target.value})}
+                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                       required
+                     />
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium text-slate-700 mb-2">
+                       Phone
+                     </label>
+                     <input
+                       type="tel"
+                       value={formData.phone}
+                       onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                       required
+                     />
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium text-slate-700 mb-2">
+                       Sekolah
+                     </label>
+                     <input
+                       type="text"
+                       value={formData.school}
+                       onChange={(e) => setFormData({...formData, school: e.target.value})}
+                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                       required
+                     />
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium text-slate-700 mb-2">
+                       Kelas
+                     </label>
+                     <select 
+                       value={formData.grade}
+                       onChange={(e) => setFormData({...formData, grade: e.target.value})}
+                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                       required
+                     >
+                       <option value="">Pilih kelas</option>
+                       <option value="10">Kelas 10</option>
+                       <option value="11">Kelas 11</option>
+                       <option value="12">Kelas 12</option>
+                     </select>
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium text-slate-700 mb-2">
+                       Status
+                     </label>
+                     <select 
+                       value={formData.status}
+                       onChange={(e) => setFormData({...formData, status: e.target.value as "active" | "inactive" | "suspended"})}
+                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                     >
+                       <option value="active">Active</option>
+                       <option value="inactive">Inactive</option>
+                       <option value="suspended">Suspended</option>
+                     </select>
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium text-slate-700 mb-2">
+                       Subscription
+                     </label>
+                     <select 
+                       value={formData.subscription_type}
+                       onChange={(e) => setFormData({...formData, subscription_type: e.target.value as "free" | "premium"})}
+                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                     >
+                       <option value="free">Free</option>
+                       <option value="premium">Premium</option>
+                     </select>
+                   </div>
+                 </div>
+                 <div className="flex items-center justify-end space-x-3 pt-6 border-t border-slate-200">
+                   <button
+                     type="button"
+                     onClick={closeModal}
+                     className="px-6 py-3 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl font-medium transition-all duration-300"
+                   >
+                     Batal
+                   </button>
+                   <button
+                     type="submit"
+                     className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+                   >
+                     Update User
+                   </button>
+                 </div>
+               </form>
+             </div>
           </div>
         </div>
       )}
@@ -474,51 +685,51 @@ export default function ManageUsers() {
                     </div>
                   </div>
                   <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-500 mb-1">
-                        Target University
-                      </label>
-                      <p className="text-slate-900">
-                        {selectedUser.targetUniversity}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-500 mb-1">
-                        Target Major
-                      </label>
-                      <p className="text-slate-900">
-                        {selectedUser.targetMajor}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-500 mb-1">
-                        Join Date
-                      </label>
-                      <p className="text-slate-900">{selectedUser.joinDate}</p>
-                    </div>
-                  </div>
-                </div>
+                                         <div>
+                       <label className="block text-sm font-medium text-slate-500 mb-1">
+                         Target University
+                       </label>
+                       <p className="text-slate-900">
+                         {selectedUser.target_university}
+                       </p>
+                     </div>
+                     <div>
+                       <label className="block text-sm font-medium text-slate-500 mb-1">
+                         Target Major
+                       </label>
+                       <p className="text-slate-900">
+                         {selectedUser.target_major}
+                       </p>
+                     </div>
+                     <div>
+                       <label className="block text-sm font-medium text-slate-500 mb-1">
+                         Join Date
+                       </label>
+                       <p className="text-slate-900">{selectedUser.join_date}</p>
+                     </div>
+                   </div>
+                 </div>
 
-                <div className="grid grid-cols-3 gap-4 pt-4 border-t border-slate-200">
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-blue-600">
-                      {selectedUser.tryoutsCompleted}
-                    </p>
-                    <p className="text-sm text-slate-500">Tryouts Completed</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-emerald-600">
-                      {selectedUser.totalScore}
-                    </p>
-                    <p className="text-sm text-slate-500">Total Score</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-amber-600">
-                      {selectedUser.lastActive}
-                    </p>
-                    <p className="text-sm text-slate-500">Last Active</p>
-                  </div>
-                </div>
+                 <div className="grid grid-cols-3 gap-4 pt-4 border-t border-slate-200">
+                   <div className="text-center">
+                     <p className="text-2xl font-bold text-blue-600">
+                       {selectedUser.tryouts_completed}
+                     </p>
+                     <p className="text-sm text-slate-500">Tryouts Completed</p>
+                   </div>
+                   <div className="text-center">
+                     <p className="text-2xl font-bold text-emerald-600">
+                       {selectedUser.total_score}
+                     </p>
+                     <p className="text-sm text-slate-500">Total Score</p>
+                   </div>
+                   <div className="text-center">
+                     <p className="text-2xl font-bold text-amber-600">
+                       {selectedUser.last_active}
+                     </p>
+                     <p className="text-sm text-slate-500">Last Active</p>
+                   </div>
+                 </div>
               </div>
             </div>
           </div>
@@ -548,12 +759,12 @@ export default function ManageUsers() {
                 >
                   Batal
                 </button>
-                <button
-                  onClick={closeModal}
-                  className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
-                >
-                  Hapus User
-                </button>
+                                 <button
+                   onClick={handleDeleteUser}
+                   className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+                 >
+                   Hapus User
+                 </button>
               </div>
             </div>
           </div>

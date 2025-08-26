@@ -29,14 +29,14 @@ interface User {
   phone: string;
   school: string;
   grade: string;
-  subscriptionType: "free" | "premium";
-  targetUniversity: string;
-  targetMajor: string;
-  joinDate: string;
-  lastActive: string;
-  status: "active" | "inactive" | "suspended";
-  tryoutsCompleted: number;
-  totalScore: number;
+  subscription_type: "free" | "premium";
+  target_university: string;
+  target_major: string;
+  join_date: string;
+  last_active: string;
+  status: "active" | "inactive" | "suspended" | "deleted";
+  tryouts_completed: number;
+  total_score: number;
 }
 
 interface UsersTableProps {
@@ -241,10 +241,10 @@ export default function UsersTable({
                     <td className="px-6 py-4">
                       <span
                         className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getSubscriptionColor(
-                          user.subscriptionType
+                          user.subscription_type
                         )}`}
                       >
-                        {user.subscriptionType === "premium" ? (
+                        {user.subscription_type === "premium" ? (
                           <>
                             <Crown className="w-3 h-3 mr-1" />
                             Premium
@@ -279,7 +279,7 @@ export default function UsersTable({
                       <div className="flex items-center space-x-2">
                         <BookOpen className="w-4 h-4 text-slate-400" />
                         <span className="text-slate-700">
-                          {user.tryoutsCompleted}
+                          {user.tryouts_completed}
                         </span>
                       </div>
                     </td>
@@ -287,7 +287,7 @@ export default function UsersTable({
                       <div className="flex items-center space-x-2">
                         <Calendar className="w-4 h-4 text-slate-400" />
                         <span className="text-slate-700">
-                          {user.lastActive}
+                          {user.last_active}
                         </span>
                       </div>
                     </td>
@@ -382,10 +382,10 @@ export default function UsersTable({
               <div className="flex flex-wrap gap-2 mb-4">
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getSubscriptionColor(
-                    user.subscriptionType
+                    user.subscription_type
                   )}`}
                 >
-                  {user.subscriptionType === "premium" ? (
+                  {user.subscription_type === "premium" ? (
                     <>
                       <Crown className="w-3 h-3 mr-1" />
                       Premium
@@ -420,13 +420,13 @@ export default function UsersTable({
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-center">
                     <p className="text-lg font-bold text-blue-600">
-                      {user.tryoutsCompleted}
+                      {user.tryouts_completed}
                     </p>
                     <p className="text-xs text-slate-500">Tryouts</p>
                   </div>
                   <div className="text-center">
                     <p className="text-lg font-bold text-emerald-600">
-                      {user.totalScore}
+                      {user.total_score}
                     </p>
                     <p className="text-xs text-slate-500">Score</p>
                   </div>
@@ -449,7 +449,7 @@ export default function UsersTable({
                     </span>
                   </div>
                   <p className="text-sm font-semibold text-slate-900">
-                    {user.targetUniversity}
+                    {user.target_university}
                   </p>
                 </div>
                 <div className="bg-slate-50 rounded-xl p-3">
@@ -460,7 +460,7 @@ export default function UsersTable({
                     </span>
                   </div>
                   <p className="text-sm font-semibold text-slate-900">
-                    {user.targetMajor}
+                    {user.target_major}
                   </p>
                 </div>
               </div>
@@ -468,10 +468,10 @@ export default function UsersTable({
               {/* Footer */}
               <div className="flex items-center justify-between pt-4 border-t border-slate-200">
                 <div className="text-xs text-slate-500">
-                  Bergabung: {user.joinDate}
+                  Bergabung: {user.join_date}
                 </div>
                 <div className="text-xs text-slate-500">
-                  Aktif: {user.lastActive}
+                  Aktif: {user.last_active}
                 </div>
               </div>
             </div>
