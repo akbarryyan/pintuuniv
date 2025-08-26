@@ -21,11 +21,18 @@ interface User {
   subscription_type: "free" | "premium";
   target_university: string;
   target_major: string;
+  target_score: number | null;
+  total_score: number;
+  total_attempts: number;
+  average_score: number;
+  rank_position: number;
+  subscription_expires: string | null;
+  role: "user" | "admin";
+  status: "active" | "inactive" | "suspended" | "deleted";
+  last_activity: string | null;
   join_date: string;
   last_active: string;
-  status: "active" | "inactive" | "suspended" | "deleted";
   tryouts_completed: number;
-  total_score: number;
 }
 
 interface Pagination {
@@ -76,6 +83,7 @@ export default function ManageUsers() {
     subscription_type: "free" as "free" | "premium",
     target_university: "",
     target_major: "",
+    target_score: null as number | null,
     password: "",
     status: "active" as "active" | "inactive" | "suspended"
   });
@@ -168,6 +176,7 @@ export default function ManageUsers() {
           subscription_type: "free",
           target_university: "",
           target_major: "",
+          target_score: null,
           password: "",
           status: "active" as "active" | "inactive" | "suspended"
         });
@@ -175,18 +184,19 @@ export default function ManageUsers() {
       case "edit":
         setShowEditModal(true);
         if (user) {
-          setFormData({
-            name: user.name,
-            email: user.email,
-            phone: user.phone,
-            school: user.school,
-            grade: user.grade,
-            subscription_type: user.subscription_type,
-            target_university: user.target_university,
-            target_major: user.target_major,
-            password: "",
-            status: user.status as "active" | "inactive" | "suspended"
-          });
+                  setFormData({
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          school: user.school,
+          grade: user.grade,
+          subscription_type: user.subscription_type,
+          target_university: user.target_university,
+          target_major: user.target_major,
+          target_score: user.target_score,
+          password: "",
+          status: user.status as "active" | "inactive" | "suspended"
+        });
         }
         break;
       case "view":
@@ -213,6 +223,7 @@ export default function ManageUsers() {
       subscription_type: "free",
       target_university: "",
       target_major: "",
+      target_score: null,
       password: "",
       status: "active" as "active" | "inactive" | "suspended"
     });

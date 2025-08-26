@@ -32,11 +32,18 @@ interface User {
   subscription_type: "free" | "premium";
   target_university: string;
   target_major: string;
+  target_score: number | null;
+  total_score: number;
+  total_attempts: number;
+  average_score: number;
+  rank_position: number;
+  subscription_expires: string | null;
+  role: "user" | "admin";
+  status: "active" | "inactive" | "suspended" | "deleted";
+  last_activity: string | null;
   join_date: string;
   last_active: string;
-  status: "active" | "inactive" | "suspended" | "deleted";
   tryouts_completed: number;
-  total_score: number;
 }
 
 interface UsersTableProps {

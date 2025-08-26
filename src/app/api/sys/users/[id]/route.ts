@@ -28,11 +28,18 @@ export async function GET(
         u.subscription_type,
         u.target_university,
         u.target_major,
+        u.target_score,
+        u.total_score,
+        u.total_attempts,
+        u.average_score,
+        u.rank_position,
+        u.subscription_expires,
+        u.role,
         u.status,
+        u.last_activity,
         u.created_at as join_date,
         u.updated_at as last_active,
-        0 as tryouts_completed,
-        0 as total_score
+        u.total_attempts as tryouts_completed
       FROM users u
       WHERE u.id = ?
     `;
@@ -120,6 +127,7 @@ export async function PUT(
         subscription_type = ?,
         target_university = ?,
         target_major = ?,
+        target_score = ?,
         status = ?,
         updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
@@ -134,6 +142,7 @@ export async function PUT(
       subscription_type || 'free',
       target_university || '',
       target_major || '',
+      null, // target_score (bisa diubah nanti jika diperlukan)
       status || 'active',
       id
     ]);

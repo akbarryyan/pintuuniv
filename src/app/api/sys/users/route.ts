@@ -57,11 +57,18 @@ export async function GET(request: NextRequest) {
         u.subscription_type,
         u.target_university,
         u.target_major,
+        u.target_score,
+        u.total_score,
+        u.total_attempts,
+        u.average_score,
+        u.rank_position,
+        u.subscription_expires,
+        u.role,
         u.status,
+        u.last_activity,
         u.created_at as join_date,
         u.updated_at as last_active,
-        0 as tryouts_completed,
-        0 as total_score
+        u.total_attempts as tryouts_completed
       FROM users u
       ${whereClause}
       ORDER BY ${sortBy} ${sortOrder.toUpperCase()}
@@ -129,8 +136,8 @@ export async function POST(request: NextRequest) {
     const insertQuery = `
       INSERT INTO users (
         name, email, phone, school, grade, subscription_type, 
-        target_university, target_major, password, status, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        target_university, target_major, target_score, password_hash, status, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `;
 
     const result = await query(insertQuery, [
@@ -142,7 +149,8 @@ export async function POST(request: NextRequest) {
       subscription_type || 'free',
       target_university || '',
       target_major || '',
-      password
+      null, // target_score
+      password // password_hash
     ]) as any;
 
     return NextResponse.json({
