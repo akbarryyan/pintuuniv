@@ -232,7 +232,19 @@ export default function ManageUsers() {
   // Handle form submission untuk create user
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
+    const submitButton = e.currentTarget.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const originalText = submitButton.textContent;
+    
     try {
+      // Set loading state
+      submitButton.disabled = true;
+      submitButton.innerHTML = `
+        <div class="flex items-center space-x-2">
+          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+          <span>Membuat User...</span>
+        </div>
+      `;
+
       const response = await fetch('/api/sys/users', {
         method: 'POST',
         headers: {
@@ -253,6 +265,10 @@ export default function ManageUsers() {
     } catch (error) {
       console.error('Error creating user:', error);
       toast.error('Gagal membuat user');
+    } finally {
+      // Reset button state
+      submitButton.disabled = false;
+      submitButton.textContent = originalText;
     }
   };
 
@@ -261,7 +277,19 @@ export default function ManageUsers() {
     e.preventDefault();
     if (!selectedUser) return;
 
+    const submitButton = e.currentTarget.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const originalText = submitButton.textContent;
+    
     try {
+      // Set loading state
+      submitButton.disabled = true;
+      submitButton.innerHTML = `
+        <div class="flex items-center space-x-2">
+          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+          <span>Mengupdate User...</span>
+        </div>
+      `;
+
       const response = await fetch(`/api/sys/users/${selectedUser.id}`, {
         method: 'PUT',
         headers: {
@@ -282,14 +310,50 @@ export default function ManageUsers() {
     } catch (error) {
       console.error('Error updating user:', error);
       toast.error('Gagal mengupdate user');
+    } finally {
+      // Reset button state
+      submitButton.disabled = false;
+      submitButton.textContent = originalText;
     }
   };
 
   // Handle delete user
+  // Format date function
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "N/A";
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return "Invalid Date";
+      
+      return date.toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      return "Invalid Date";
+    }
+  };
+
   const handleDeleteUser = async () => {
     if (!selectedUser) return;
 
+    const deleteButton = document.querySelector('[data-delete-button]') as HTMLButtonElement;
+    const originalText = deleteButton.textContent;
+    
     try {
+      // Set loading state
+      deleteButton.disabled = true;
+      deleteButton.innerHTML = `
+        <div class="flex items-center space-x-2">
+          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+          <span>Menghapus User...</span>
+        </div>
+      `;
+
       const response = await fetch(`/api/sys/users/${selectedUser.id}`, {
         method: 'DELETE',
       });
@@ -306,6 +370,10 @@ export default function ManageUsers() {
     } catch (error) {
       console.error('Error deleting user:', error);
       toast.error('Gagal menghapus user');
+    } finally {
+      // Reset button state
+      deleteButton.disabled = false;
+      deleteButton.textContent = originalText;
     }
   };
 
@@ -712,12 +780,12 @@ export default function ManageUsers() {
                          {selectedUser.target_major}
                        </p>
                      </div>
-                     <div>
-                       <label className="block text-sm font-medium text-slate-500 mb-1">
-                         Join Date
-                       </label>
-                       <p className="text-slate-900">{selectedUser.join_date}</p>
-                     </div>
+                                           <div>
+                        <label className="block text-sm font-medium text-slate-500 mb-1">
+                          Join Date
+                        </label>
+                        <p className="text-slate-900">{formatDate(selectedUser.join_date)}</p>
+                      </div>
                    </div>
                  </div>
 
@@ -772,6 +840,7 @@ export default function ManageUsers() {
                 </button>
                                  <button
                    onClick={handleDeleteUser}
+                   data-delete-button
                    className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
                  >
                    Hapus User

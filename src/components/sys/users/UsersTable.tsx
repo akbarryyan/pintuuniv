@@ -172,6 +172,26 @@ export default function UsersTable({
     }
   };
 
+  // Format date function
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "N/A";
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return "Invalid Date";
+      
+      return date.toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      return "Invalid Date";
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Loading Overlay */}
@@ -380,20 +400,20 @@ export default function UsersTable({
               {/* Footer with Dates */}
               <div className="px-6 py-4 bg-gradient-to-r from-slate-50 to-gray-50 border-t border-slate-200">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="w-4 h-4 text-slate-400" />
-                    <div className="text-xs">
-                      <p className="font-medium text-slate-600">Bergabung</p>
-                      <p className="text-slate-500">{user.join_date}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <div className="text-xs">
-                      <p className="font-medium text-slate-600">Last Active</p>
-                      <p className="text-slate-500">{user.last_active}</p>
-                    </div>
-                  </div>
+                                     <div className="flex items-center space-x-2">
+                     <Calendar className="w-4 h-4 text-slate-400" />
+                     <div className="text-xs">
+                       <p className="font-medium text-slate-600">Bergabung</p>
+                       <p className="text-slate-500">{formatDate(user.join_date)}</p>
+                     </div>
+                   </div>
+                   <div className="flex items-center space-x-2">
+                     <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                     <div className="text-xs">
+                       <p className="font-medium text-slate-600">Last Active</p>
+                       <p className="text-slate-500">{formatDate(user.last_active)}</p>
+                     </div>
+                   </div>
                 </div>
               </div>
             </div>
