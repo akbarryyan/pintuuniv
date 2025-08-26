@@ -19,6 +19,7 @@ import {
   ChevronRight,
   MoreHorizontal,
   Loader2,
+  Star,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -183,302 +184,216 @@ export default function UsersTable({
         </div>
       )}
 
-      {/* Table Content with Fade Animation */}
+      {/* Cards Grid - Always Visible */}
       <div className={`transition-all duration-300 ${fadeClass}`}>
-        {/* Desktop Table - Hidden on Mobile */}
-        <div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-slate-50 border-b border-slate-200">
-                <tr>
-                  <th className="px-6 py-4 text-left">
-                    <button
-                      onClick={() => onSort("name")}
-                      className="flex items-center space-x-1 font-semibold text-slate-700 hover:text-slate-900 transition-colors"
-                    >
-                      <span>Nama</span>
-                      {sortBy === "name" &&
-                        (sortOrder === "asc" ? (
-                          <ChevronUp className="w-4 h-4" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4" />
-                        ))}
-                    </button>
-                  </th>
-                  <th className="px-6 py-4 text-left">Email</th>
-                  <th className="px-6 py-4 text-left">Sekolah</th>
-                  <th className="px-6 py-4 text-left">Subscription</th>
-                  <th className="px-6 py-4 text-left">Status</th>
-                  <th className="px-6 py-4 text-left">Tryouts</th>
-                  <th className="px-6 py-4 text-left">Last Active</th>
-                  <th className="px-6 py-4 text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200">
-                {users.map((user) => (
-                  <tr
-                    key={user.id}
-                    className="hover:bg-slate-50 transition-colors"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
-                          {user.name.charAt(0)}
-                        </div>
-                        <div>
-                          <p className="font-medium text-slate-900">
-                            {user.name}
-                          </p>
-                          <p className="text-sm text-slate-500">{user.phone}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center space-x-2">
-                        <Mail className="w-4 h-4 text-slate-400" />
-                        <span className="text-slate-700">{user.email}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center space-x-2">
-                        <MapPin className="w-4 h-4 text-slate-400" />
-                        <span className="text-slate-700">{user.school}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getSubscriptionColor(
-                          user.subscription_type
-                        )}`}
-                      >
-                        {user.subscription_type === "premium" ? (
-                          <>
-                            <Crown className="w-3 h-3 mr-1" />
-                            Premium
-                          </>
-                        ) : (
-                          "Free"
-                        )}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                          user.status
-                        )}`}
-                      >
-                        {user.status === "active" ? (
-                          <>
-                            <UserCheck className="w-3 h-3 mr-1" />
-                            Active
-                          </>
-                        ) : user.status === "inactive" ? (
-                          <>
-                            <UserX className="w-3 h-3 mr-1" />
-                            Inactive
-                          </>
-                        ) : (
-                          "Suspended"
-                        )}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center space-x-2">
-                        <BookOpen className="w-4 h-4 text-slate-400" />
-                        <span className="text-slate-700">
-                          {user.tryouts_completed}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center space-x-2">
-                        <Calendar className="w-4 h-4 text-slate-400" />
-                        <span className="text-slate-700">
-                          {user.last_active}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-center space-x-2">
-                        <button
-                          onClick={() => onOpenModal("view", user)}
-                          className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-300"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => onOpenModal("edit", user)}
-                          className="p-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-all duration-300"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => onOpenModal("delete", user)}
-                          className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-300"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Mobile Cards - Visible on Mobile */}
-        <div className="lg:hidden space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {users.map((user) => (
             <div
               key={user.id}
-              className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-all duration-300"
+              className="bg-white rounded-2xl shadow-lg border border-slate-200 hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden group"
             >
-              {/* Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center space-x-3 flex-1">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
-                    {user.name.charAt(0)}
+              {/* Header with Avatar and Actions */}
+              <div className="relative p-6 pb-4">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center space-x-4 flex-1">
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                      {user.name.charAt(0)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-slate-900 text-xl leading-tight mb-2">
+                        {user.name}
+                      </h3>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Mail className="w-4 h-4 text-slate-400" />
+                        <p className="text-sm text-slate-600 truncate">{user.email}</p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Phone className="w-4 h-4 text-slate-400" />
+                        <p className="text-sm text-slate-600">{user.phone}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-slate-900 text-lg leading-tight mb-1">
-                      {user.name}
-                    </h3>
-                    <p className="text-sm text-slate-500">{user.email}</p>
+                  
+                  {/* Action Buttons */}
+                  <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <button
+                      onClick={() => onOpenModal("view", user)}
+                      className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-all duration-200 hover:scale-110"
+                      title="Lihat Detail"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => onOpenModal("edit", user)}
+                      className="p-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl transition-all duration-200 hover:scale-110"
+                      title="Edit User"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => onOpenModal("delete", user)}
+                      className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all duration-200 hover:scale-110"
+                      title="Hapus User"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2 ml-3">
-                  <button
-                    onClick={() => onOpenModal("view", user)}
-                    className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-300"
-                  >
-                    <Eye className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => onOpenModal("edit", user)}
-                    className="p-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-all duration-300"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => onOpenModal("delete", user)}
-                    className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-300"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+
+                {/* School and Grade Info */}
+                <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-4 mb-4 border border-slate-100">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <MapPin className="w-4 h-4 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Sekolah</p>
+                        <p className="text-sm font-semibold text-slate-900">{user.school}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                        <BookOpen className="w-4 h-4 text-emerald-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Kelas</p>
+                        <p className="text-sm font-semibold text-slate-900">Kelas {user.grade}</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Contact Info */}
-              <div className="bg-slate-50 rounded-xl p-4 mb-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center space-x-2">
-                    <Phone className="w-4 h-4 text-slate-400" />
-                    <span className="text-sm text-slate-700">{user.phone}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <MapPin className="w-4 h-4 text-slate-400" />
-                    <span className="text-sm text-slate-700">
-                      {user.school}
-                    </span>
-                  </div>
+              {/* Status and Subscription Badges */}
+              <div className="px-6 pb-4">
+                <div className="flex flex-wrap gap-3 mb-4">
+                  <span
+                    className={`inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-all duration-200 hover:scale-105 ${getSubscriptionColor(
+                      user.subscription_type
+                    )}`}
+                  >
+                    {user.subscription_type === "premium" ? (
+                      <>
+                        <Crown className="w-4 h-4 mr-2" />
+                        Premium
+                      </>
+                    ) : (
+                      <>
+                        <Users className="w-4 h-4 mr-2" />
+                        Free
+                      </>
+                    )}
+                  </span>
+                  <span
+                    className={`inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-all duration-200 hover:scale-105 ${getStatusColor(
+                      user.status
+                    )}`}
+                  >
+                    {user.status === "active" ? (
+                      <>
+                        <UserCheck className="w-4 h-4 mr-2" />
+                        Active
+                      </>
+                    ) : user.status === "inactive" ? (
+                      <>
+                        <UserX className="w-4 h-4 mr-2" />
+                        Inactive
+                      </>
+                    ) : (
+                      <>
+                        <UserX className="w-4 h-4 mr-2" />
+                        Suspended
+                      </>
+                    )}
+                  </span>
                 </div>
-              </div>
-
-              {/* Badges Row */}
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getSubscriptionColor(
-                    user.subscription_type
-                  )}`}
-                >
-                  {user.subscription_type === "premium" ? (
-                    <>
-                      <Crown className="w-3 h-3 mr-1" />
-                      Premium
-                    </>
-                  ) : (
-                    "Free"
-                  )}
-                </span>
-                <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                    user.status
-                  )}`}
-                >
-                  {user.status === "active" ? (
-                    <>
-                      <UserCheck className="w-3 h-3 mr-1" />
-                      Active
-                    </>
-                  ) : user.status === "inactive" ? (
-                    <>
-                      <UserX className="w-3 h-3 mr-1" />
-                      Inactive
-                    </>
-                  ) : (
-                    "Suspended"
-                  )}
-                </span>
               </div>
 
               {/* Stats Section */}
-              <div className="bg-slate-50 rounded-xl p-4 mb-4">
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="text-center">
-                    <p className="text-lg font-bold text-blue-600">
-                      {user.tryouts_completed}
-                    </p>
-                    <p className="text-xs text-slate-500">Tryouts</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-lg font-bold text-emerald-600">
-                      {user.total_score}
-                    </p>
-                    <p className="text-xs text-slate-500">Score</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-lg font-bold text-amber-600">
-                      {user.grade}
-                    </p>
-                    <p className="text-xs text-slate-500">Kelas</p>
+              <div className="px-6 pb-4">
+                <div className="bg-gradient-to-r from-slate-50 to-indigo-50 rounded-2xl p-4 border border-slate-100">
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="text-center group">
+                      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-2 group-hover:bg-blue-200 transition-colors duration-200">
+                        <BookOpen className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <p className="text-xl font-bold text-blue-600 mb-1">
+                        {user.tryouts_completed}
+                      </p>
+                      <p className="text-xs font-medium text-slate-600 uppercase tracking-wide">Tryouts</p>
+                    </div>
+                    <div className="text-center group">
+                      <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-2 group-hover:bg-emerald-200 transition-colors duration-200">
+                        <Star className="w-5 h-5 text-emerald-600" />
+                      </div>
+                      <p className="text-xl font-bold text-emerald-600 mb-1">
+                        {user.total_score}
+                      </p>
+                      <p className="text-xs font-medium text-slate-600 uppercase tracking-wide">Score</p>
+                    </div>
+                    <div className="text-center group">
+                      <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mx-auto mb-2 group-hover:bg-amber-200 transition-colors duration-200">
+                        <Users className="w-5 h-5 text-amber-600" />
+                      </div>
+                      <p className="text-xl font-bold text-amber-600 mb-1">
+                        {user.average_score}
+                      </p>
+                      <p className="text-xs font-medium text-slate-600 uppercase tracking-wide">Average</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Target Info */}
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="bg-slate-50 rounded-xl p-3">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <MapPin className="w-4 h-4 text-slate-400" />
-                    <span className="text-xs font-medium text-slate-600 uppercase">
-                      Target Univ
-                    </span>
+              <div className="px-6 pb-4">
+                <div className="grid grid-cols-1 gap-3 mb-4">
+                  <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-100">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <MapPin className="w-4 h-4 text-purple-600" />
+                      </div>
+                      <span className="text-xs font-bold text-purple-600 uppercase tracking-wide">
+                        Target University
+                      </span>
+                    </div>
+                    <p className="text-sm font-semibold text-slate-900">
+                      {user.target_university || "Belum ditentukan"}
+                    </p>
                   </div>
-                  <p className="text-sm font-semibold text-slate-900">
-                    {user.target_university}
-                  </p>
-                </div>
-                <div className="bg-slate-50 rounded-xl p-3">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <BookOpen className="w-4 h-4 text-slate-400" />
-                    <span className="text-xs font-medium text-slate-600 uppercase">
-                      Target Major
-                    </span>
+                  <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-4 border border-indigo-100">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                        <BookOpen className="w-4 h-4 text-indigo-600" />
+                      </div>
+                      <span className="text-xs font-bold text-indigo-600 uppercase tracking-wide">
+                        Target Major
+                      </span>
+                    </div>
+                    <p className="text-sm font-semibold text-slate-900">
+                      {user.target_major || "Belum ditentukan"}
+                    </p>
                   </div>
-                  <p className="text-sm font-semibold text-slate-900">
-                    {user.target_major}
-                  </p>
                 </div>
               </div>
 
-              {/* Footer */}
-              <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-                <div className="text-xs text-slate-500">
-                  Bergabung: {user.join_date}
-                </div>
-                <div className="text-xs text-slate-500">
-                  Aktif: {user.last_active}
+              {/* Footer with Dates */}
+              <div className="px-6 py-4 bg-gradient-to-r from-slate-50 to-gray-50 border-t border-slate-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Calendar className="w-4 h-4 text-slate-400" />
+                    <div className="text-xs">
+                      <p className="font-medium text-slate-600">Bergabung</p>
+                      <p className="text-slate-500">{user.join_date}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <div className="text-xs">
+                      <p className="font-medium text-slate-600">Last Active</p>
+                      <p className="text-slate-500">{user.last_active}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
