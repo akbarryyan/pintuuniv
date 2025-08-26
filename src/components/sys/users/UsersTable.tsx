@@ -40,7 +40,7 @@ interface User {
   rank_position: number;
   subscription_expires: string | null;
   role: "user" | "admin";
-  status: "active" | "inactive" | "suspended" | "deleted";
+  status: "active" | "inactive" | "suspended";
   last_activity: string | null;
   join_date: string;
   last_active: string;
@@ -156,6 +156,7 @@ export default function UsersTable({
         return "text-slate-700 bg-slate-50 border-slate-200";
       case "suspended":
         return "text-red-700 bg-red-50 border-red-200";
+
       default:
         return "text-slate-700 bg-slate-50 border-slate-200";
     }
@@ -310,22 +311,22 @@ export default function UsersTable({
                       user.status
                     )}`}
                   >
-                    {user.status === "active" ? (
-                      <>
-                        <UserCheck className="w-4 h-4 mr-2" />
-                        Active
-                      </>
-                    ) : user.status === "inactive" ? (
-                      <>
-                        <UserX className="w-4 h-4 mr-2" />
-                        Inactive
-                      </>
-                    ) : (
-                      <>
-                        <UserX className="w-4 h-4 mr-2" />
-                        Suspended
-                      </>
-                    )}
+                                         {user.status === "active" ? (
+                       <>
+                         <UserCheck className="w-4 h-4 mr-2" />
+                         Active
+                       </>
+                     ) : user.status === "inactive" ? (
+                       <>
+                         <UserX className="w-4 h-4 mr-2" />
+                         Inactive
+                       </>
+                     ) : (
+                       <>
+                         <UserX className="w-4 h-4 mr-2" />
+                         Suspended
+                       </>
+                     )}
                   </span>
                 </div>
               </div>

@@ -28,7 +28,7 @@ interface User {
   rank_position: number;
   subscription_expires: string | null;
   role: "user" | "admin";
-  status: "active" | "inactive" | "suspended" | "deleted";
+  status: "active" | "inactive" | "suspended";
   last_activity: string | null;
   join_date: string;
   last_active: string;
@@ -146,6 +146,7 @@ export default function ManageUsers() {
         return "text-slate-700 bg-slate-50 border-slate-200";
       case "suspended":
         return "text-red-700 bg-red-50 border-red-200";
+
       default:
         return "text-slate-700 bg-slate-50 border-slate-200";
     }

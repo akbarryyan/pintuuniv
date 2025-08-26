@@ -188,14 +188,8 @@ export async function DELETE(
       );
     }
     
-    // Hapus user (soft delete dengan mengubah status menjadi 'deleted')
-    const deleteQuery = `
-      UPDATE users 
-      SET 
-        status = 'deleted',
-        updated_at = CURRENT_TIMESTAMP
-      WHERE id = ?
-    `;
+    // Hapus user (hard delete - benar-benar hapus dari database)
+    const deleteQuery = "DELETE FROM users WHERE id = ?";
     
     await query(deleteQuery, [id]);
     
