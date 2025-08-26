@@ -49,6 +49,33 @@ export default function ManageQuestions() {
   // Loading states
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  // Helper function untuk mengatur answers berdasarkan tipe soal
+  const getDefaultAnswers = (type: string) => {
+    if (type === "Pilihan Ganda") {
+      return [
+        { content: "", is_correct: false },
+        { content: "", is_correct: false },
+        { content: "", is_correct: false },
+        { content: "", is_correct: false },
+      ];
+    } else if (type === "Benar/Salah") {
+      return [
+        { content: "Benar", is_correct: false },
+        { content: "Salah", is_correct: false },
+      ];
+    } else if (type === "Essay") {
+      return [
+        { content: "", is_correct: true },
+      ];
+    }
+    return [
+      { content: "", is_correct: false },
+      { content: "", is_correct: false },
+      { content: "", is_correct: false },
+      { content: "", is_correct: false },
+    ];
+  };
+
   const [formData, setFormData] = useState<QuestionCreateData>({
     title: "",
     content: "",
@@ -57,12 +84,7 @@ export default function ManageQuestions() {
     difficulty: "Mudah",
     weight: 1,
     is_active: true,
-    answers: [
-      { content: "", is_correct: false },
-      { content: "", is_correct: false },
-      { content: "", is_correct: false },
-      { content: "", is_correct: false },
-    ],
+    answers: getDefaultAnswers("Pilihan Ganda"),
   });
 
   // Fetch questions from database
@@ -136,12 +158,7 @@ export default function ManageQuestions() {
         difficulty: "Mudah",
         weight: 1,
         is_active: true,
-        answers: [
-          { content: "", is_correct: false },
-          { content: "", is_correct: false },
-          { content: "", is_correct: false },
-          { content: "", is_correct: false },
-        ],
+        answers: getDefaultAnswers("Pilihan Ganda"),
       });
       setShowCreateModal(true);
     } else if (question) {
@@ -394,21 +411,28 @@ export default function ManageQuestions() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Tipe Soal *
-                  </label>
-                  <select
-                    value={formData.type}
-                    onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
-                    required
-                  >
-                    <option value="Pilihan Ganda">Pilihan Ganda</option>
-                    <option value="Essay">Essay</option>
-                    <option value="Benar/Salah">Benar/Salah</option>
-                  </select>
-                </div>
+                                 <div>
+                   <label className="block text-sm font-medium text-slate-700 mb-2">
+                     Tipe Soal *
+                   </label>
+                   <select
+                     value={formData.type}
+                     onChange={(e) => {
+                       const newType = e.target.value as any;
+                       setFormData({ 
+                         ...formData, 
+                         type: newType,
+                         answers: getDefaultAnswers(newType)
+                       });
+                     }}
+                     className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
+                     required
+                   >
+                     <option value="Pilihan Ganda">Pilihan Ganda</option>
+                     <option value="Essay">Essay</option>
+                     <option value="Benar/Salah">Benar/Salah</option>
+                   </select>
+                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -459,40 +483,93 @@ export default function ManageQuestions() {
               <div className="space-y-4">
                 <h4 className="text-lg font-semibold text-slate-900">Jawaban</h4>
                 
-                {formData.answers.map((answer, index) => (
-                  <div key={index} className="flex items-center space-x-3 p-4 border border-slate-200 rounded-lg">
-                    <input
-                      type="radio"
-                      name="correctAnswer"
-                      checked={answer.is_correct}
-                      onChange={() => {
-                        const newAnswers = formData.answers.map((a, i) => ({
-                          ...a,
-                          is_correct: i === index
-                        }));
-                        setFormData({ ...formData, answers: newAnswers });
-                      }}
-                      className="w-4 h-4 text-emerald-600 border-slate-300 focus:ring-emerald-500"
-                    />
-                    <input
-                      type="text"
-                      value={answer.content}
-                      onChange={(e) => {
-                        const newAnswers = [...formData.answers];
-                        newAnswers[index].content = e.target.value;
-                        setFormData({ ...formData, answers: newAnswers });
-                      }}
-                      className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                      placeholder={`Jawaban ${index + 1}`}
-                      required
-                    />
-                    {formData.type === "Pilihan Ganda" && (
+                {formData.type === "Pilihan Ganda" ? (
+                  // Pilihan Ganda - Multiple choice dengan radio buttons
+                  formData.answers.map((answer, index) => (
+                    <div key={index} className="flex items-center space-x-3 p-4 border border-slate-200 rounded-lg">
+                      <input
+                        type="radio"
+                        name="correctAnswer"
+                        checked={answer.is_correct}
+                        onChange={() => {
+                          const newAnswers = formData.answers.map((a, i) => ({
+                            ...a,
+                            is_correct: i === index
+                          }));
+                          setFormData({ ...formData, answers: newAnswers });
+                        }}
+                        className="w-4 h-4 text-emerald-600 border-slate-300 focus:ring-emerald-500"
+                      />
+                      <input
+                        type="text"
+                        value={answer.content}
+                        onChange={(e) => {
+                          const newAnswers = [...formData.answers];
+                          newAnswers[index].content = e.target.value;
+                          setFormData({ ...formData, answers: newAnswers });
+                        }}
+                        className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        placeholder={`Jawaban ${index + 1}`}
+                        required
+                      />
                       <span className="text-sm font-medium text-slate-500 w-8 text-center">
                         {String.fromCharCode(65 + index)}
                       </span>
-                    )}
+                    </div>
+                  ))
+                ) : formData.type === "Benar/Salah" ? (
+                  // Benar/Salah - Hanya 2 opsi
+                  formData.answers.slice(0, 2).map((answer, index) => (
+                    <div key={index} className="flex items-center space-x-3 p-4 border border-slate-200 rounded-lg">
+                      <input
+                        type="radio"
+                        name="correctAnswer"
+                        checked={answer.is_correct}
+                        onChange={() => {
+                          const newAnswers = formData.answers.map((a, i) => ({
+                            ...a,
+                            is_correct: i === index
+                          }));
+                          setFormData({ ...formData, answers: newAnswers });
+                        }}
+                        className="w-4 h-4 text-emerald-600 border-slate-300 focus:ring-emerald-500"
+                      />
+                      <input
+                        type="text"
+                        value={answer.content}
+                        onChange={(e) => {
+                          const newAnswers = [...formData.answers];
+                          newAnswers[index].content = e.target.value;
+                          setFormData({ ...formData, answers: newAnswers });
+                        }}
+                        className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        placeholder={index === 0 ? "Benar" : "Salah"}
+                        required
+                      />
+                    </div>
+                  ))
+                ) : (
+                  // Essay - Textarea untuk jawaban
+                  <div className="space-y-3">
+                    <div className="p-4 border border-slate-200 rounded-lg">
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Jawaban Benar
+                      </label>
+                      <textarea
+                        value={formData.answers[0]?.content || ""}
+                        onChange={(e) => {
+                          const newAnswers = [...formData.answers];
+                          newAnswers[0] = { content: e.target.value, is_correct: true };
+                          setFormData({ ...formData, answers: newAnswers });
+                        }}
+                        rows={4}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        placeholder="Tulis jawaban yang benar untuk soal essay ini..."
+                        required
+                      />
+                    </div>
                   </div>
-                ))}
+                )}
               </div>
 
               <div className="flex items-center justify-end space-x-3 pt-6 border-t border-slate-200">

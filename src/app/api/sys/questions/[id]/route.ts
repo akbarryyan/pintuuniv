@@ -4,10 +4,11 @@ import { query } from "@/lib/db";
 // GET - Ambil question berdasarkan ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const { id: idParam } = await params;
+    const id = parseInt(idParam);
     
     if (isNaN(id)) {
       return NextResponse.json(
@@ -73,10 +74,11 @@ export async function GET(
 // PUT - Update question
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const { id: idParam } = await params;
+    const id = parseInt(idParam);
     
     if (isNaN(id)) {
       return NextResponse.json(
@@ -137,6 +139,11 @@ export async function PUT(
       const oldQuestion = oldQuestionResult[0];
       const oldCategoryId = oldQuestion.category_id;
       const oldWeight = oldQuestion.weight;
+      
+      // Validasi data lama
+      if (oldCategoryId === undefined || oldCategoryId === null || oldWeight === undefined || oldWeight === null) {
+        throw new Error("Data question lama tidak valid");
+      }
       
       // Update question
       const questionQuery = `
@@ -278,10 +285,11 @@ export async function PUT(
 // DELETE - Hapus question
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const { id: idParam } = await params;
+    const id = parseInt(idParam);
     
     if (isNaN(id)) {
       return NextResponse.json(
@@ -303,7 +311,14 @@ export async function DELETE(
         throw new Error("Question tidak ditemukan");
       }
       
-      const { category_id, weight } = questionResult[0];
+      const questionData = questionResult[0];
+      const category_id = questionData.category_id;
+      const weight = questionData.weight;
+      
+      // Validasi data
+      if (category_id === undefined || category_id === null || weight === undefined || weight === null) {
+        throw new Error("Data question tidak valid");
+      }
       
       // Hapus answers
       await connection.execute("DELETE FROM answers WHERE question_id = ?", [id]);
