@@ -130,18 +130,19 @@ export async function PUT(
     try {
       // Ambil data question lama untuk update stats
       const oldQuestionQuery = "SELECT category_id, weight FROM questions WHERE id = ?";
-      const oldQuestionResult = await connection.execute(oldQuestionQuery, [id]) as any[];
+      const [oldQuestionRows] = await connection.execute(oldQuestionQuery, [id]) as any;
       
-      if (oldQuestionResult.length === 0) {
+      if (!oldQuestionRows || oldQuestionRows.length === 0) {
         throw new Error("Question tidak ditemukan");
       }
       
-      const oldQuestion = oldQuestionResult[0];
+      const oldQuestion = oldQuestionRows[0];
       const oldCategoryId = oldQuestion.category_id;
       const oldWeight = oldQuestion.weight;
       
       // Validasi data lama
       if (oldCategoryId === undefined || oldCategoryId === null || oldWeight === undefined || oldWeight === null) {
+        console.error("Invalid old question data:", { oldCategoryId, oldWeight, oldQuestion });
         throw new Error("Data question lama tidak valid");
       }
       
@@ -305,18 +306,19 @@ export async function DELETE(
     try {
       // Ambil data question untuk update stats
       const questionQuery = "SELECT category_id, weight FROM questions WHERE id = ?";
-      const questionResult = await connection.execute(questionQuery, [id]) as any[];
+      const [questionRows] = await connection.execute(questionQuery, [id]) as any;
       
-      if (questionResult.length === 0) {
+      if (!questionRows || questionRows.length === 0) {
         throw new Error("Question tidak ditemukan");
       }
       
-      const questionData = questionResult[0];
+      const questionData = questionRows[0];
       const category_id = questionData.category_id;
       const weight = questionData.weight;
       
       // Validasi data
       if (category_id === undefined || category_id === null || weight === undefined || weight === null) {
+        console.error("Invalid question data for delete:", { category_id, weight, questionData });
         throw new Error("Data question tidak valid");
       }
       
