@@ -92,10 +92,9 @@ export default function SearchAndFilters({
             <div className="flex flex-wrap gap-2">
               {[
                 { id: "all", label: "🎯 Semua" },
-                { id: "Mudah", label: "🟢 Mudah" },
-                { id: "Sedang", label: "🟡 Sedang" },
-                { id: "Sulit", label: "🟠 Sulit" },
-                { id: "Sangat Sulit", label: "🔴 Sangat Sulit" },
+                { id: "easy", label: "🟢 Mudah" },
+                { id: "medium", label: "🟡 Sedang" },
+                { id: "hard", label: "🟠 Sulit" },
               ].map((filter) => (
                 <button
                   key={filter.id}

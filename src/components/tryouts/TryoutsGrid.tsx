@@ -23,16 +23,27 @@ interface TryoutsGridProps {
 export default function TryoutsGrid({ tryouts }: TryoutsGridProps) {
   const getDifficultyColor = (level: string) => {
     switch (level) {
-      case "Mudah":
+      case "easy":
         return "bg-emerald-100 text-emerald-800 border-emerald-400";
-      case "Sedang":
+      case "medium":
         return "bg-blue-100 text-blue-800 border-blue-400";
-      case "Sulit":
+      case "hard":
         return "bg-orange-100 text-orange-800 border-orange-400";
-      case "Sangat Sulit":
-        return "bg-red-100 text-red-800 border-red-400";
       default:
         return "bg-gray-100 text-gray-800 border-gray-400";
+    }
+  };
+
+  const getDifficultyLabel = (level: string) => {
+    switch (level) {
+      case "easy":
+        return "Mudah";
+      case "medium":
+        return "Sedang";
+      case "hard":
+        return "Sulit";
+      default:
+        return "Sedang";
     }
   };
 
@@ -71,7 +82,7 @@ export default function TryoutsGrid({ tryouts }: TryoutsGridProps) {
                       tryout.difficulty
                     )}`}
                   >
-                    {tryout.difficulty}
+                    {getDifficultyLabel(tryout.difficulty)}
                   </div>
                 </div>
                 <h3 className="font-black text-sm sm:text-base text-slate-900 mb-2 leading-tight">
