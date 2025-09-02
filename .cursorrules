@@ -87,6 +87,22 @@ answers:
   - created_at (DATETIME)
   - updated_at (DATETIME)
 
+user_tryout_registrations:
+  - id (INT, PK, AUTO_INCREMENT)
+  - user_id (FK → users.id)
+  - tryout_id (FK → tryouts.id)
+  - registration_date (DATETIME)
+  - status (ENUM: 'registered', 'approved', 'rejected', 'cancelled')
+  - payment_status (ENUM: 'pending', 'paid', 'failed', 'refunded')
+  - payment_method (VARCHAR)
+  - payment_reference (VARCHAR)
+  - payment_date (DATETIME)
+  - approved_by (INT, FK → admin_users.id)
+  - approved_at (DATETIME)
+  - notes (TEXT)
+  - created_at (DATETIME)
+  - updated_at (DATETIME)
+
 user_tryout_sessions:
   - id (INT, PK, AUTO_INCREMENT)
   - user_id (FK → users.id)
