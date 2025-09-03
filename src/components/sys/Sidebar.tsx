@@ -104,6 +104,12 @@ export default function Sidebar({
       badge: "156",
     },
     {
+      title: "Tryout Registration",
+      href: "/sys/dashboard/tryouts-registers",
+      icon: <User className="w-5 h-5" />,
+      badge: "New",
+    },
+    {
       title: "Payments",
       href: "/sys/dashboard/payments",
       icon: <CreditCard className="w-5 h-5" />,
