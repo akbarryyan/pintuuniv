@@ -33,11 +33,21 @@ export async function GET(
          t.description as tryout_description,
          t.start_date as tryout_start_date,
          t.end_date as tryout_end_date,
+         t.passing_score as tryout_passing_score,
+         COALESCE(q_stats.question_count, 0) as tryout_total_questions,
          admin.name as approved_by_name
        FROM user_tryout_registrations utr
        JOIN users u ON utr.user_id = u.id
        JOIN tryouts t ON utr.tryout_id = t.id
        LEFT JOIN users admin ON utr.approved_by = admin.id
+       LEFT JOIN (
+         SELECT 
+           c.tryout_id,
+           COUNT(q.id) as question_count
+         FROM categories c
+         LEFT JOIN questions q ON c.id = q.category_id
+         GROUP BY c.tryout_id
+       ) q_stats ON t.id = q_stats.tryout_id
        WHERE utr.id = ?`,
       [id]
     );
@@ -49,9 +59,15 @@ export async function GET(
       );
     }
 
+    // Add tryout type information
+    const registrationWithType = {
+      ...registration,
+      tryout_type: registration.tryout_total_questions <= 50 ? 'free' : 'paid'
+    };
+
     return NextResponse.json({
       success: true,
-      registration
+      registration: registrationWithType
     });
 
   } catch (error) {

@@ -23,6 +23,9 @@ export interface Registration {
   tryout_description: string;
   tryout_start_date: string;
   tryout_end_date: string;
+  tryout_passing_score: number;
+  tryout_total_questions: number;
+  tryout_type: 'free' | 'paid';
   approved_by_name: string;
 }
 

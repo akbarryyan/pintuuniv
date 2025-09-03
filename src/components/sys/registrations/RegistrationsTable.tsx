@@ -178,6 +178,16 @@ export default function RegistrationsTable({
     }
   };
 
+  // Determine if tryout is free or paid
+  const isTryoutFree = (registration: Registration) => {
+    return registration.tryout_type === 'free';
+  };
+
+  // Determine if registration needs admin approval
+  const needsApproval = (registration: Registration) => {
+    return !isTryoutFree(registration) && registration.status === "registered";
+  };
+
   return (
     <div className="space-y-6">
       {/* Loading Overlay */}
@@ -248,7 +258,7 @@ export default function RegistrationsTable({
                   >
                     <Eye className="w-4 h-4" />
                   </button>
-                  {registration.status === "registered" && (
+                  {needsApproval(registration) && (
                     <>
                       <button
                         onClick={() => onApprove(registration)}
@@ -285,6 +295,16 @@ export default function RegistrationsTable({
                 >
                   <Activity className="w-3 h-3 mr-1" />
                   {getStatusLabel(registration.status)}
+                </span>
+                <span
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${
+                    isTryoutFree(registration)
+                      ? "text-emerald-700 bg-emerald-50 border-emerald-200"
+                      : "text-blue-700 bg-blue-50 border-blue-200"
+                  }`}
+                >
+                  <Target className="w-3 h-3 mr-1" />
+                  {isTryoutFree(registration) ? "Gratis" : "Berbayar"}
                 </span>
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getPaymentStatusColor(
@@ -370,7 +390,7 @@ export default function RegistrationsTable({
                   >
                     <Eye className="w-4 h-4" />
                   </button>
-                  {registration.status === "registered" && (
+                  {needsApproval(registration) && (
                     <>
                       <button
                         onClick={() => onApprove(registration)}
@@ -404,6 +424,16 @@ export default function RegistrationsTable({
                 >
                   <Activity className="w-3 h-3 mr-1" />
                   {getStatusLabel(registration.status)}
+                </span>
+                <span
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${
+                    isTryoutFree(registration)
+                      ? "text-emerald-700 bg-emerald-50 border-emerald-200"
+                      : "text-blue-700 bg-blue-50 border-blue-200"
+                  }`}
+                >
+                  <Target className="w-3 h-3 mr-1" />
+                  {isTryoutFree(registration) ? "Gratis" : "Berbayar"}
                 </span>
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getPaymentStatusColor(
