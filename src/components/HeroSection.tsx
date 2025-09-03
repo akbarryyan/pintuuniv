@@ -3,6 +3,16 @@
 import Link from "next/link";
 
 export default function HeroSection() {
+  const scrollToTryoutSimulation = () => {
+    const element = document.getElementById('tryout-simulation');
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  };
+
   return (
     <section className="relative pt-12 pb-12 sm:pb-16 md:pb-28 overflow-hidden min-h-screen flex items-center">
       {/* Background with improved gradient */}
@@ -101,7 +111,10 @@ export default function HeroSection() {
 
           {/* Enhanced CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-6 justify-center mb-6 sm:mb-8 md:mb-16 px-2 sm:px-4">
-            <button className="group bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 sm:px-6 md:px-10 py-3 sm:py-4 md:py-5 font-black text-xs sm:text-sm md:text-lg uppercase border-3 sm:border-4 md:border-8 border-slate-800 transform hover:-rotate-2 hover:-translate-y-3 hover:scale-105 transition-all duration-300 shadow-brutal w-full sm:w-auto">
+            <button 
+              onClick={scrollToTryoutSimulation}
+              className="group bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 sm:px-6 md:px-10 py-3 sm:py-4 md:py-5 font-black text-xs sm:text-sm md:text-lg uppercase border-3 sm:border-4 md:border-8 border-slate-800 transform hover:-rotate-2 hover:-translate-y-3 hover:scale-105 transition-all duration-300 shadow-brutal w-full sm:w-auto cursor-pointer"
+            >
               <span className="flex items-center justify-center gap-2 sm:gap-3">
                 <span className="text-lg sm:text-xl md:text-2xl group-hover:animate-bounce">
                   ⚡

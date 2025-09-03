@@ -817,7 +817,9 @@ export default function Home() {
         return <U />;
       })()}
       {/* Interactive Tryout Simulation Section */}
-      <TryoutSimulation />
+      <div id="tryout-simulation">
+        <TryoutSimulation />
+      </div>
       {/* Pricing Section */}
       <PricingSection />
       {/* FAQ Section */}
