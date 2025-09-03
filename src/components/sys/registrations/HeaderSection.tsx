@@ -1,3 +1,7 @@
+"use client";
+
+import { Users, Clock, CheckCircle, XCircle } from "lucide-react";
+
 interface HeaderSectionProps {
   totalRegistrations: number;
   pendingRegistrations: number;
@@ -12,54 +16,69 @@ export default function HeaderSection({
   rejectedRegistrations,
 }: HeaderSectionProps) {
   return (
-    <div className="mb-6 sm:mb-8">
-      <div className="bg-white border-3 sm:border-4 border-slate-800 shadow-brutal p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mb-2 uppercase">
-              Kelola Registrasi Tryout
-            </h1>
-            <p className="text-slate-600 font-bold text-sm sm:text-base">
-              Manajemen pendaftaran tryout dan persetujuan peserta
-            </p>
+    <div className="mb-6">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
+              <Users className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-600">
+                Total Registrasi
+              </p>
+              <p className="text-2xl font-bold text-slate-900">
+                {totalRegistrations.toLocaleString()}
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-6">
-          <div className="bg-blue-100 border-3 border-blue-400 p-3 sm:p-4 text-center">
-            <div className="text-2xl sm:text-3xl font-black text-blue-600 mb-1">
-              {totalRegistrations}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-amber-100 to-amber-200 rounded-xl flex items-center justify-center">
+              <Clock className="w-6 h-6 text-amber-600" />
             </div>
-            <div className="text-xs sm:text-sm font-bold text-blue-800 uppercase">
-              Total Registrasi
-            </div>
-          </div>
-
-          <div className="bg-orange-100 border-3 border-orange-400 p-3 sm:p-4 text-center">
-            <div className="text-2xl sm:text-3xl font-black text-orange-600 mb-1">
-              {pendingRegistrations}
-            </div>
-            <div className="text-xs sm:text-sm font-bold text-orange-800 uppercase">
-              Menunggu Persetujuan
+            <div>
+              <p className="text-sm font-medium text-slate-600">
+                Menunggu Persetujuan
+              </p>
+              <p className="text-2xl font-bold text-slate-900">
+                {pendingRegistrations.toLocaleString()}
+              </p>
             </div>
           </div>
+        </div>
 
-          <div className="bg-emerald-100 border-3 border-emerald-400 p-3 sm:p-4 text-center">
-            <div className="text-2xl sm:text-3xl font-black text-emerald-600 mb-1">
-              {approvedRegistrations}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl flex items-center justify-center">
+              <CheckCircle className="w-6 h-6 text-emerald-600" />
             </div>
-            <div className="text-xs sm:text-sm font-bold text-emerald-800 uppercase">
-              Disetujui
+            <div>
+              <p className="text-sm font-medium text-slate-600">
+                Disetujui
+              </p>
+              <p className="text-2xl font-bold text-slate-900">
+                {approvedRegistrations.toLocaleString()}
+              </p>
             </div>
           </div>
+        </div>
 
-          <div className="bg-red-100 border-3 border-red-400 p-3 sm:p-4 text-center">
-            <div className="text-2xl sm:text-3xl font-black text-red-600 mb-1">
-              {rejectedRegistrations}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-red-100 to-red-200 rounded-xl flex items-center justify-center">
+              <XCircle className="w-6 h-6 text-red-600" />
             </div>
-            <div className="text-xs sm:text-sm font-bold text-red-800 uppercase">
-              Ditolak
+            <div>
+              <p className="text-sm font-medium text-slate-600">
+                Ditolak
+              </p>
+              <p className="text-2xl font-bold text-slate-900">
+                {rejectedRegistrations.toLocaleString()}
+              </p>
             </div>
           </div>
         </div>
