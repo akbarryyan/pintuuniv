@@ -15,6 +15,7 @@ import {
 } from "@/components/sys/registrations";
 import { usePageTransition } from "@/lib/hooks";
 import { Registration, RegistrationService, RegistrationFilters } from "@/lib/services/registrationService";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Pagination {
   page: number;
@@ -27,6 +28,9 @@ export default function TryoutRegistrationsPage() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeItem, setActiveItem] = useState("tryouts-registers");
+  
+  // Use auth context
+  const { isAuthenticated, isLoading } = useAuth();
 
   // Use page transition hook
   usePageTransition();
@@ -38,7 +42,7 @@ export default function TryoutRegistrationsPage() {
     total: 0,
     totalPages: 0
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Filter states
@@ -58,7 +62,7 @@ export default function TryoutRegistrationsPage() {
   // Load registrations
   const fetchRegistrations = async () => {
     try {
-      setIsLoading(true);
+      setDataLoading(true);
       setError(null);
 
       const params = new URLSearchParams({
@@ -87,7 +91,7 @@ export default function TryoutRegistrationsPage() {
       setError("Terjadi kesalahan saat memuat data");
       toast.error("Terjadi kesalahan saat memuat data");
     } finally {
-      setIsLoading(false);
+      setDataLoading(false);
     }
   };
 
@@ -201,6 +205,23 @@ export default function TryoutRegistrationsPage() {
   const pendingRegistrations = registrations.filter(r => r.status === 'registered').length;
   const approvedRegistrations = registrations.filter(r => r.status === 'approved').length;
   const rejectedRegistrations = registrations.filter(r => r.status === 'rejected').length;
+
+  // Show loading screen while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-600">Memverifikasi akses admin...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show nothing if not authenticated (will redirect)
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex">

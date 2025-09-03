@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import jwt from 'jsonwebtoken';
 
+// Simple in-memory cache for rate limiting
+const verifyCache = new Map<string, { result: any; timestamp: number }>();
+const CACHE_DURATION = 5000; // 5 seconds cache
+
 export async function GET(request: NextRequest) {
   try {
     // Get token from headers
@@ -16,6 +20,14 @@ export async function GET(request: NextRequest) {
     }
 
     console.log('Verifying token:', token.substring(0, 20) + '...');
+
+    // Check cache first
+    const cacheKey = token.substring(0, 20);
+    const cached = verifyCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      console.log('Returning cached verification result');
+      return NextResponse.json(cached.result);
+    }
 
     try {
       // Verify JWT token
@@ -83,7 +95,7 @@ export async function GET(request: NextRequest) {
         [session.id]
       );
 
-      return NextResponse.json({
+      const result = {
         success: true,
         message: 'Token valid',
         data: {
@@ -94,7 +106,15 @@ export async function GET(request: NextRequest) {
             role: user.role
           }
         }
+      };
+
+      // Cache the result
+      verifyCache.set(cacheKey, {
+        result,
+        timestamp: Date.now()
       });
+
+      return NextResponse.json(result);
 
     } catch (jwtError) {
       return NextResponse.json(

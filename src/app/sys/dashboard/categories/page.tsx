@@ -11,10 +11,14 @@ import { usePageTransition } from "@/lib/hooks";
 import { categoryService, Category, CategoryFilters, CategoryCreateData } from "@/lib/services/categoryService";
 import { tryoutService } from "@/lib/services/tryoutService";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function ManageCategories() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeItem, setActiveItem] = useState("categories");
+  
+  // Use auth context
+  const { isAuthenticated, isLoading } = useAuth();
 
   // Use page transition hook
   usePageTransition();
@@ -208,6 +212,23 @@ export default function ManageCategories() {
       return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
     }
   });
+
+  // Show loading screen while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-600">Memverifikasi akses admin...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show nothing if not authenticated (will redirect)
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
