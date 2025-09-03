@@ -17,6 +17,7 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface TopHeaderProps {
   sidebarOpen: boolean;
@@ -32,6 +33,7 @@ export default function TopHeader({
   pageDescription = "Selamat datang kembali, Admin!",
 }: TopHeaderProps) {
   const router = useRouter();
+  const { user, logout } = useAuth();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(3);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -93,14 +95,8 @@ export default function TopHeader({
         });
       }
 
-      // Clear all storage
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminUser');
-      sessionStorage.removeItem('adminToken');
-      sessionStorage.removeItem('adminUser');
-      
-      // Clear cookie
-      document.cookie = 'adminToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      // Use auth context logout method
+      logout();
       
       // Redirect to login after a short delay
       setTimeout(() => {
@@ -234,11 +230,11 @@ export default function TopHeader({
                 className="flex items-center space-x-2 lg:space-x-3 group cursor-pointer p-2 rounded-xl hover:bg-slate-100 transition-all duration-300"
               >
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  A
+                  {user?.name?.charAt(0) || 'A'}
                 </div>
                 <div className="hidden lg:block">
-                  <p className="text-sm font-semibold text-slate-900">Admin</p>
-                  <p className="text-xs text-slate-500">Super Admin</p>
+                  <p className="text-sm font-semibold text-slate-900">{user?.name || 'Admin'}</p>
+                  <p className="text-xs text-slate-500">{user?.role || 'Super Admin'}</p>
                 </div>
                 <ChevronDown
                   className={`w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-all duration-300 ${
@@ -260,14 +256,14 @@ export default function TopHeader({
               <div className="px-4 py-3 border-b border-slate-100">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
-                    A
+                    {user?.name?.charAt(0) || 'A'}
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-slate-900">
-                      Admin
+                      {user?.name || 'Admin'}
                     </p>
                     <p className="text-xs text-slate-500">
-                      admin@pintuuniv.com
+                      {user?.email || 'admin@pintuuniv.com'}
                     </p>
                   </div>
                 </div>

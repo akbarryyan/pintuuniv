@@ -8,11 +8,14 @@ export async function GET(request: NextRequest) {
     const token = request.headers.get('authorization')?.replace('Bearer ', '');
 
     if (!token) {
+      console.log('No token provided in authorization header');
       return NextResponse.json(
         { success: false, message: 'Token tidak ditemukan' },
         { status: 401 }
       );
     }
+
+    console.log('Verifying token:', token.substring(0, 20) + '...');
 
     try {
       // Verify JWT token
@@ -33,6 +36,7 @@ export async function GET(request: NextRequest) {
       ) as any[];
 
       if (!sessions || sessions.length === 0) {
+        console.log('Session not found in database for token:', token.substring(0, 20) + '...');
         return NextResponse.json(
           { success: false, message: 'Session tidak valid' },
           { status: 401 }

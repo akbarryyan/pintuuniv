@@ -14,11 +14,23 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const { login, isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/sys/dashboard');
+    }
+  }, [isAuthenticated, router]);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -45,14 +57,8 @@ export default function AdminLogin() {
       const data = await response.json();
 
       if (data.success) {
-        // Store admin token
-        if (formData.rememberMe) {
-          localStorage.setItem('adminToken', data.data.token);
-          localStorage.setItem('adminUser', JSON.stringify(data.data.user));
-        } else {
-          sessionStorage.setItem('adminToken', data.data.token);
-          sessionStorage.setItem('adminUser', JSON.stringify(data.data.user));
-        }
+        // Use auth context login method
+        login(data.data.token, data.data.user);
 
         // Set cookie for middleware
         document.cookie = `adminToken=${data.data.token}; path=/; max-age=${formData.rememberMe ? 86400 * 30 : 86400}; secure=${window.location.protocol === 'https:'}; samesite=strict`;
@@ -65,7 +71,7 @@ export default function AdminLogin() {
         
         // Redirect to dashboard after a short delay
         setTimeout(() => {
-          window.location.href = "/sys/dashboard";
+          router.push("/sys/dashboard");
         }, 1000);
       } else {
         setError(data.message || 'Login gagal');

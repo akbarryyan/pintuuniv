@@ -14,6 +14,7 @@ import {
 } from "@/components/sys";
 import { usePageTransition, useSmoothNavigation } from "@/lib/hooks";
 import { SmoothTransition } from "@/components/ui/loading";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface AdminStats {
   totalUsers: number;
@@ -28,8 +29,9 @@ export default function AdminDashboard() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeItem, setActiveItem] = useState("dashboard");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  
+  // Use auth context
+  const { isAuthenticated, isLoading } = useAuth();
 
   // Use page transition and navigation hooks
   const { isLoading: pageTransitionLoading } = usePageTransition();
@@ -43,58 +45,7 @@ export default function AdminDashboard() {
     pendingApprovals: 12,
   });
 
-  // Authentication check
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        // Check for token in localStorage or sessionStorage
-        const adminToken = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
-        
-        if (!adminToken) {
-          router.push('/sys/login');
-          return;
-        }
 
-        // Verify token with server
-        const response = await fetch('/api/admin/verify', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${adminToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          // Token invalid, clear storage and redirect
-          localStorage.removeItem('adminToken');
-          localStorage.removeItem('adminUser');
-          sessionStorage.removeItem('adminToken');
-          sessionStorage.removeItem('adminUser');
-          
-          toast.error("Session Expired", {
-            description: "Session Anda telah berakhir. Silakan login kembali.",
-            duration: 4000,
-          });
-          
-          router.push('/sys/login');
-          return;
-        }
-
-        setIsAuthenticated(true);
-      } catch (error) {
-        console.error('Auth check error:', error);
-        toast.error("Authentication Error", {
-          description: "Terjadi kesalahan saat memverifikasi akses. Silakan login kembali.",
-          duration: 4000,
-        });
-        router.push('/sys/login');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, [router]);
 
   const [recentActivities] = useState<
     Array<{
