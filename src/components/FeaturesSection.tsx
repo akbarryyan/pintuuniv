@@ -15,15 +15,15 @@ export default function FeaturesSection() {
       rotation: "hover:-rotate-2",
     },
     {
-      icon: "🤖",
-      title: "ANALISIS AI REAL-TIME",
+      icon: "📊",
+      title: "ANALISIS SKOR DETAIL",
       description:
-        "Sistem AI canggih yang menganalisis pola jawabanmu dan memberikan rekomendasi pembelajaran personal.",
+        "Sistem penilaian UTBK yang akurat dengan analisis mendalam untuk setiap kategori dan rekomendasi perbaikan.",
       bgColor: "from-blue-400 to-blue-500",
       bgLight: "bg-blue-100",
       borderColor: "border-blue-400",
       textColor: "text-blue-300",
-      ctaText: "COBA SEKARANG →",
+      ctaText: "LIHAT ANALISIS →",
       rotation: "hover:rotate-2",
     },
     {
@@ -39,15 +39,15 @@ export default function FeaturesSection() {
       rotation: "hover:-rotate-1",
     },
     {
-      icon: "👥",
-      title: "KOMUNITAS BELAJAR",
+      icon: "🏆",
+      title: "LEADERBOARD & RANKING",
       description:
-        "Bergabung dengan ribuan siswa lain, diskusi soal, dan saling mendukung dalam persiapan UTBK.",
+        "Lihat peringkatmu di antara ribuan peserta lain dan motivasi diri untuk terus meningkatkan skor UTBK.",
       bgColor: "from-violet-400 to-violet-500",
       bgLight: "bg-violet-100",
       borderColor: "border-violet-400",
       textColor: "text-violet-300",
-      ctaText: "GABUNG KOMUNITAS →",
+      ctaText: "LIHAT RANKING →",
       rotation: "hover:rotate-1",
     },
     {
@@ -63,15 +63,15 @@ export default function FeaturesSection() {
       rotation: "hover:-rotate-2",
     },
     {
-      icon: "👨‍🏫",
-      title: "MENTOR PERSONAL",
+      icon: "🎯",
+      title: "TARGET UNIVERSITAS",
       description:
-        "Dapatkan bimbingan langsung dari mentor berpengalaman yang siap membantu strategi belajarmu.",
+        "Set target universitas dan jurusan impianmu, lalu dapatkan rekomendasi skor UTBK yang dibutuhkan.",
       bgColor: "from-amber-400 to-amber-500",
       bgLight: "bg-amber-100",
       borderColor: "border-amber-400",
       textColor: "text-amber-300",
-      ctaText: "CHAT MENTOR →",
+      ctaText: "SET TARGET →",
       rotation: "hover:rotate-2",
     },
   ];
@@ -155,34 +155,34 @@ export default function FeaturesSection() {
           ))}
         </div>
 
-        {/* Additional Features Highlight */}
+        {/* Tryout Categories Highlight */}
         <div className="mt-16 md:mt-20">
           <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-6 md:p-10 border-4 md:border-6 border-orange-500 transform -rotate-1 shadow-brutal hover:rotate-0 transition-transform duration-300">
             <div className="text-center">
               <h3 className="text-2xl md:text-3xl font-black uppercase mb-4 md:mb-6 text-orange-300">
-                🎯 BONUS EKSKLUSIF!
+                📚 KATEGORI TRYOUT LENGKAP!
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                 <div className="bg-orange-500 text-white p-4 border-3 border-white transform rotate-1 shadow-lg">
-                  <div className="text-2xl mb-2">🎁</div>
+                  <div className="text-2xl mb-2">🧠</div>
                   <h4 className="font-black text-sm uppercase mb-2">
-                    E-BOOK GRATIS
+                    TPS PENALARAN
                   </h4>
-                  <p className="text-xs font-bold">Strategi Lolos UTBK</p>
+                  <p className="text-xs font-bold">Penalaran Umum & Logis</p>
                 </div>
                 <div className="bg-blue-500 text-white p-4 border-3 border-white transform -rotate-1 shadow-lg">
-                  <div className="text-2xl mb-2">🎬</div>
+                  <div className="text-2xl mb-2">📖</div>
                   <h4 className="font-black text-sm uppercase mb-2">
-                    VIDEO TUTORIAL
+                    LITERASI BAHASA
                   </h4>
-                  <p className="text-xs font-bold">Tips & Trik Eksklusif</p>
+                  <p className="text-xs font-bold">Indonesia & Inggris</p>
                 </div>
                 <div className="bg-emerald-500 text-white p-4 border-3 border-white transform rotate-1 shadow-lg">
-                  <div className="text-2xl mb-2">🏆</div>
+                  <div className="text-2xl mb-2">🔢</div>
                   <h4 className="font-black text-sm uppercase mb-2">
-                    SERTIFIKAT
+                    PENGETAHUAN KUANTITATIF
                   </h4>
-                  <p className="text-xs font-bold">Completion Certificate</p>
+                  <p className="text-xs font-bold">Matematika & Logika</p>
                 </div>
               </div>
             </div>
