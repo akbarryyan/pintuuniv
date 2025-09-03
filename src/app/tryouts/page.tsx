@@ -28,6 +28,8 @@ interface Tryout {
   status: string;
   createdAt: string;
   updatedAt: string;
+  isRegistered?: boolean;
+  registrationStatus?: string;
 }
 
 export default function TryoutsPage() {
@@ -39,6 +41,7 @@ export default function TryoutsPage() {
   const [userData, setUserData] = useState({
     name: "User",
     avatar: "👨‍🎓",
+    id: null as number | null,
   });
   const [tryouts, setTryouts] = useState<Tryout[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -54,6 +57,7 @@ export default function TryoutsPage() {
           setUserData({
             name: parsedData.name || "User",
             avatar: parsedData.avatar || "👨‍🎓",
+            id: parsedData.id || null,
           });
         }
       }
@@ -82,6 +86,11 @@ export default function TryoutsPage() {
         if (data.success) {
           setTryouts(data.tryouts);
           console.log("Tryouts loaded:", data.tryouts.length);
+          
+          // Cek status registrasi untuk setiap tryout jika user sudah login
+          if (userData.id) {
+            checkRegistrationStatus(data.tryouts);
+          }
         } else {
           setError(data.message || "Gagal memuat data tryouts");
           toast.error("Gagal memuat data tryouts");
@@ -96,7 +105,78 @@ export default function TryoutsPage() {
     };
 
     fetchTryouts();
-  }, [activeFilter, difficulty, priceRange, searchQuery]);
+  }, [activeFilter, difficulty, priceRange, searchQuery, userData.id]);
+
+  // Fungsi untuk mengecek status registrasi
+  const checkRegistrationStatus = async (tryoutsData: Tryout[]) => {
+    if (!userData.id) return;
+
+    try {
+      const updatedTryouts = await Promise.all(
+        tryoutsData.map(async (tryout) => {
+          const response = await fetch(
+            `/api/tryouts/register?userId=${userData.id}&tryoutId=${tryout.id}`
+          );
+          const data = await response.json();
+          
+          if (data.success) {
+            return {
+              ...tryout,
+              isRegistered: data.isRegistered,
+              registrationStatus: data.registration?.status || null,
+            };
+          }
+          return tryout;
+        })
+      );
+      
+      setTryouts(updatedTryouts);
+    } catch (error) {
+      console.error("Error checking registration status:", error);
+    }
+  };
+
+  // Fungsi untuk mendaftar tryout
+  const handleRegisterTryout = async (tryoutId: number, tryoutTitle: string) => {
+    if (!userData.id) {
+      toast.error("Anda harus login terlebih dahulu");
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/tryouts/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tryoutId,
+          userId: userData.id,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success(`Berhasil mendaftar tryout "${tryoutTitle}"!`);
+        
+        // Update status registrasi di state
+        setTryouts(prevTryouts =>
+          prevTryouts.map(tryout =>
+            tryout.id === tryoutId
+              ? { ...tryout, isRegistered: true, registrationStatus: "registered" }
+              : tryout
+          )
+        );
+      } else {
+        toast.error(data.message || "Gagal mendaftar tryout");
+      }
+    } catch (error) {
+      console.error("Error registering for tryout:", error);
+      toast.error("Terjadi kesalahan saat mendaftar");
+    }
+  };
 
   // Logout function
   const handleLogout = () => {
@@ -210,7 +290,13 @@ export default function TryoutsPage() {
         )}
 
         {/* Tryouts Grid */}
-        {!isLoading && !error && <TryoutsGrid tryouts={tryouts} />}
+        {!isLoading && !error && (
+          <TryoutsGrid 
+            tryouts={tryouts} 
+            onRegisterTryout={handleRegisterTryout}
+            userData={userData}
+          />
+        )}
 
         {/* No Results */}
         {!isLoading && !error && tryouts.length === 0 && (
