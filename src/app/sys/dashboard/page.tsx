@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Settings, LogOut, User, X } from "lucide-react";
+import { toast } from "sonner";
 import {
   Sidebar,
   StatsGrid,
@@ -69,6 +70,12 @@ export default function AdminDashboard() {
           localStorage.removeItem('adminUser');
           sessionStorage.removeItem('adminToken');
           sessionStorage.removeItem('adminUser');
+          
+          toast.error("Session Expired", {
+            description: "Session Anda telah berakhir. Silakan login kembali.",
+            duration: 4000,
+          });
+          
           router.push('/sys/login');
           return;
         }
@@ -76,6 +83,10 @@ export default function AdminDashboard() {
         setIsAuthenticated(true);
       } catch (error) {
         console.error('Auth check error:', error);
+        toast.error("Authentication Error", {
+          description: "Terjadi kesalahan saat memverifikasi akses. Silakan login kembali.",
+          duration: 4000,
+        });
         router.push('/sys/login');
       } finally {
         setIsLoading(false);

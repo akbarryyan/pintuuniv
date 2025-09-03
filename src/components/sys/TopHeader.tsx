@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface TopHeaderProps {
   sidebarOpen: boolean;
@@ -64,12 +65,31 @@ export default function TopHeader({
       const adminToken = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
       
       if (adminToken) {
-        await fetch('/api/admin/logout', {
+        const response = await fetch('/api/admin/logout', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${adminToken}`,
             'Content-Type': 'application/json',
           },
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+          toast.success("Logout Berhasil!", {
+            description: "Anda telah berhasil keluar dari sistem admin",
+            duration: 3000,
+          });
+        } else {
+          toast.warning("Logout Warning", {
+            description: "Session berhasil dihapus, tetapi ada masalah dengan server",
+            duration: 3000,
+          });
+        }
+      } else {
+        toast.info("Session Berakhir", {
+          description: "Session Anda telah berakhir",
+          duration: 3000,
         });
       }
 
@@ -82,12 +102,21 @@ export default function TopHeader({
       // Clear cookie
       document.cookie = 'adminToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
       
-      // Redirect to login
-      router.push('/sys/login');
+      // Redirect to login after a short delay
+      setTimeout(() => {
+        router.push('/sys/login');
+      }, 1000);
     } catch (error) {
       console.error('Logout error:', error);
+      toast.error("Logout Gagal", {
+        description: "Terjadi kesalahan saat logout, tetapi Anda akan tetap diarahkan ke halaman login",
+        duration: 4000,
+      });
+      
       // Still redirect even if logout API fails
-      router.push('/sys/login');
+      setTimeout(() => {
+        router.push('/sys/login');
+      }, 1500);
     } finally {
       setIsLoggingOut(false);
     }

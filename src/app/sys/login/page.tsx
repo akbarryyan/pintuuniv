@@ -13,6 +13,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -56,14 +57,30 @@ export default function AdminLogin() {
         // Set cookie for middleware
         document.cookie = `adminToken=${data.data.token}; path=/; max-age=${formData.rememberMe ? 86400 * 30 : 86400}; secure=${window.location.protocol === 'https:'}; samesite=strict`;
         
-        // Redirect to dashboard
-        window.location.href = "/sys/dashboard";
+        // Show success notification
+        toast.success("Login Berhasil!", {
+          description: `Selamat datang kembali, ${data.data.user.name}!`,
+          duration: 3000,
+        });
+        
+        // Redirect to dashboard after a short delay
+        setTimeout(() => {
+          window.location.href = "/sys/dashboard";
+        }, 1000);
       } else {
         setError(data.message || 'Login gagal');
+        toast.error("Login Gagal", {
+          description: data.message || 'Terjadi kesalahan saat login',
+          duration: 4000,
+        });
       }
     } catch (err) {
       setError('Terjadi kesalahan koneksi');
       console.error('Login error:', err);
+      toast.error("Koneksi Gagal", {
+        description: 'Tidak dapat terhubung ke server. Periksa koneksi internet Anda.',
+        duration: 4000,
+      });
     } finally {
       setIsLoading(false);
     }

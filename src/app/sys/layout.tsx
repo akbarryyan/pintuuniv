@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard - Pintu Universitas",
@@ -6,5 +7,16 @@ export const metadata: Metadata = {
 };
 
 export default function SysLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      {children}
+      <Toaster 
+        position="top-right"
+        expand={true}
+        richColors={true}
+        closeButton={true}
+        duration={4000}
+      />
+    </>
+  );
 }
