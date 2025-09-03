@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
 
 export function middleware(request: NextRequest) {
   // Check if the request is for admin routes
@@ -17,9 +18,29 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/sys/login', request.url));
     }
 
-    // In production, validate token here
-    // For now, just check if token exists
-    if (!adminToken.startsWith('admin_')) {
+    try {
+      // Verify JWT token
+      const decoded = jwt.verify(adminToken, process.env.JWT_SECRET || 'fallback-secret-key') as any;
+      
+      // Check if user is admin
+      if (decoded.role !== 'admin' || decoded.type !== 'admin') {
+        return NextResponse.redirect(new URL('/sys/login', request.url));
+      }
+
+      // Add user info to headers for API routes
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set('x-user-id', decoded.id.toString());
+      requestHeaders.set('x-user-email', decoded.email);
+      requestHeaders.set('x-user-role', decoded.role);
+
+      return NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      });
+
+    } catch (error) {
+      // Token is invalid
       return NextResponse.redirect(new URL('/sys/login', request.url));
     }
   }

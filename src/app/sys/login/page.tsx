@@ -19,7 +19,7 @@ export default function AdminLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
     rememberMe: false
   });
@@ -36,7 +36,7 @@ export default function AdminLogin() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: formData.username,
+          email: formData.email,
           password: formData.password
         }),
       });
@@ -52,6 +52,9 @@ export default function AdminLogin() {
           sessionStorage.setItem('adminToken', data.data.token);
           sessionStorage.setItem('adminUser', JSON.stringify(data.data.user));
         }
+
+        // Set cookie for middleware
+        document.cookie = `adminToken=${data.data.token}; path=/; max-age=${formData.rememberMe ? 86400 * 30 : 86400}; secure=${window.location.protocol === 'https:'}; samesite=strict`;
         
         // Redirect to dashboard
         window.location.href = "/sys/dashboard";
@@ -103,22 +106,22 @@ export default function AdminLogin() {
               </div>
             )}
 
-            {/* Username Field */}
+            {/* Email Field */}
             <div className="space-y-2">
-              <label htmlFor="username" className="text-sm font-medium text-slate-700 flex items-center space-x-2">
+              <label htmlFor="email" className="text-sm font-medium text-slate-700 flex items-center space-x-2">
                 <User className="w-4 h-4" />
-                <span>Username</span>
+                <span>Email</span>
               </label>
               <div className="relative">
                 <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  value={formData.username}
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
                   onChange={handleInputChange}
                   required
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 placeholder-slate-400"
-                  placeholder="Masukkan username admin"
+                  placeholder="Masukkan email admin"
                 />
               </div>
             </div>

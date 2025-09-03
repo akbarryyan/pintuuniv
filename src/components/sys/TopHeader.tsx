@@ -15,6 +15,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface TopHeaderProps {
   sidebarOpen: boolean;
@@ -29,9 +30,11 @@ export default function TopHeader({
   pageTitle = "Dashboard",
   pageDescription = "Selamat datang kembali, Admin!",
 }: TopHeaderProps) {
+  const router = useRouter();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(3);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -55,7 +58,48 @@ export default function TopHeader({
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
-  const profileMenuItems = [
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      const adminToken = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
+      
+      if (adminToken) {
+        await fetch('/api/admin/logout', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${adminToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      }
+
+      // Clear all storage
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminUser');
+      sessionStorage.removeItem('adminToken');
+      sessionStorage.removeItem('adminUser');
+      
+      // Clear cookie
+      document.cookie = 'adminToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      
+      // Redirect to login
+      router.push('/sys/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Still redirect even if logout API fails
+      router.push('/sys/login');
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+  const profileMenuItems: Array<{
+    icon: React.ReactNode;
+    label: string;
+    action: () => void;
+    danger?: boolean;
+    disabled?: boolean;
+  }> = [
     {
       icon: <UserCircle className="w-4 h-4" />,
       label: "Profil Saya",
@@ -78,9 +122,10 @@ export default function TopHeader({
     },
     {
       icon: <LogOut className="w-4 h-4" />,
-      label: "Keluar",
-      action: () => console.log("Logout clicked"),
+      label: isLoggingOut ? "Keluar..." : "Keluar",
+      action: handleLogout,
       danger: true,
+      disabled: isLoggingOut,
     },
   ];
 
@@ -205,11 +250,16 @@ export default function TopHeader({
                   <button
                     key={index}
                     onClick={() => {
-                      item.action();
-                      setIsProfileDropdownOpen(false);
+                      if (!item.disabled) {
+                        item.action();
+                        setIsProfileDropdownOpen(false);
+                      }
                     }}
+                    disabled={item.disabled}
                     className={`w-full flex items-center space-x-3 px-4 py-2.5 text-left transition-all duration-200 ${
-                      item.danger
+                      item.disabled
+                        ? "opacity-50 cursor-not-allowed"
+                        : item.danger
                         ? "text-red-600 hover:bg-red-50 hover:text-red-700"
                         : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                     }`}

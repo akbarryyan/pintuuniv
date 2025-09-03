@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Settings, LogOut, User, X } from "lucide-react";
 import {
   Sidebar,
@@ -23,11 +24,14 @@ interface AdminStats {
 }
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeItem, setActiveItem] = useState("dashboard");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Use page transition and navigation hooks
-  const { isLoading } = usePageTransition();
+  const { isLoading: pageTransitionLoading } = usePageTransition();
   const { isNavigating } = useSmoothNavigation();
   const [stats, setStats] = useState<AdminStats>({
     totalUsers: 1247,
@@ -37,6 +41,49 @@ export default function AdminDashboard() {
     completedTryouts: 2341,
     pendingApprovals: 12,
   });
+
+  // Authentication check
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        // Check for token in localStorage or sessionStorage
+        const adminToken = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
+        
+        if (!adminToken) {
+          router.push('/sys/login');
+          return;
+        }
+
+        // Verify token with server
+        const response = await fetch('/api/admin/verify', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${adminToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          // Token invalid, clear storage and redirect
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminUser');
+          sessionStorage.removeItem('adminToken');
+          sessionStorage.removeItem('adminUser');
+          router.push('/sys/login');
+          return;
+        }
+
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Auth check error:', error);
+        router.push('/sys/login');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [router]);
 
   const [recentActivities] = useState<
     Array<{
@@ -85,6 +132,23 @@ export default function AdminDashboard() {
       status: "warning",
     },
   ]);
+
+  // Show loading screen while checking authentication
+  if (isLoading || pageTransitionLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-600">Memverifikasi akses admin...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show nothing if not authenticated (will redirect)
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
