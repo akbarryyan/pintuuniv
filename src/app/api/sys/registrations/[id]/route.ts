@@ -34,6 +34,7 @@ export async function GET(
          t.start_date as tryout_start_date,
          t.end_date as tryout_end_date,
          t.passing_score as tryout_passing_score,
+         t.type_tryout,
          COALESCE(q_stats.question_count, 0) as tryout_total_questions,
          admin.name as approved_by_name
        FROM user_tryout_registrations utr
@@ -62,7 +63,7 @@ export async function GET(
     // Add tryout type information
     const registrationWithType = {
       ...registration,
-      tryout_type: registration.tryout_total_questions <= 50 ? 'free' : 'paid'
+      tryout_type: registration.type_tryout || (registration.tryout_total_questions <= 50 ? 'free' : 'paid')
     };
 
     return NextResponse.json({

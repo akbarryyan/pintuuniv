@@ -117,6 +117,8 @@ export async function GET(request: NextRequest) {
         COALESCE(q_stats.total_weight, 0) as total_weight,
         t.passing_score,
         t.is_active,
+        t.type_tryout,
+        t.price,
         DATE(t.start_date) as start_date,
         DATE(t.end_date) as end_date,
         t.created_at,
@@ -183,14 +185,24 @@ export async function POST(request: NextRequest) {
       description,
       passing_score,
       is_active,
+      type_tryout,
+      price,
       start_date,
       end_date
     } = body;
     
     // Validasi input
-    if (!title || !description || !passing_score) {
+    if (!title || !description || !passing_score || !type_tryout) {
       return NextResponse.json(
-        { success: false, message: "Title, description, dan passing score wajib diisi" },
+        { success: false, message: "Title, description, passing score, dan type tryout wajib diisi" },
+        { status: 400 }
+      );
+    }
+
+    // Validasi untuk tryout berbayar
+    if (type_tryout === 'paid' && (!price || price <= 0)) {
+      return NextResponse.json(
+        { success: false, message: "Harga wajib diisi untuk tryout berbayar" },
         { status: 400 }
       );
     }
@@ -198,8 +210,8 @@ export async function POST(request: NextRequest) {
     const insertQuery = `
       INSERT INTO tryouts (
         title, description, total_categories, total_questions, 
-        total_weight, passing_score, is_active, start_date, end_date
-      ) VALUES (?, ?, 0, 0, 0, ?, ?, ?, ?)
+        total_weight, passing_score, is_active, type_tryout, price, start_date, end_date
+      ) VALUES (?, ?, 0, 0, 0, ?, ?, ?, ?, ?, ?)
     `;
     
     const result = await query(insertQuery, [
@@ -207,6 +219,8 @@ export async function POST(request: NextRequest) {
       description,
       passing_score,
       is_active ? 1 : 0,
+      type_tryout,
+      type_tryout === 'free' ? 0 : price,
       start_date || null,
       end_date || null
     ]) as any;

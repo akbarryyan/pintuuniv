@@ -30,6 +30,8 @@ interface Tryout {
   total_weight: number;
   passing_score: number;
   is_active: boolean;
+  type_tryout: 'free' | 'paid';
+  price: number;
   start_date: string;
   end_date: string;
   created_at: string;

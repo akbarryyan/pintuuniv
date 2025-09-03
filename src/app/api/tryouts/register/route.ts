@@ -27,15 +27,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Cek apakah tryout ada dan aktif, serta ambil informasi total questions
-    const [tryout] = await query(
-      `SELECT 
-         t.id, 
-         t.title, 
+        const [tryout] = await query(
+      `SELECT
+         t.id,
+         t.title,
          t.is_active,
+         t.type_tryout,
          COALESCE(q_stats.question_count, 0) as total_questions
        FROM tryouts t
        LEFT JOIN (
-         SELECT 
+         SELECT
            c.tryout_id,
            COUNT(q.id) as question_count
          FROM categories c
@@ -53,8 +54,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Tentukan apakah tryout gratis atau berbayar
-    const isFreeTryout = tryout.total_questions <= 50;
+    // Tentukan apakah tryout gratis atau berbayar berdasarkan type_tryout dari database
+    const isFreeTryout = tryout.type_tryout === 'free';
     
     // Tentukan status dan payment status berdasarkan type tryout
     const status = isFreeTryout ? 'approved' : 'registered';

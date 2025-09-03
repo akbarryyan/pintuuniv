@@ -74,6 +74,7 @@ export async function GET(request: NextRequest) {
          t.start_date as tryout_start_date,
          t.end_date as tryout_end_date,
          t.passing_score as tryout_passing_score,
+         t.type_tryout,
          COALESCE(q_stats.question_count, 0) as tryout_total_questions,
          admin.name as approved_by_name
        FROM user_tryout_registrations utr
@@ -97,7 +98,7 @@ export async function GET(request: NextRequest) {
     // Add tryout type information to each registration
     const registrationsWithType = registrations.map((reg: any) => ({
       ...reg,
-      tryout_type: reg.tryout_total_questions <= 50 ? 'free' : 'paid'
+      tryout_type: reg.type_tryout || (reg.tryout_total_questions <= 50 ? 'free' : 'paid')
     }));
 
     return NextResponse.json({

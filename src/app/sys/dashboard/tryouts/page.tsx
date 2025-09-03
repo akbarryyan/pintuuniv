@@ -46,6 +46,8 @@ export default function ManageTryouts() {
     description: "",
     passing_score: 500,
     is_active: true,
+    type_tryout: "free",
+    price: 0,
     start_date: "",
     end_date: "",
   });
@@ -108,6 +110,8 @@ export default function ManageTryouts() {
         description: "",
         passing_score: 500,
         is_active: true,
+        type_tryout: "free",
+        price: 0,
         start_date: "",
         end_date: "",
       });
@@ -119,6 +123,8 @@ export default function ManageTryouts() {
         description: tryout.description,
         passing_score: tryout.passing_score,
         is_active: tryout.is_active,
+        type_tryout: tryout.type_tryout,
+        price: tryout.price,
         start_date: tryout.start_date,
         end_date: tryout.end_date,
       });
@@ -376,6 +382,46 @@ export default function ManageTryouts() {
                     <option value="inactive">Tidak Aktif</option>
                   </select>
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Tipe Tryout *
+                  </label>
+                  <select
+                    value={formData.type_tryout}
+                    onChange={(e) => setFormData({ 
+                      ...formData, 
+                      type_tryout: e.target.value as 'free' | 'paid',
+                      price: e.target.value === 'free' ? 0 : formData.price
+                    })}
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    required
+                  >
+                    <option value="free">Gratis</option>
+                    <option value="paid">Berbayar</option>
+                  </select>
+                </div>
+
+                {formData.type_tryout === 'paid' && (
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Harga (Rp) *
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.price || 0}
+                      onChange={(e) => setFormData({ ...formData, price: parseInt(e.target.value) || 0 })}
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      min="0"
+                      placeholder="Masukkan harga tryout"
+                      required={formData.type_tryout === 'paid'}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

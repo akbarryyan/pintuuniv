@@ -18,6 +18,8 @@ export async function GET(request: NextRequest) {
         t.description,
         t.passing_score,
         t.is_active,
+        t.type_tryout,
+        t.price,
         DATE(t.start_date) as start_date,
         DATE(t.end_date) as end_date,
         t.created_at,
@@ -100,23 +102,19 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Transform the data to match the frontend structure dengan data mock untuk kolom yang tidak ada
+    // Transform the data to match the frontend structure
     const tryouts = rows.map((row: any) => {
-      // Tentukan type berdasarkan total_questions
-      const type = row.total_questions <= 50 ? "free" : "premium";
+      // Gunakan type_tryout dari database
+      const type = row.type_tryout === 'free' ? "free" : "premium";
       
       // Tentukan difficulty berdasarkan passing_score
       let difficulty = "medium";
       if (row.passing_score <= 600) difficulty = "easy";
       else if (row.passing_score > 750) difficulty = "hard";
       
-      // Tentukan price berdasarkan type dan total_questions
-      let price = 0;
-      let originalPrice = 0;
-      if (type === "premium") {
-        price = row.total_questions <= 100 ? 50000 : 100000;
-        originalPrice = price * 1.2; // 20% markup
-      }
+      // Gunakan price dari database
+      const price = row.price || 0;
+      const originalPrice = type === "premium" ? price * 1.2 : 0; // 20% markup untuk premium
       
       // Tentukan discount (random untuk demo)
       const discount = type === "premium" ? Math.floor(Math.random() * 30) + 10 : 0;
@@ -144,6 +142,7 @@ export async function GET(request: NextRequest) {
         totalCategories: row.total_categories,
         totalQuestions: row.total_questions,
         totalWeight: row.total_weight,
+        typeTryout: row.type_tryout, // Tambahkan field type_tryout
       };
     });
 
