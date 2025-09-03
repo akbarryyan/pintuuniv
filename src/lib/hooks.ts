@@ -16,10 +16,14 @@ export function useActiveItem(setActiveItem: (item: string) => void) {
       setActiveItem("dashboard");
     } else if (pathname.includes("/users")) {
       setActiveItem("users");
-    } else if (pathname.includes("/tryouts")) {
+    } else if (pathname.includes("/tryouts-registers")) {
+      setActiveItem("tryouts-registers");
+    } else if (pathname.includes("/tryouts") && !pathname.includes("/tryouts-registers")) {
       setActiveItem("tryouts");
     } else if (pathname.includes("/categories")) {
       setActiveItem("categories");
+    } else if (pathname.includes("/questions")) {
+      setActiveItem("questions");
     } else if (pathname.includes("/payments")) {
       setActiveItem("payments");
     } else if (pathname.includes("/reports")) {
