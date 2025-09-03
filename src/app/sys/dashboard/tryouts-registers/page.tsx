@@ -14,33 +14,7 @@ import {
   DeleteModal,
 } from "@/components/sys/registrations";
 import { usePageTransition } from "@/lib/hooks";
-
-interface Registration {
-  id: number;
-  user_id: number;
-  tryout_id: number;
-  registration_date: string;
-  status: 'registered' | 'approved' | 'rejected' | 'cancelled';
-  payment_status: 'pending' | 'paid' | 'failed' | 'refunded';
-  payment_method: string;
-  payment_reference: string;
-  payment_date: string;
-  approved_by: number;
-  approved_at: string;
-  notes: string;
-  created_at: string;
-  updated_at: string;
-  user_name: string;
-  user_email: string;
-  user_phone: string;
-  user_school: string;
-  user_grade: string;
-  tryout_title: string;
-  tryout_description: string;
-  tryout_start_date: string;
-  tryout_end_date: string;
-  approved_by_name: string;
-}
+import { Registration, RegistrationService, RegistrationFilters } from "@/lib/services/registrationService";
 
 interface Pagination {
   page: number;

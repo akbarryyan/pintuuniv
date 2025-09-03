@@ -1,16 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-interface Registration {
-  id: number;
-  user_name: string;
-  user_email: string;
-  tryout_title: string;
-  registration_date: string;
-  status: string;
-  payment_status: string;
-}
+import { Registration } from "@/lib/services/registrationService";
 
 interface ApproveModalProps {
   isOpen: boolean;
