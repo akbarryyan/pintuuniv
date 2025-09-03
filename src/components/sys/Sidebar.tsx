@@ -104,7 +104,7 @@ export default function Sidebar({
       badge: "156",
     },
     {
-      title: "Tryout Registration",
+      title: "TO Registration",
       href: "/sys/dashboard/tryouts-registers",
       icon: <User className="w-5 h-5" />,
       badge: "New",

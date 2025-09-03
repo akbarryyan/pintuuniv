@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Sidebar, TopHeader } from "@/components/sys";
 import {
   HeaderSection,
   FiltersAndSearch,
@@ -12,6 +13,7 @@ import {
   ViewModal,
   DeleteModal,
 } from "@/components/sys/registrations";
+import { usePageTransition } from "@/lib/hooks";
 
 interface Registration {
   id: number;
@@ -49,6 +51,12 @@ interface Pagination {
 
 export default function TryoutRegistrationsPage() {
   const router = useRouter();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeItem, setActiveItem] = useState("tryouts-registers");
+
+  // Use page transition hook
+  usePageTransition();
+
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
@@ -221,119 +229,152 @@ export default function TryoutRegistrationsPage() {
   const rejectedRegistrations = registrations.filter(r => r.status === 'rejected').length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-emerald-50">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Header Section */}
-        <HeaderSection
-          totalRegistrations={totalRegistrations}
-          pendingRegistrations={pendingRegistrations}
-          approvedRegistrations={approvedRegistrations}
-          rejectedRegistrations={rejectedRegistrations}
+    <div className="min-h-screen bg-slate-50 flex">
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-white/30 backdrop-blur-sm lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar Component */}
+      <Sidebar
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        activeItem={activeItem}
+        setActiveItem={setActiveItem}
+      />
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top Header */}
+        <TopHeader
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          pageTitle="Tryout Registration"
+          pageDescription="Kelola pendaftaran tryout dan persetujuan peserta"
         />
 
-        {/* Filters and Search */}
-        <FiltersAndSearch
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          paymentStatusFilter={paymentStatusFilter}
-          setPaymentStatusFilter={setPaymentStatusFilter}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-          onResetFilters={resetFilters}
-        />
-
-        {/* Loading State */}
-        {isLoading && (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
-          </div>
-        )}
-
-        {/* Error State */}
-        {error && !isLoading && (
-          <div className="text-center py-12">
-            <div className="text-red-600 mb-4">
-              <p className="text-lg font-semibold">Gagal memuat data</p>
-              <p className="text-sm">{error}</p>
-            </div>
-            <button
-              onClick={fetchRegistrations}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-            >
-              Coba Lagi
-            </button>
-          </div>
-        )}
-
-        {/* Registrations Table */}
-        {!isLoading && !error && (
-          <RegistrationsTable
-            registrations={registrations}
-            pagination={pagination}
-            onPageChange={handlePageChange}
-            onView={(registration) => {
-              setSelectedRegistration(registration);
-              setIsViewModalOpen(true);
-            }}
-            onApprove={(registration) => {
-              setSelectedRegistration(registration);
-              setIsApproveModalOpen(true);
-            }}
-            onReject={(registration) => {
-              setSelectedRegistration(registration);
-              setIsRejectModalOpen(true);
-            }}
-            onDelete={(registration) => {
-              setSelectedRegistration(registration);
-              setIsDeleteModalOpen(true);
-            }}
+        {/* Page Content */}
+        <main className="flex-1 p-4 lg:p-8 overflow-auto" data-main-content>
+          {/* Header Section */}
+          <HeaderSection
+            totalRegistrations={totalRegistrations}
+            pendingRegistrations={pendingRegistrations}
+            approvedRegistrations={approvedRegistrations}
+            rejectedRegistrations={rejectedRegistrations}
           />
-        )}
 
-        {/* Modals */}
-        <ApproveModal
-          isOpen={isApproveModalOpen}
-          onClose={() => {
-            setIsApproveModalOpen(false);
-            setSelectedRegistration(null);
-          }}
-          registration={selectedRegistration}
-          onApprove={handleApprove}
-        />
+          {/* Filters and Search */}
+          <FiltersAndSearch
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            paymentStatusFilter={paymentStatusFilter}
+            setPaymentStatusFilter={setPaymentStatusFilter}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            onResetFilters={resetFilters}
+          />
 
-        <RejectModal
-          isOpen={isRejectModalOpen}
-          onClose={() => {
-            setIsRejectModalOpen(false);
-            setSelectedRegistration(null);
-          }}
-          registration={selectedRegistration}
-          onReject={handleReject}
-        />
+          {/* Loading State */}
+          {isLoading && (
+            <div className="bg-white rounded-2xl shadow-lg border border-white/20 p-8">
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <span className="ml-3 text-slate-600">Loading registrations...</span>
+              </div>
+            </div>
+          )}
 
-        <ViewModal
-          isOpen={isViewModalOpen}
-          onClose={() => {
-            setIsViewModalOpen(false);
-            setSelectedRegistration(null);
-          }}
-          registration={selectedRegistration}
-        />
+          {/* Error State */}
+          {error && !isLoading && (
+            <div className="bg-white rounded-2xl shadow-lg border border-white/20 p-8">
+              <div className="text-center">
+                <div className="text-red-600 mb-4">
+                  <p className="text-lg font-semibold">Gagal memuat data</p>
+                  <p className="text-sm">{error}</p>
+                </div>
+                <button
+                  onClick={fetchRegistrations}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  Coba Lagi
+                </button>
+              </div>
+            </div>
+          )}
 
-        <DeleteModal
-          isOpen={isDeleteModalOpen}
-          onClose={() => {
-            setIsDeleteModalOpen(false);
-            setSelectedRegistration(null);
-          }}
-          registration={selectedRegistration}
-          onDelete={handleDelete}
-        />
+          {/* Registrations Table */}
+          {!isLoading && !error && (
+            <RegistrationsTable
+              registrations={registrations}
+              pagination={pagination}
+              onPageChange={handlePageChange}
+              onView={(registration) => {
+                setSelectedRegistration(registration);
+                setIsViewModalOpen(true);
+              }}
+              onApprove={(registration) => {
+                setSelectedRegistration(registration);
+                setIsApproveModalOpen(true);
+              }}
+              onReject={(registration) => {
+                setSelectedRegistration(registration);
+                setIsRejectModalOpen(true);
+              }}
+              onDelete={(registration) => {
+                setSelectedRegistration(registration);
+                setIsDeleteModalOpen(true);
+              }}
+            />
+          )}
+        </main>
       </div>
+
+      {/* Modals */}
+      <ApproveModal
+        isOpen={isApproveModalOpen}
+        onClose={() => {
+          setIsApproveModalOpen(false);
+          setSelectedRegistration(null);
+        }}
+        registration={selectedRegistration}
+        onApprove={handleApprove}
+      />
+
+      <RejectModal
+        isOpen={isRejectModalOpen}
+        onClose={() => {
+          setIsRejectModalOpen(false);
+          setSelectedRegistration(null);
+        }}
+        registration={selectedRegistration}
+        onReject={handleReject}
+      />
+
+      <ViewModal
+        isOpen={isViewModalOpen}
+        onClose={() => {
+          setIsViewModalOpen(false);
+          setSelectedRegistration(null);
+        }}
+        registration={selectedRegistration}
+      />
+
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setSelectedRegistration(null);
+        }}
+        registration={selectedRegistration}
+        onDelete={handleDelete}
+      />
     </div>
   );
 }
