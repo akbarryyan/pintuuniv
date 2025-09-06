@@ -165,11 +165,11 @@ export default function TryoutsGrid({ tryouts, onRegisterTryout, userData }: Try
                 ) : (
                   <div>
                     <div className="font-black text-lg text-slate-900">
-                      Rp {tryout.price.toLocaleString()}
+                      Rp {Math.round(tryout.price).toLocaleString('id-ID')}
                     </div>
                     {tryout.discount > 0 && (
                       <div className="text-xs text-slate-500 line-through font-bold">
-                        Rp {tryout.originalPrice.toLocaleString()}
+                        Rp {Math.round(tryout.originalPrice).toLocaleString('id-ID')}
                       </div>
                     )}
                     {tryout.discount > 0 && (
