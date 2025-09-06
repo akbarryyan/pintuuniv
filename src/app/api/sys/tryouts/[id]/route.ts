@@ -195,30 +195,70 @@ export async function DELETE(
       );
     }
     
-    // Cek apakah tryout memiliki kategori atau soal
-    const checkQuery = `
-      SELECT 
-        (SELECT COUNT(*) FROM categories WHERE tryout_id = ?) as category_count,
-        (SELECT COUNT(*) FROM questions q 
-         JOIN categories c ON q.category_id = c.id 
-         WHERE c.tryout_id = ?) as question_count
-    `;
+    // Cek apakah tryout ada
+    const checkQuery = "SELECT id FROM tryouts WHERE id = ?";
+    const checkResult = await query(checkQuery, [id]) as any[];
     
-    const checkResult = await query(checkQuery, [id, id]) as any[];
-    const { category_count, question_count } = checkResult[0];
-    
-    if (category_count > 0 || question_count > 0) {
+    if (checkResult.length === 0) {
       return NextResponse.json(
-        { 
-          success: false, 
-          message: `Tidak dapat menghapus tryout. Masih ada ${category_count} kategori dan ${question_count} soal yang terkait.` 
-        },
-        { status: 400 }
+        { success: false, message: "Tryout tidak ditemukan" },
+        { status: 404 }
       );
     }
     
-    const deleteQuery = "DELETE FROM tryouts WHERE id = ?";
-    await query(deleteQuery, [id]);
+    // Hapus data terkait secara berurutan (cascade delete)
+    // 1. Hapus user_answers yang terkait dengan questions dari tryout ini
+    await query(`
+      DELETE ua FROM user_answers ua
+      JOIN questions q ON ua.question_id = q.id
+      JOIN categories c ON q.category_id = c.id
+      WHERE c.tryout_id = ?
+    `, [id]);
+    
+    // 2. Hapus answers yang terkait dengan questions dari tryout ini
+    await query(`
+      DELETE a FROM answers a
+      JOIN questions q ON a.question_id = q.id
+      JOIN categories c ON q.category_id = c.id
+      WHERE c.tryout_id = ?
+    `, [id]);
+    
+    // 3. Hapus questions yang terkait dengan categories dari tryout ini
+    await query(`
+      DELETE q FROM questions q
+      JOIN categories c ON q.category_id = c.id
+      WHERE c.tryout_id = ?
+    `, [id]);
+    
+    // 4. Hapus user_category_scores yang terkait dengan tryout ini
+    await query(`
+      DELETE FROM user_category_scores WHERE tryout_id = ?
+    `, [id]);
+    
+    // 5. Hapus user_category_sessions yang terkait dengan tryout ini
+    await query(`
+      DELETE FROM user_category_sessions WHERE tryout_id = ?
+    `, [id]);
+    
+    // 6. Hapus user_tryout_sessions yang terkait dengan tryout ini
+    await query(`
+      DELETE FROM user_tryout_sessions WHERE tryout_id = ?
+    `, [id]);
+    
+    // 7. Hapus user_tryout_registrations yang terkait dengan tryout ini
+    await query(`
+      DELETE FROM user_tryout_registrations WHERE tryout_id = ?
+    `, [id]);
+    
+    // 8. Hapus categories yang terkait dengan tryout ini
+    await query(`
+      DELETE FROM categories WHERE tryout_id = ?
+    `, [id]);
+    
+    // 9. Hapus tryout itu sendiri
+    await query(`
+      DELETE FROM tryouts WHERE id = ?
+    `, [id]);
     
     return NextResponse.json({
       success: true,
