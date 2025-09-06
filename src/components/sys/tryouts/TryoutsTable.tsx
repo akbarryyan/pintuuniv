@@ -406,7 +406,7 @@ export default function TryoutsTable({
                 {tryout.type_tryout === 'paid' && tryout.price > 0 && (
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border text-amber-700 bg-amber-50 border-amber-200">
                     <span className="mr-1">💰</span>
-                    Rp {tryout.price.toLocaleString('id-ID')}
+                    Rp {Math.round(tryout.price).toLocaleString('id-ID')}
                   </span>
                 )}
                 <span
@@ -568,7 +568,7 @@ export default function TryoutsTable({
                 {tryout.type_tryout === 'paid' && tryout.price > 0 && (
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border text-amber-700 bg-amber-50 border-amber-200">
                     <span className="mr-1">💰</span>
-                    Rp {tryout.price.toLocaleString('id-ID')}
+                    Rp {Math.round(tryout.price).toLocaleString('id-ID')}
                   </span>
                 )}
                 <span
