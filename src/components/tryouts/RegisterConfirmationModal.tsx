@@ -97,7 +97,7 @@ export default function RegisterConfirmationModal({
                   </p>
                 ) : (
                   <p className="text-slate-600 text-xs font-bold">
-                    💰 Biaya: Rp {tryout.price.toLocaleString()}
+                    💰 Biaya: Rp {Math.round(tryout.price).toLocaleString('id-ID')}
                     <br />
                     ⏳ Menunggu konfirmasi pembayaran
                     <br />
