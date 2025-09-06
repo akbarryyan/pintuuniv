@@ -48,6 +48,8 @@ tryouts:
   - total_weight (INT)
   - passing_score (INT)
   - is_active (BOOLEAN)
+  - type_tryout (ENUM: 'free', 'paid')
+  - price (DECIMAL: 10,2)
   - start_date (DATETIME)
   - end_date (DATETIME)
   - created_at (DATETIME)

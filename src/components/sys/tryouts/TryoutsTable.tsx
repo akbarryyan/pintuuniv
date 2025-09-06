@@ -385,6 +385,31 @@ export default function TryoutsTable({
                   )}
                 </span>
                 <span
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${
+                    tryout.type_tryout === 'free' 
+                      ? 'text-emerald-700 bg-emerald-50 border-emerald-200' 
+                      : 'text-blue-700 bg-blue-50 border-blue-200'
+                  }`}
+                >
+                  {tryout.type_tryout === 'free' ? (
+                    <>
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full mr-1"></span>
+                      Gratis
+                    </>
+                  ) : (
+                    <>
+                      <span className="w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
+                      Berbayar
+                    </>
+                  )}
+                </span>
+                {tryout.type_tryout === 'paid' && tryout.price > 0 && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border text-amber-700 bg-amber-50 border-amber-200">
+                    <span className="mr-1">💰</span>
+                    Rp {tryout.price.toLocaleString('id-ID')}
+                  </span>
+                )}
+                <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(
                     tryout.passing_score
                   )}`}
@@ -521,6 +546,31 @@ export default function TryoutsTable({
                     </>
                   )}
                 </span>
+                <span
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${
+                    tryout.type_tryout === 'free' 
+                      ? 'text-emerald-700 bg-emerald-50 border-emerald-200' 
+                      : 'text-blue-700 bg-blue-50 border-blue-200'
+                  }`}
+                >
+                  {tryout.type_tryout === 'free' ? (
+                    <>
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full mr-1"></span>
+                      Gratis
+                    </>
+                  ) : (
+                    <>
+                      <span className="w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
+                      Berbayar
+                    </>
+                  )}
+                </span>
+                {tryout.type_tryout === 'paid' && tryout.price > 0 && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border text-amber-700 bg-amber-50 border-amber-200">
+                    <span className="mr-1">💰</span>
+                    Rp {tryout.price.toLocaleString('id-ID')}
+                  </span>
+                )}
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(
                     tryout.passing_score
