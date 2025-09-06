@@ -59,7 +59,7 @@ export default function UpcomingTryouts({ userId }: UpcomingTryoutsProps) {
                 return {
                   ...tryout,
                   isRegistered: regData.isRegistered || false,
-                  registrationStatus: regData.status || null,
+                  registrationStatus: regData.registration?.status || null,
                   // Mock data untuk UI
                   subject: "UTBK/SNBT",
                   duration: "120 menit",
@@ -82,9 +82,12 @@ export default function UpcomingTryouts({ userId }: UpcomingTryoutsProps) {
               }
             })
           );
-          setTryouts(tryoutsWithStatus);
+          
+          // Filter hanya tryout yang belum didaftar
+          const unregisteredTryouts = tryoutsWithStatus.filter(tryout => !tryout.isRegistered);
+          setTryouts(unregisteredTryouts);
         } else {
-          // If no user, just add mock data
+          // If no user, show all tryouts (no registration data available)
           const tryoutsWithMockData = tryoutsData.map((tryout: any) => ({
             ...tryout,
             isRegistered: false,
@@ -238,9 +241,9 @@ export default function UpcomingTryouts({ userId }: UpcomingTryoutsProps) {
         <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 shadow-brutal">
           <div className="text-center py-8">
             <div className="text-slate-400 text-4xl mb-3">📝</div>
-            <p className="font-black text-slate-900 mb-2">Belum Ada Tryout Tersedia</p>
+            <p className="font-black text-slate-900 mb-2">Semua Tryout Sudah Terdaftar</p>
             <p className="text-slate-600 text-sm mb-4">
-              Coba lagi nanti atau hubungi admin
+              Anda sudah mendaftar di semua tryout yang tersedia. Coba lagi nanti atau hubungi admin untuk tryout baru.
             </p>
             <Link
               href="/tryouts"
