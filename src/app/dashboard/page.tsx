@@ -193,47 +193,6 @@ export default function DashboardPage() {
     },
   ]);
 
-  const [upcomingTryouts] = useState([
-    {
-      id: 1,
-      title: "Tryout UTBK Nasional #8",
-      date: "10 Agustus 2025",
-      time: "09:00",
-      duration: "180 menit",
-      subject: "TPS + TKA Saintek",
-      questions: 150,
-      price: 79000,
-      type: "premium",
-      status: "registered",
-      reminder: "H-1",
-    },
-    {
-      id: 2,
-      title: "Simulasi UTBK Komprehensif",
-      date: "12 Agustus 2025",
-      time: "13:00",
-      duration: "195 menit",
-      subject: "Semua Mata Pelajaran",
-      questions: 160,
-      price: 0,
-      type: "free",
-      status: "available",
-      reminder: "H-3",
-    },
-    {
-      id: 3,
-      title: "Tryout Intensif Matematika",
-      date: "14 Agustus 2025",
-      time: "15:30",
-      duration: "120 menit",
-      subject: "Matematika Wajib + Peminatan",
-      questions: 80,
-      price: 49000,
-      type: "premium",
-      status: "available",
-      reminder: "H-5",
-    },
-  ]);
 
   // Load user data from localStorage on component mount
   useEffect(() => {
@@ -384,7 +343,7 @@ export default function DashboardPage() {
         <TryoutsTerdaftar userId={userData.id} />
 
         {/* Upcoming Tryouts */}
-        <UpcomingTryouts tryouts={upcomingTryouts} />
+        <UpcomingTryouts userId={userData.id} />
       </div>
 
       {/* Bottom Navigation - Mobile Only */}

@@ -51,11 +51,11 @@ export async function GET(request: NextRequest) {
 
     // Add filters
     if (type && type !== "all") {
-      // Karena tidak ada kolom type, kita akan filter berdasarkan total_questions atau total_categories
+      // Filter berdasarkan type_tryout dari database
       if (type === "free") {
-        sqlQuery += " AND t.total_questions <= 50"; // Tryout gratis dengan soal sedikit
+        sqlQuery += " AND t.type_tryout = 'free'";
       } else if (type === "premium") {
-        sqlQuery += " AND t.total_questions > 50"; // Tryout premium dengan soal banyak
+        sqlQuery += " AND t.type_tryout = 'paid'";
       }
     }
 
@@ -71,13 +71,13 @@ export async function GET(request: NextRequest) {
     }
 
     if (priceRange && priceRange !== "all") {
-      // Karena tidak ada kolom price, kita akan skip filter ini atau gunakan total_questions sebagai proxy
+      // Filter berdasarkan price dari database
       if (priceRange === "free") {
-        sqlQuery += " AND t.total_questions <= 50";
+        sqlQuery += " AND t.price = 0";
       } else if (priceRange === "cheap") {
-        sqlQuery += " AND t.total_questions > 50 AND t.total_questions <= 100";
+        sqlQuery += " AND t.price > 0 AND t.price <= 50000";
       } else if (priceRange === "expensive") {
-        sqlQuery += " AND t.total_questions > 100";
+        sqlQuery += " AND t.price > 50000";
       }
     }
 
