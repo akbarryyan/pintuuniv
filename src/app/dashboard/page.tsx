@@ -13,7 +13,7 @@ import StatsGrid from "@/components/dashboard/StatsGrid";
 import RecentActivities from "@/components/dashboard/RecentActivities";
 import ProgressTracking from "@/components/dashboard/ProgressTracking";
 import UpcomingEvents from "@/components/dashboard/UpcomingEvents";
-import AvailableTryouts from "@/components/dashboard/AvailableTryouts";
+import TryoutsTerdaftar from "@/components/dashboard/TryoutsTerdaftar";
 import UpcomingTryouts from "@/components/dashboard/UpcomingTryouts";
 
 export default function DashboardPage() {
@@ -22,6 +22,7 @@ export default function DashboardPage() {
   // ALL HOOKS MUST BE DECLARED AT THE TOP LEVEL BEFORE ANY CONDITIONAL RETURNS
   const [mounted, setMounted] = useState(false);
   const [userData, setUserData] = useState({
+    id: null as number | null,
     name: "",
     email: "",
     school: "",
@@ -145,74 +146,6 @@ export default function DashboardPage() {
     },
   ]);
 
-  // Available Tryouts Data
-  const [availableTryouts] = useState([
-    {
-      id: 1,
-      title: "Tryout UTBK Saintek Premium",
-      subject: "Matematika, Fisika, Kimia, Biologi",
-      duration: "180 menit",
-      questions: 120,
-      price: 49000,
-      type: "premium",
-      difficulty: "Sulit",
-      participants: 15420,
-      rating: 4.8,
-      deadline: "5 Agustus 2025",
-    },
-    {
-      id: 2,
-      title: "Tryout UTBK Soshum Gratis",
-      subject: "Sejarah, Geografi, Sosiologi, Ekonomi",
-      duration: "180 menit",
-      questions: 120,
-      price: 0,
-      type: "free",
-      difficulty: "Sedang",
-      participants: 28547,
-      rating: 4.6,
-      deadline: "10 Agustus 2025",
-    },
-    {
-      id: 3,
-      title: "Tryout Simulasi UTBK Nasional",
-      subject: "TPS + TKA Saintek/Soshum",
-      duration: "195 menit",
-      questions: 150,
-      price: 99000,
-      type: "premium",
-      difficulty: "Sangat Sulit",
-      participants: 8924,
-      rating: 4.9,
-      deadline: "15 Agustus 2025",
-    },
-    {
-      id: 4,
-      title: "Tryout TPS (Tes Potensi Skolastik)",
-      subject: "Penalaran Umum, Kuantitatif, Bahasa",
-      duration: "110 menit",
-      questions: 88,
-      price: 0,
-      type: "free",
-      difficulty: "Sedang",
-      participants: 42156,
-      rating: 4.5,
-      deadline: "20 Agustus 2025",
-    },
-    {
-      id: 5,
-      title: "Tryout UTBK Intensif Pro",
-      subject: "Semua Mata Pelajaran + Analisis AI",
-      duration: "200 menit",
-      questions: 160,
-      price: 149000,
-      type: "premium",
-      difficulty: "Sangat Sulit",
-      participants: 5847,
-      rating: 5.0,
-      deadline: "25 Agustus 2025",
-    },
-  ]);
 
   // User's Tryout History
   const [userTryouts] = useState([
@@ -323,6 +256,7 @@ export default function DashboardPage() {
             
             // Set initial data from localStorage
             setUserData({
+              id: parsedData.id || null,
               name: parsedData.name || "User",
               email: parsedData.email || "",
               school: parsedData.school || "Tidak diset",
@@ -357,6 +291,7 @@ export default function DashboardPage() {
                     
                     // Update state with fresh data
                     setUserData({
+                      id: merged.id || null,
                       name: merged.name || "User",
                       email: merged.email || "",
                       school: merged.school || "Tidak diset",
@@ -445,8 +380,8 @@ export default function DashboardPage() {
           <UpcomingEvents events={upcomingEvents} stats={stats} />
         </div>
 
-        {/* Available Tryouts Section */}
-        <AvailableTryouts tryouts={availableTryouts} />
+        {/* Tryouts Terdaftar Section */}
+        <TryoutsTerdaftar userId={userData.id} />
 
         {/* Upcoming Tryouts */}
         <UpcomingTryouts tryouts={upcomingTryouts} />
