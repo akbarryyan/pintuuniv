@@ -318,29 +318,20 @@ export default function DiscussPage() {
         <TopHeader 
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
+          pageTitle="Forum Management"
+          pageDescription="Kelola discussions dan tags forum"
         />
         
         <main className="flex-1 p-4 lg:p-8 overflow-auto" data-main-content>
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                  <MessageSquare className="w-8 h-8 text-blue-600" />
-                  Forum Management
-                </h1>
-                <p className="text-gray-600 mt-2">Kelola discussions dan tags forum</p>
-              </div>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowTagModal(true)}
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
-                >
-                  <Tag className="w-4 h-4" />
-                  Buat Tag
-                </button>
-              </div>
-            </div>
+          {/* Action Buttons */}
+          <div className="mb-6 flex justify-end">
+            <button
+              onClick={() => setShowTagModal(true)}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+            >
+              <Tag className="w-4 h-4" />
+              Buat Tag
+            </button>
           </div>
 
           {/* Tabs */}
