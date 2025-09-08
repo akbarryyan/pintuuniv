@@ -307,20 +307,20 @@ export default function DiscussPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex">
       <Sidebar 
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         activeItem={activeItem}
         setActiveItem={setActiveItem}
       />
-      <div className="lg:pl-64">
+      <div className="flex-1 flex flex-col min-w-0">
         <TopHeader 
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
         
-        <div className="p-6">
+        <div className="flex-1 p-4 lg:p-8 overflow-auto">
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between">
