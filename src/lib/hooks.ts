@@ -24,6 +24,8 @@ export function useActiveItem(setActiveItem: (item: string) => void) {
       setActiveItem("categories");
     } else if (pathname.includes("/questions")) {
       setActiveItem("questions");
+    } else if (pathname.includes("/discuss")) {
+      setActiveItem("discuss");
     } else if (pathname.includes("/payments")) {
       setActiveItem("payments");
     } else if (pathname.includes("/reports")) {
