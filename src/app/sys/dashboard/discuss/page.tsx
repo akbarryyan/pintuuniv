@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePageTransition } from "@/lib/hooks";
 import Sidebar from '@/components/sys/Sidebar';
 import TopHeader from '@/components/sys/TopHeader';
 import { toast } from 'sonner';
@@ -53,8 +54,15 @@ interface Tag {
 }
 
 export default function DiscussPage() {
-  const { user } = useAuth();
-  const [authLoading, setAuthLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeItem, setActiveItem] = useState('discuss');
+  
+  // Use auth context
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Use page transition hook
+  usePageTransition();
+
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,8 +72,6 @@ export default function DiscussPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showTagModal, setShowTagModal] = useState(false);
   const [editingTag, setEditingTag] = useState<Tag | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState('discuss');
 
   // Form states
   const [tagForm, setTagForm] = useState({
@@ -75,14 +81,11 @@ export default function DiscussPage() {
   });
 
   useEffect(() => {
-    if (user) {
-      setAuthLoading(false);
+    if (isAuthenticated) {
       fetchDiscussions();
       fetchTags();
-    } else if (user === null) {
-      setAuthLoading(false);
     }
-  }, [user]);
+  }, [isAuthenticated]);
 
   const fetchDiscussions = async () => {
     try {
@@ -279,7 +282,7 @@ export default function DiscussPage() {
   };
 
   // Show loading screen while checking authentication
-  if (authLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
@@ -291,19 +294,8 @@ export default function DiscussPage() {
   }
 
   // Show nothing if not authenticated (will redirect)
-  if (!user) {
+  if (!isAuthenticated) {
     return null;
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-600">Memuat data...</p>
-        </div>
-      </div>
-    );
   }
 
   return (
@@ -328,7 +320,7 @@ export default function DiscussPage() {
           setSidebarOpen={setSidebarOpen}
         />
         
-        <div className="flex-1 p-4 lg:p-8 overflow-auto">
+        <main className="flex-1 p-4 lg:p-8 overflow-auto" data-main-content>
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between">
@@ -550,7 +542,7 @@ export default function DiscussPage() {
               )}
             </div>
           )}
-        </div>
+        </main>
       </div>
 
       {/* Tag Modal */}
