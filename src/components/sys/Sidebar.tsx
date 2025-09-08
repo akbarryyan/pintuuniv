@@ -35,6 +35,7 @@ import {
   Menu,
   X,
   Folder,
+  MessageSquare,
 } from "lucide-react";
 
 interface SidebarItem {
@@ -107,6 +108,12 @@ export default function Sidebar({
       title: "TO Registration",
       href: "/sys/dashboard/tryouts-registers",
       icon: <User className="w-5 h-5" />,
+      badge: "New",
+    },
+    {
+      title: "Discuss",
+      href: "/sys/dashboard/discuss",
+      icon: <MessageSquare className="w-5 h-5" />,
       badge: "New",
     },
     {
