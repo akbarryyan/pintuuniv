@@ -1,6 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { Edit, Trash2, Tag as TagIcon } from 'lucide-react';
+import { toast } from 'sonner';
+import DeleteConfirmModal from './DeleteConfirmModal';
 
 interface Tag {
   id: number;
@@ -29,6 +32,55 @@ export default function TagsContent({
   onDeleteTag, 
   formatDate 
 }: TagsContentProps) {
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    tagId: number | null;
+    tagName: string;
+    isLoading: boolean;
+  }>({
+    isOpen: false,
+    tagId: null,
+    tagName: '',
+    isLoading: false
+  });
+
+  const handleDeleteClick = (tagId: number, tagName: string) => {
+    setDeleteModal({
+      isOpen: true,
+      tagId,
+      tagName,
+      isLoading: false
+    });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.tagId) return;
+
+    setDeleteModal(prev => ({ ...prev, isLoading: true }));
+
+    try {
+      await onDeleteTag(deleteModal.tagId);
+      toast.success('Tag berhasil dihapus');
+      setDeleteModal({
+        isOpen: false,
+        tagId: null,
+        tagName: '',
+        isLoading: false
+      });
+    } catch (error) {
+      toast.error('Gagal menghapus tag');
+      setDeleteModal(prev => ({ ...prev, isLoading: false }));
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModal({
+      isOpen: false,
+      tagId: null,
+      tagName: '',
+      isLoading: false
+    });
+  };
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -76,7 +128,7 @@ export default function TagsContent({
                   <Edit className="w-3 h-3" />
                 </button>
                 <button
-                  onClick={() => onDeleteTag(tag.id)}
+                  onClick={() => handleDeleteClick(tag.id, tag.name)}
                   className="p-1.5 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
                   title="Hapus"
                 >
@@ -111,6 +163,16 @@ export default function TagsContent({
           </div>
         </div>
       ))}
+      
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title="Hapus Tag"
+        description={`Apakah Anda yakin ingin menghapus tag "${deleteModal.tagName}"? Tindakan ini tidak dapat dibatalkan.`}
+        isLoading={deleteModal.isLoading}
+      />
     </div>
   );
 }

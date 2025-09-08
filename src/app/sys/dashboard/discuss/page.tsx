@@ -163,8 +163,6 @@ export default function DiscussPage() {
   };
 
   const handleDeleteTag = async (tagId: number) => {
-    if (!confirm('Yakin ingin menghapus tag ini?')) return;
-
     try {
       const response = await fetch(`/api/sys/discussions/tags/${tagId}`, {
         method: 'DELETE'
