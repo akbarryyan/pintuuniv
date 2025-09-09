@@ -49,6 +49,7 @@ export default function CategoriesSidebar({
           postCount: data.data.tags.reduce((sum: number, tag: any) => sum + tag.postCount, 0)
         };
         
+        console.log('Tags from API:', data.data.tags);
         setCategories([allCategory, ...data.data.tags]);
       }
     } catch (error) {
@@ -73,6 +74,52 @@ export default function CategoriesSidebar({
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
+  };
+
+  const getCategoryColor = (color: string) => {
+    // If color is already a valid Tailwind class, return it
+    if (color && color.startsWith('bg-')) {
+      return color;
+    }
+    
+    // Map color names to Tailwind classes
+    const colorMap: { [key: string]: string } = {
+      'blue': 'bg-blue-500',
+      'green': 'bg-green-500',
+      'purple': 'bg-purple-500',
+      'orange': 'bg-orange-500',
+      'pink': 'bg-pink-500',
+      'red': 'bg-red-500',
+      'yellow': 'bg-yellow-500',
+      'indigo': 'bg-indigo-500',
+      'teal': 'bg-teal-500',
+      'cyan': 'bg-cyan-500',
+      'emerald': 'bg-emerald-500',
+      'lime': 'bg-lime-500',
+      'amber': 'bg-amber-500',
+      'rose': 'bg-rose-500',
+      'violet': 'bg-violet-500',
+      'fuchsia': 'bg-fuchsia-500',
+      'sky': 'bg-sky-500',
+      'slate': 'bg-slate-500'
+    };
+    
+    const lowerColor = color?.toLowerCase() || '';
+    
+    // Check for exact matches first
+    if (colorMap[lowerColor]) {
+      return colorMap[lowerColor];
+    }
+    
+    // Check for partial matches
+    for (const [key, value] of Object.entries(colorMap)) {
+      if (lowerColor.includes(key) || key.includes(lowerColor)) {
+        return value;
+      }
+    }
+    
+    // Default color
+    return 'bg-slate-500';
   };
   if (loading) {
     return (
@@ -104,7 +151,7 @@ export default function CategoriesSidebar({
               onClick={() => onSelectCategory(category.id)}
               className={`w-full text-left p-3 border-2 border-slate-800 transition-all duration-200 ${
                 selectedCategory === category.id
-                  ? `${category.color} text-white shadow-brutal transform -translate-y-1`
+                  ? `${getCategoryColor(category.color)} text-white shadow-brutal transform -translate-y-1`
                   : "bg-gray-50 hover:bg-gray-100"
               }`}
             >
@@ -112,7 +159,11 @@ export default function CategoriesSidebar({
                 <div className="flex items-center space-x-2">
                   <span className="text-lg">{category.icon}</span>
                   <div>
-                    <p className="font-black text-sm">{category.name}</p>
+                    <p className={`font-black text-sm ${
+                      selectedCategory === category.id
+                        ? "text-white"
+                        : "text-slate-900"
+                    }`}>{category.name}</p>
                     <p
                       className={`text-xs font-bold ${
                         selectedCategory === category.id
