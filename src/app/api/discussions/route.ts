@@ -130,3 +130,55 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export async function POST(request: NextRequest) {
+  try {
+    const { title, content, tagIds = [] } = await request.json();
+
+    if (!title || !content) {
+      return NextResponse.json(
+        { success: false, error: 'Title and content are required' },
+        { status: 400 }
+      );
+    }
+
+    // For now, use user_id = 1 as default
+    // In a real app, you'd get this from authentication
+    const userId = 1;
+
+    // Insert discussion
+    const discussionQuery = `
+      INSERT INTO discussions (user_id, title, content, view_count, reply_count, like_count, is_pinned, is_deleted, created_at, updated_at)
+      VALUES (?, ?, ?, 0, 0, 0, 0, 0, NOW(), NOW())
+    `;
+
+    const [result] = await db.execute(discussionQuery, [userId, title.trim(), content.trim()]);
+    const discussionId = (result as any).insertId;
+
+    // Insert tag mappings if tags are provided
+    if (tagIds.length > 0) {
+      const tagMappingQuery = `
+        INSERT INTO discussion_tag_map (discussion_id, tag_id)
+        VALUES ${tagIds.map(() => '(?, ?)').join(', ')}
+      `;
+      
+      const tagMappingParams = tagIds.flatMap((tagId: string) => [discussionId, tagId]);
+      await db.execute(tagMappingQuery, tagMappingParams);
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        id: discussionId,
+        message: 'Discussion created successfully'
+      }
+    });
+
+  } catch (error) {
+    console.error('Error creating discussion:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to create discussion' },
+      { status: 500 }
+    );
+  }
+}
