@@ -149,6 +149,49 @@ user_answers:
   - weight_earned (INT) # bobot yang didapatkan, default: 0
   - answered_at (DATETIME)
 
+discussion:
+  - id (INT, PK, AUTO_INCREMENT)
+  - user_id (FK → users.id)
+  - title (VARCHAR)
+  - content (TEXT)
+  - view_count (INT)
+  - reply_count (INT)
+  - like_count (INT)
+  - is_pinned (BOOLEAN)
+  - is_deleted (BOOLEAN)
+  - created_at (DATETIME)
+  - updated_at (DATETIME)
+
+discussion_tags:
+  - id (INT, PK, AUTO_INCREMENT)
+  - name (VARCHAR)
+  - description (TEXT)
+  - color (VARCHAR)
+  - is_active (BOOLEAN)
+  - created_at (DATETIME)
+  - updated_at (DATETIME)
+
+discussion_tag_map:
+  - id (INT, PK, AUTO_INCREMENT)
+  - discussion_id (FK → discussions.id)
+  - tag_id (FK → discussion_tags.id)
+
+discussion_replies:
+  - id (INT, PK, AUTO_INCREMENT)
+  - discussion_id (FK → discussions.id)
+  - user_id (FK → users.id)
+  - content (TEXT)
+  - is_deleted (BOOLEAN)
+  - created_at (DATETIME)
+  - updated_at (DATETIME)
+
+discussion_likes:
+  - id (INT, PK, AUTO_INCREMENT)
+  - user_id (FK → users.id)
+  - discussion_id (FK → discussions.id)
+  - reply_id (FK → discussion_replies.id)
+  - created_at (DATETIME)
+
 # VIEW
 category_summary:
   - id (INT, PK, AUTO_INCREMENT)
