@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import HeaderNavigation from "@/components/HeaderNavigation";
 import MobileFriendlyHeader from "@/components/MobileFriendlyHeader";
 import BottomNavigation from "@/components/BottomNavigation";
 import { ArrowLeft, Heart, MessageCircle, Eye, Calendar, User, School, Pin } from 'lucide-react';
@@ -169,7 +168,6 @@ export default function DiscussionDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <HeaderNavigation />
         <MobileFriendlyHeader />
         
         <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 pb-24 sm:pb-8">
@@ -193,7 +191,6 @@ export default function DiscussionDetailPage() {
   if (!discussion) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <HeaderNavigation />
         <MobileFriendlyHeader />
         
         <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 pb-24 sm:pb-8">
@@ -217,7 +214,6 @@ export default function DiscussionDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <HeaderNavigation />
       <MobileFriendlyHeader />
       
       <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 pb-24 sm:pb-8">
