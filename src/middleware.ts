@@ -8,6 +8,7 @@ const protectedRoutes = [
   "/leaderboard",
   "/profile",
   "/lessons",
+  "/discuss",
 ];
 
 // Define auth routes (redirect to dashboard if already logged in)
@@ -19,11 +20,6 @@ export async function middleware(request: NextRequest) {
     request.cookies.get("auth-token")?.value ||
     request.headers.get("authorization")?.replace("Bearer ", "");
 
-  // Debug logging
-  console.log("Middleware - Path:", pathname);
-  console.log("Middleware - Token:", token ? "Present" : "Not found");
-  console.log("Middleware - Cookies:", request.cookies.getAll());
-
   // Check if current route is protected
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
@@ -31,6 +27,15 @@ export async function middleware(request: NextRequest) {
 
   // Check if current route is auth route
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
+
+  // Debug logging
+  console.log("=== MIDDLEWARE DEBUG ===");
+  console.log("Middleware - Path:", pathname);
+  console.log("Middleware - Token:", token ? "Present" : "Not found");
+  console.log("Middleware - Token value:", token);
+  console.log("Middleware - Cookies:", request.cookies.getAll());
+  console.log("Middleware - isProtectedRoute:", isProtectedRoute);
+  console.log("Middleware - isAuthRoute:", isAuthRoute);
 
   // For protected routes
   if (isProtectedRoute) {
@@ -48,8 +53,12 @@ export async function middleware(request: NextRequest) {
     }
 
     // Verify token
+    console.log("Middleware - Starting JWT verification...");
     const payload = await verifyTokenEdge(token);
+    console.log("Middleware - JWT verification result:", payload);
+    
     if (!payload) {
+      console.error("Middleware - JWT verification failed, redirecting to login");
       // Invalid token, redirect to login (tanpa query redirect) + set cookie flag for toast
       const resp = NextResponse.redirect(new URL("/login", request.url));
       resp.cookies.set("login_required", "1", {
@@ -61,6 +70,8 @@ export async function middleware(request: NextRequest) {
       });
       return resp;
     }
+    
+    console.log("Middleware - Token verified successfully, payload:", payload);
 
     // Add user info to headers for the request
     const response = NextResponse.next();

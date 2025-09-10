@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
+import jwt from 'jsonwebtoken';
 
 export async function GET(request: NextRequest) {
   try {
@@ -142,9 +143,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // For now, use user_id = 1 as default
-    // In a real app, you'd get this from authentication
-    const userId = 1;
+    // Get token from cookie or authorization header
+    const token = request.cookies.get('auth-token')?.value || 
+                  request.headers.get('authorization')?.replace('Bearer ', '');
+    
+    console.log('POST /api/discussions - Token:', token ? 'Present' : 'Not found');
+    
+    if (!token) {
+      console.log('POST /api/discussions - No token found');
+      return NextResponse.json(
+        { success: false, error: 'User not authenticated' },
+        { status: 401 }
+      );
+    }
+
+    // Verify JWT token
+    let payload;
+    try {
+      payload = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret-key') as {
+        userId: number;
+        email: string;
+        subscriptionType: string;
+      };
+      console.log('POST /api/discussions - Token verified, userId:', payload.userId);
+    } catch (error) {
+      console.error('POST /api/discussions - JWT verification failed:', error);
+      return NextResponse.json(
+        { success: false, error: 'Invalid token' },
+        { status: 401 }
+      );
+    }
+
+    const userId = payload.userId;
 
     // Insert discussion
     const discussionQuery = `

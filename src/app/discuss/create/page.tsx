@@ -75,9 +75,15 @@ export default function CreateDiscussionPage() {
     try {
       setSubmitting(true);
       
+      // Get auth token from localStorage
+      const authToken = localStorage.getItem('authToken');
+      
       const response = await fetch('/api/discussions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
         body: JSON.stringify({
           title: formData.title.trim(),
           content: formData.content.trim(),

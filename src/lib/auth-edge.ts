@@ -1,7 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
 
 const secret = new TextEncoder().encode(
-  process.env.JWT_SECRET || "your-fallback-secret-key-change-this-in-production"
+  process.env.JWT_SECRET || "fallback-secret-key"
 );
 
 export async function verifyTokenEdge(token: string) {
