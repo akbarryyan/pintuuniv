@@ -98,11 +98,10 @@ export default function DashboardPage() {
     },
   };
 
-  const [stats] = useState({
+  const [stats, setStats] = useState({
     totalTryouts: 0,
     averageScore: 0,
-    completedLessons: 0,
-    achievements: 12,
+    discussionsCreated: 0,
     studyStreak: 0,
     rank: 0,
     totalStudents: 1247,
@@ -194,6 +193,35 @@ export default function DashboardPage() {
   ]);
 
 
+  // Function to fetch user discussions count
+  const fetchDiscussionsCount = async (userId: number) => {
+    try {
+      const response = await fetch('/api/discussions/my');
+      const data = await response.json();
+      
+      if (data.success) {
+        const discussionsCount = data.data.discussions.length;
+        setStats(prevStats => ({
+          ...prevStats,
+          discussionsCreated: discussionsCount
+        }));
+      } else {
+        // If error, set to 0
+        setStats(prevStats => ({
+          ...prevStats,
+          discussionsCreated: 0
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching discussions count:', error);
+      // If error, set to 0
+      setStats(prevStats => ({
+        ...prevStats,
+        discussionsCreated: 0
+      }));
+    }
+  };
+
   // Load user data from localStorage on component mount
   useEffect(() => {
     setMounted(true);
@@ -225,6 +253,11 @@ export default function DashboardPage() {
               targetUniversity: parsedData.targetUniversity || "ui",
               targetMajor: parsedData.targetMajor || "",
             });
+
+            // Fetch discussions count
+            if (parsedData.id) {
+              fetchDiscussionsCount(parsedData.id);
+            }
 
             // Fetch fresh data from server to ensure sync with database
             if (storedAuthToken) {
@@ -260,6 +293,11 @@ export default function DashboardPage() {
                       targetUniversity: merged.targetUniversity || "ui",
                       targetMajor: merged.targetMajor || "",
                     });
+
+                    // Fetch discussions count
+                    if (merged.id) {
+                      fetchDiscussionsCount(merged.id);
+                    }
                   }
                 })
                 .catch((err) => {
