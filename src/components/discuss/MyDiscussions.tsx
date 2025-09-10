@@ -25,6 +25,7 @@ export default function MyDiscussions() {
   const [loading, setLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [discussionToDelete, setDiscussionToDelete] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchMyDiscussions();
@@ -62,6 +63,11 @@ export default function MyDiscussions() {
     if (!discussionToDelete) return;
 
     try {
+      setIsDeleting(true);
+      
+      // Tambahkan delay untuk menampilkan animasi loading
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       const response = await fetch(`/api/discussions/${discussionToDelete}`, {
         method: 'DELETE',
         headers: {
@@ -81,6 +87,7 @@ export default function MyDiscussions() {
       console.error('Error deleting discussion:', error);
       toast.error('Gagal menghapus diskusi');
     } finally {
+      setIsDeleting(false);
       setShowDeleteModal(false);
       setDiscussionToDelete(null);
     }
@@ -260,15 +267,24 @@ export default function MyDiscussions() {
               <div className="flex gap-3 justify-center">
                 <button
                   onClick={() => setShowDeleteModal(false)}
-                  className="px-6 py-3 font-black text-sm border-2 border-slate-800 bg-gray-100 hover:bg-gray-200 transition-colors"
+                  disabled={isDeleting}
+                  className="px-6 py-3 font-black text-sm border-2 border-slate-800 bg-gray-100 hover:bg-gray-200 transition-colors disabled:bg-gray-200 disabled:cursor-not-allowed"
                 >
                   Batal
                 </button>
                 <button
                   onClick={confirmDelete}
-                  className="px-6 py-3 font-black text-sm border-2 border-slate-800 bg-red-500 text-white hover:bg-red-600 transition-colors"
+                  disabled={isDeleting}
+                  className="px-6 py-3 font-black text-sm border-2 border-slate-800 bg-red-500 text-white hover:bg-red-600 transition-colors disabled:bg-red-300 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  Hapus
+                  {isDeleting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Menghapus...
+                    </>
+                  ) : (
+                    'Hapus'
+                  )}
                 </button>
               </div>
             </div>
