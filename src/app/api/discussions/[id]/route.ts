@@ -4,10 +4,10 @@ import jwt from 'jsonwebtoken';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const discussionId = params.id;
+    const { id: discussionId } = await params;
 
     const query = `
       SELECT 
@@ -79,10 +79,10 @@ export async function GET(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const discussionId = params.id;
+    const { id: discussionId } = await params;
 
     // Get token from cookie or authorization header
     const token = request.cookies.get('auth-token')?.value || 
@@ -153,10 +153,10 @@ export async function DELETE(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const discussionId = params.id;
+    const { id: discussionId } = await params;
     const { title, content, tagIds = [] } = await request.json();
 
     if (!title || !content) {
@@ -228,12 +228,28 @@ export async function PUT(
 
     // Then, add new tags
     if (tagIds.length > 0) {
-      const tagMappingQuery = `
-        INSERT INTO discussion_tag_map (discussion_id, tag_id)
-        VALUES ${tagIds.map(() => '(?, ?)').join(', ')}
+      // Validate that all tag IDs exist
+      const tagValidationQuery = `
+        SELECT id FROM discussion_tags 
+        WHERE id IN (${tagIds.map(() => '?').join(',')}) AND is_active = 1
       `;
       
-      const tagMappingParams = tagIds.flatMap((tagId: string) => [discussionId, tagId]);
+      const [validTags] = await db.execute(tagValidationQuery, tagIds);
+      const validTagIds = (validTags as any[]).map(tag => tag.id);
+      
+      if (validTagIds.length !== tagIds.length) {
+        return NextResponse.json(
+          { success: false, error: 'One or more tags are invalid' },
+          { status: 400 }
+        );
+      }
+
+      const tagMappingQuery = `
+        INSERT INTO discussion_tag_map (discussion_id, tag_id)
+        VALUES ${validTagIds.map(() => '(?, ?)').join(', ')}
+      `;
+      
+      const tagMappingParams = validTagIds.flatMap((tagId: string) => [discussionId, tagId]);
       await db.execute(tagMappingQuery, tagMappingParams);
     }
 
