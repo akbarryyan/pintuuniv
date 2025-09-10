@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
+import jwt from 'jsonwebtoken';
 
 export async function GET(
   request: NextRequest,
@@ -71,6 +72,180 @@ export async function GET(
     console.error('Error fetching discussion:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch discussion' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const discussionId = params.id;
+
+    // Get token from cookie or authorization header
+    const token = request.cookies.get('auth-token')?.value || 
+                  request.headers.get('authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+      return NextResponse.json(
+        { success: false, error: 'User not authenticated' },
+        { status: 401 }
+      );
+    }
+
+    // Verify JWT token
+    let payload;
+    try {
+      payload = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret-key') as {
+        userId: number;
+        email: string;
+        subscriptionType: string;
+      };
+    } catch (error) {
+      console.error('JWT verification failed:', error);
+      return NextResponse.json(
+        { success: false, error: 'Invalid token' },
+        { status: 401 }
+      );
+    }
+
+    const userId = payload.userId;
+
+    // Check if discussion exists and belongs to user
+    const checkQuery = `
+      SELECT id, user_id FROM discussions 
+      WHERE id = ? AND user_id = ? AND is_deleted = 0
+    `;
+    
+    const [checkResult] = await db.execute(checkQuery, [discussionId, userId]);
+    
+    if (!checkResult || (checkResult as any[]).length === 0) {
+      return NextResponse.json(
+        { success: false, error: 'Discussion not found or access denied' },
+        { status: 404 }
+      );
+    }
+
+    // Soft delete discussion
+    const deleteQuery = `
+      UPDATE discussions 
+      SET is_deleted = 1, updated_at = NOW() 
+      WHERE id = ? AND user_id = ?
+    `;
+    
+    await db.execute(deleteQuery, [discussionId, userId]);
+
+    return NextResponse.json({
+      success: true,
+      message: 'Discussion deleted successfully'
+    });
+
+  } catch (error) {
+    console.error('Error deleting discussion:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to delete discussion' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const discussionId = params.id;
+    const { title, content, tagIds = [] } = await request.json();
+
+    if (!title || !content) {
+      return NextResponse.json(
+        { success: false, error: 'Title and content are required' },
+        { status: 400 }
+      );
+    }
+
+    // Get token from cookie or authorization header
+    const token = request.cookies.get('auth-token')?.value || 
+                  request.headers.get('authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+      return NextResponse.json(
+        { success: false, error: 'User not authenticated' },
+        { status: 401 }
+      );
+    }
+
+    // Verify JWT token
+    let payload;
+    try {
+      payload = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret-key') as {
+        userId: number;
+        email: string;
+        subscriptionType: string;
+      };
+    } catch (error) {
+      console.error('JWT verification failed:', error);
+      return NextResponse.json(
+        { success: false, error: 'Invalid token' },
+        { status: 401 }
+      );
+    }
+
+    const userId = payload.userId;
+
+    // Check if discussion exists and belongs to user
+    const checkQuery = `
+      SELECT id, user_id FROM discussions 
+      WHERE id = ? AND user_id = ? AND is_deleted = 0
+    `;
+    
+    const [checkResult] = await db.execute(checkQuery, [discussionId, userId]);
+    
+    if (!checkResult || (checkResult as any[]).length === 0) {
+      return NextResponse.json(
+        { success: false, error: 'Discussion not found or access denied' },
+        { status: 404 }
+      );
+    }
+
+    // Update discussion
+    const updateQuery = `
+      UPDATE discussions 
+      SET title = ?, content = ?, updated_at = NOW() 
+      WHERE id = ? AND user_id = ?
+    `;
+    
+    await db.execute(updateQuery, [title.trim(), content.trim(), discussionId, userId]);
+
+    // Update tags
+    // First, remove existing tags
+    await db.execute(
+      'DELETE FROM discussion_tag_map WHERE discussion_id = ?',
+      [discussionId]
+    );
+
+    // Then, add new tags
+    if (tagIds.length > 0) {
+      const tagMappingQuery = `
+        INSERT INTO discussion_tag_map (discussion_id, tag_id)
+        VALUES ${tagIds.map(() => '(?, ?)').join(', ')}
+      `;
+      
+      const tagMappingParams = tagIds.flatMap((tagId: string) => [discussionId, tagId]);
+      await db.execute(tagMappingQuery, tagMappingParams);
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Discussion updated successfully'
+    });
+
+  } catch (error) {
+    console.error('Error updating discussion:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to update discussion' },
       { status: 500 }
     );
   }

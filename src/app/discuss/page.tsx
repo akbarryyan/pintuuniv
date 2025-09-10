@@ -8,6 +8,7 @@ import HeaderNavigation from "@/components/HeaderNavigation";
 import MobileFriendlyHeader from "@/components/MobileFriendlyHeader";
 import BottomNavigation from "@/components/BottomNavigation";
 import { HeaderSection as DiscussHeaderSection, CategoriesSidebar, MainContent } from "@/components/discuss";
+import MyDiscussions from "@/components/discuss/MyDiscussions";
 
 
 export default function DiscussPage() {
@@ -23,6 +24,7 @@ export default function DiscussPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"latest" | "popular" | "replies">("latest");
+  const [activeTab, setActiveTab] = useState<"all" | "my">("all");
 
   // Load user data
   useEffect(() => {
@@ -125,23 +127,53 @@ export default function DiscussPage() {
         {/* Header Section */}
         <DiscussHeaderSection />
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
-          {/* Sidebar - Categories */}
-          <CategoriesSidebar
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
-          />
-
-          {/* Main Content */}
-          <MainContent
-            selectedCategory={selectedCategory}
-            searchQuery={searchQuery}
-            sortBy={sortBy}
-            onSearchQueryChange={setSearchQuery}
-            onSortByChange={setSortBy}
-            onLike={handleLike}
-          />
+        {/* Tab Navigation */}
+        <div className="bg-white border-3 border-slate-800 p-4 shadow-brutal mb-6">
+          <div className="flex space-x-1">
+            <button
+              onClick={() => setActiveTab("all")}
+              className={`px-4 py-2 font-black text-sm border-2 border-slate-800 transition-colors ${
+                activeTab === "all"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-100 text-slate-900 hover:bg-gray-200"
+              }`}
+            >
+              🌐 Semua Diskusi
+            </button>
+            <button
+              onClick={() => setActiveTab("my")}
+              className={`px-4 py-2 font-black text-sm border-2 border-slate-800 transition-colors ${
+                activeTab === "my"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-100 text-slate-900 hover:bg-gray-200"
+              }`}
+            >
+              📝 Diskusi Saya
+            </button>
+          </div>
         </div>
+
+        {activeTab === "all" ? (
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
+            {/* Sidebar - Categories */}
+            <CategoriesSidebar
+              selectedCategory={selectedCategory}
+              onSelectCategory={setSelectedCategory}
+            />
+
+            {/* Main Content */}
+            <MainContent
+              selectedCategory={selectedCategory}
+              searchQuery={searchQuery}
+              sortBy={sortBy}
+              onSearchQueryChange={setSearchQuery}
+              onSortByChange={setSortBy}
+              onLike={handleLike}
+            />
+          </div>
+        ) : (
+          <MyDiscussions />
+        )}
       </div>
 
       {/* Bottom Navigation - Mobile Only */}
