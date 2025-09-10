@@ -245,7 +245,7 @@ export default function MyDiscussions() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white border-3 border-slate-800 p-6 shadow-brutal max-w-md w-full">
             <div className="text-center">
               <div className="w-16 h-16 bg-red-400 border-3 border-slate-800 mx-auto mb-4 flex items-center justify-center text-2xl">
