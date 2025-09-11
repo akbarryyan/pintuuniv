@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, CreditCard, Smartphone, Building2 } from "lucide-react";
+import { X } from "lucide-react";
 import { toast } from "sonner";
 
 interface Tryout {
@@ -35,42 +35,17 @@ export default function PaymentConfirmationModal({
   tryout,
   onConfirmPayment,
 }: PaymentConfirmationModalProps) {
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const paymentMethods = [
-    {
-      id: "credit_card",
-      name: "Kartu Kredit",
-      icon: CreditCard,
-      description: "Visa, Mastercard, JCB",
-      color: "bg-blue-500",
-    },
-    {
-      id: "e_wallet",
-      name: "E-Wallet",
-      icon: Smartphone,
-      description: "GoPay, OVO, DANA, ShopeePay",
-      color: "bg-green-500",
-    },
-    {
-      id: "bank_transfer",
-      name: "Transfer Bank",
-      icon: Building2,
-      description: "BCA, Mandiri, BRI, BNI",
-      color: "bg-purple-500",
-    },
-  ];
-
   const handleConfirm = async () => {
-    if (!tryout || !selectedPaymentMethod) {
-      toast.error("Pilih metode pembayaran terlebih dahulu");
+    if (!tryout) {
+      toast.error("Data tryout tidak valid");
       return;
     }
 
     setIsProcessing(true);
     try {
-      await onConfirmPayment(tryout.id, tryout.title, selectedPaymentMethod);
+      await onConfirmPayment(tryout.id, tryout.title, "default_payment");
       toast.success("Pembayaran berhasil diproses!");
       onClose();
     } catch (error) {
@@ -83,7 +58,6 @@ export default function PaymentConfirmationModal({
 
   const handleClose = () => {
     if (!isProcessing) {
-      setSelectedPaymentMethod("");
       onClose();
     }
   };
@@ -148,39 +122,6 @@ export default function PaymentConfirmationModal({
             )}
           </div>
 
-          {/* Payment Methods */}
-          <div className="mb-6">
-            <h4 className="font-black text-sm text-slate-900 mb-3">
-              Pilih Metode Pembayaran:
-            </h4>
-            <div className="space-y-2">
-              {paymentMethods.map((method) => {
-                const IconComponent = method.icon;
-                return (
-                  <button
-                    key={method.id}
-                    onClick={() => setSelectedPaymentMethod(method.id)}
-                    disabled={isProcessing}
-                    className={`w-full p-3 border-2 border-slate-800 rounded-lg text-left transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
-                      selectedPaymentMethod === method.id
-                        ? "bg-slate-900 text-white"
-                        : "bg-white hover:bg-slate-50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 ${method.color} border-2 border-slate-800 rounded-lg flex items-center justify-center`}>
-                        <IconComponent className="w-4 h-4 text-white" />
-                      </div>
-                      <div>
-                        <div className="font-black text-sm">{method.name}</div>
-                        <div className="text-xs text-slate-600">{method.description}</div>
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
 
           {/* Action Buttons */}
           <div className="flex gap-3">
@@ -193,7 +134,7 @@ export default function PaymentConfirmationModal({
             </button>
             <button
               onClick={handleConfirm}
-              disabled={!selectedPaymentMethod || isProcessing}
+              disabled={isProcessing}
               className="flex-1 bg-orange-500 text-white px-4 py-3 font-black text-sm border-2 border-slate-800 hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isProcessing ? (
