@@ -9,13 +9,14 @@ import {
   NotificationSettings,
   SecuritySettings,
   SystemSettings,
+  WebsiteSettings,
 } from "@/components/sys/settings";
 import { usePageTransition, useSmoothNavigation } from "@/lib/hooks";
 import { SmoothTransition } from "@/components/ui/loading";
 
 export default function AdminSettingsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("profile");
+  const [activeSection, setActiveSection] = useState("website-general");
 
   // Use page transition and navigation hooks
   const { isLoading: pageLoading } = usePageTransition();
@@ -49,6 +50,11 @@ export default function AdminSettingsPage() {
 
   const renderActiveSection = () => {
     switch (activeSection) {
+      case "website-general":
+      case "website-logo":
+      case "website-seo":
+      case "website-contact":
+        return <WebsiteSettings isLoading={isLoading} onSave={handleSave} activeTab={activeSection} />;
       case "profile":
         return <ProfileSettings isLoading={isLoading} onSave={handleSave} />;
       case "notifications":
