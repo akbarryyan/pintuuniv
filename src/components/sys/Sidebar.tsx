@@ -123,6 +123,12 @@ export default function Sidebar({
       badge: "New",
     },
     {
+      title: "Transactions",
+      href: "/sys/dashboard/transactions",
+      icon: <DollarSign className="w-5 h-5" />,
+      badge: "New",
+    },
+    {
       title: "Reports",
       href: "/sys/dashboard/reports",
       icon: <BarChart3 className="w-5 h-5" />,
