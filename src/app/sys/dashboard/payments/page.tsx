@@ -41,6 +41,17 @@ export default function PaymentsPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [methodToDelete, setMethodToDelete] = useState<string | null>(null);
   const [isAddingMethod, setIsAddingMethod] = useState(false);
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    name: '',
+    type: 'qris' as 'qris' | 'e_wallet' | 'bank_transfer',
+    color: 'bg-green-500',
+    isPopular: false,
+    isActive: true,
+    qrCode: null as File | null,
+    qrCodePreview: '',
+  });
 
   // Mock data untuk payment methods
   const mockPaymentMethods: PaymentMethod[] = [
@@ -121,6 +132,17 @@ export default function PaymentsPage() {
     // Simulasi delay loading
     await new Promise(resolve => setTimeout(resolve, 1500));
     
+    // Reset form data
+    setFormData({
+      name: '',
+      type: 'qris',
+      color: 'bg-green-500',
+      isPopular: false,
+      isActive: true,
+      qrCode: null,
+      qrCodePreview: '',
+    });
+    
     setEditingMethod(null);
     setShowModal(true);
     setIsAddingMethod(false);
@@ -128,7 +150,84 @@ export default function PaymentsPage() {
 
   const handleEditMethod = (method: PaymentMethod) => {
     setEditingMethod(method);
+    setFormData({
+      name: method.name,
+      type: method.type,
+      color: method.color,
+      isPopular: method.isPopular,
+      isActive: method.isActive,
+      qrCode: null,
+      qrCodePreview: method.qrCode || '',
+    });
     setShowModal(true);
+  };
+
+  const handleFormChange = (field: string, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast.error('Hanya file gambar yang diperbolehkan');
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Ukuran file maksimal 5MB');
+        return;
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        qrCode: file,
+        qrCodePreview: URL.createObjectURL(file)
+      }));
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name.trim()) {
+      toast.error('Nama metode harus diisi');
+      return;
+    }
+
+    if (formData.type === 'qris' && !formData.qrCode && !formData.qrCodePreview) {
+      toast.error('Gambar QRIS harus diupload');
+      return;
+    }
+
+    // Simulate save
+    const newMethod: PaymentMethod = {
+      id: editingMethod?.id || Date.now().toString(),
+      name: formData.name,
+      type: formData.type,
+      icon: formData.type === 'qris' ? 'QrCode' : formData.type === 'e_wallet' ? 'Smartphone' : 'Building2',
+      color: formData.color,
+      isActive: formData.isActive,
+      isPopular: formData.isPopular,
+      qrCode: formData.qrCodePreview,
+      accounts: editingMethod?.accounts || []
+    };
+
+    if (editingMethod) {
+      setPaymentMethods(prev => prev.map(m => m.id === editingMethod.id ? newMethod : m));
+      toast.success('Metode pembayaran berhasil diupdate');
+    } else {
+      setPaymentMethods(prev => [...prev, newMethod]);
+      toast.success('Metode pembayaran berhasil ditambahkan');
+    }
+
+    setShowModal(false);
+    setEditingMethod(null);
   };
 
   const handleDeleteMethod = (methodId: string) => {
@@ -404,7 +503,19 @@ export default function PaymentsPage() {
                 {editingMethod ? 'Edit Metode Pembayaran' : 'Tambah Metode Pembayaran'}
               </h3>
               <button
-                onClick={() => setShowModal(false)}
+                onClick={() => {
+                  setShowModal(false);
+                  setEditingMethod(null);
+                  setFormData({
+                    name: '',
+                    type: 'qris',
+                    color: 'bg-green-500',
+                    isPopular: false,
+                    isActive: true,
+                    qrCode: null,
+                    qrCodePreview: '',
+                  });
+                }}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -413,7 +524,7 @@ export default function PaymentsPage() {
               </button>
             </div>
 
-            <form className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Nama Metode
@@ -421,8 +532,10 @@ export default function PaymentsPage() {
                 <input
                   type="text"
                   placeholder="Masukkan nama metode"
+                  value={formData.name}
+                  onChange={(e) => handleFormChange('name', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  defaultValue={editingMethod?.name || ''}
+                  required
                 />
               </div>
 
@@ -430,12 +543,63 @@ export default function PaymentsPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Tipe Metode
                 </label>
-                <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <select 
+                  value={formData.type}
+                  onChange={(e) => handleFormChange('type', e.target.value as 'qris' | 'e_wallet' | 'bank_transfer')}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
                   <option value="qris">QRIS</option>
                   <option value="e_wallet">E-Wallet</option>
                   <option value="bank_transfer">Bank Transfer</option>
                 </select>
               </div>
+
+              {/* QRIS Upload Section */}
+              {formData.type === 'qris' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Upload Gambar QRIS
+                  </label>
+                  <div className="space-y-3">
+                    {/* File Upload */}
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-gray-400 transition-colors">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                        id="qr-upload"
+                      />
+                      <label
+                        htmlFor="qr-upload"
+                        className="cursor-pointer flex flex-col items-center gap-2"
+                      >
+                        <QrCode className="w-8 h-8 text-gray-400" />
+                        <span className="text-sm text-gray-600">
+                          {formData.qrCode ? 'Ganti gambar QRIS' : 'Klik untuk upload gambar QRIS'}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          PNG, JPG, JPEG (max 5MB)
+                        </span>
+                      </label>
+                    </div>
+
+                    {/* Preview */}
+                    {formData.qrCodePreview && (
+                      <div className="mt-3">
+                        <p className="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+                        <div className="border border-gray-200 rounded-lg p-2 max-w-xs mx-auto">
+                          <img
+                            src={formData.qrCodePreview}
+                            alt="QRIS Preview"
+                            className="w-full h-auto max-h-32 object-contain"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -446,7 +610,10 @@ export default function PaymentsPage() {
                     <button
                       key={color}
                       type="button"
-                      className={`w-8 h-8 ${color} rounded-lg border-2 border-gray-300 hover:border-gray-400 transition-colors`}
+                      onClick={() => handleFormChange('color', color)}
+                      className={`w-8 h-8 ${color} rounded-lg border-2 transition-colors ${
+                        formData.color === color ? 'border-gray-600' : 'border-gray-300 hover:border-gray-400'
+                      }`}
                     />
                   ))}
                 </div>
@@ -456,6 +623,8 @@ export default function PaymentsPage() {
                 <input
                   type="checkbox"
                   id="isPopular"
+                  checked={formData.isPopular}
+                  onChange={(e) => handleFormChange('isPopular', e.target.checked)}
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <label htmlFor="isPopular" className="text-sm font-medium text-gray-700">
@@ -467,7 +636,8 @@ export default function PaymentsPage() {
                 <input
                   type="checkbox"
                   id="isActive"
-                  defaultChecked
+                  checked={formData.isActive}
+                  onChange={(e) => handleFormChange('isActive', e.target.checked)}
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
@@ -478,7 +648,19 @@ export default function PaymentsPage() {
               <div className="flex gap-3 pt-4">
                 <button
                   type="button"
-                  onClick={() => setShowModal(false)}
+                  onClick={() => {
+                    setShowModal(false);
+                    setEditingMethod(null);
+                    setFormData({
+                      name: '',
+                      type: 'qris',
+                      color: 'bg-green-500',
+                      isPopular: false,
+                      isActive: true,
+                      qrCode: null,
+                      qrCodePreview: '',
+                    });
+                  }}
                   className="flex-1 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   Batal
