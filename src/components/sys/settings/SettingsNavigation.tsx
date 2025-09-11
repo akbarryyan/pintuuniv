@@ -21,13 +21,25 @@ export default function SettingsNavigation({
   setActiveSection,
 }: SettingsNavigationProps) {
   const [expandedSections, setExpandedSections] = useState<string[]>(['website']);
+  const [isAnimating, setIsAnimating] = useState<string | null>(null);
 
   const toggleSection = (sectionId: string) => {
-    setExpandedSections(prev => 
-      prev.includes(sectionId) 
-        ? prev.filter(id => id !== sectionId)
-        : [...prev, sectionId]
-    );
+    if (isAnimating) return; // Prevent multiple clicks during animation
+    
+    setIsAnimating(sectionId);
+    
+    if (expandedSections.includes(sectionId)) {
+      // Closing animation
+      setExpandedSections(prev => prev.filter(id => id !== sectionId));
+    } else {
+      // Opening animation
+      setExpandedSections(prev => [...prev, sectionId]);
+    }
+    
+    // Reset animation state after animation completes
+    setTimeout(() => {
+      setIsAnimating(null);
+    }, 300);
   };
 
   const settingsSections: SettingsSection[] = [
@@ -107,10 +119,13 @@ export default function SettingsNavigation({
                     setActiveSection(section.id);
                   }
                 }}
+                disabled={isAnimating === section.id}
                 className={`w-full flex items-center justify-between px-3 py-2.5 text-left rounded-lg transition-all duration-200 ${
                   activeSection === section.id || (section.children && section.children.some(child => activeSection === child.id))
                     ? "bg-slate-100 text-slate-900"
                     : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                } ${
+                  isAnimating === section.id ? 'opacity-75 cursor-wait' : ''
                 }`}
               >
                 <div className="flex items-center space-x-3">
@@ -131,46 +146,71 @@ export default function SettingsNavigation({
                   </div>
                 </div>
                 {section.children && (
-                  <div className="text-slate-400">
-                    {expandedSections.includes(section.id) ? (
-                      <ChevronDown className="w-4 h-4" />
-                    ) : (
-                      <ChevronRight className="w-4 h-4" />
-                    )}
+                  <div className={`text-slate-400 transition-transform duration-300 ${
+                    isAnimating === section.id ? 'opacity-50' : ''
+                  }`}>
+                    <ChevronDown 
+                      className={`w-4 h-4 transition-transform duration-300 ${
+                        expandedSections.includes(section.id) 
+                          ? 'rotate-0' 
+                          : '-rotate-90'
+                      }`} 
+                    />
                   </div>
                 )}
               </button>
 
               {/* Children Sections */}
-              {section.children && expandedSections.includes(section.id) && (
-                <div className="ml-6 mt-1 space-y-1">
-                  {section.children.map((child) => (
-                    <button
-                      key={child.id}
-                      onClick={() => setActiveSection(child.id)}
-                      className={`w-full flex items-center space-x-3 px-3 py-2 text-left rounded-lg transition-all duration-200 ${
-                        activeSection === child.id
-                          ? "bg-blue-50 text-blue-700 border-l-2 border-blue-500"
-                          : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-                      }`}
-                    >
+              {section.children && (
+                <div 
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                    expandedSections.includes(section.id) 
+                      ? 'max-h-96 opacity-100' 
+                      : 'max-h-0 opacity-0'
+                  }`}
+                >
+                  <div className="ml-6 mt-1 space-y-1 transform transition-transform duration-300 ease-in-out">
+                    {section.children.map((child, index) => (
                       <div
-                        className={`p-1 rounded-lg ${
-                          activeSection === child.id
-                            ? "bg-blue-100 text-blue-600"
-                            : "text-slate-400"
+                        key={child.id}
+                        className={`transform transition-all duration-300 ease-out ${
+                          expandedSections.includes(section.id)
+                            ? 'translate-y-0 opacity-100'
+                            : 'translate-y-2 opacity-0'
                         }`}
+                        style={{
+                          transitionDelay: expandedSections.includes(section.id) 
+                            ? `${index * 50}ms` 
+                            : '0ms'
+                        }}
                       >
-                        {child.icon}
+                        <button
+                          onClick={() => setActiveSection(child.id)}
+                          className={`w-full flex items-center space-x-3 px-3 py-2 text-left rounded-lg transition-all duration-200 ${
+                            activeSection === child.id
+                              ? "bg-blue-50 text-blue-700 border-l-2 border-blue-500"
+                              : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                          }`}
+                        >
+                          <div
+                            className={`p-1 rounded-lg transition-colors duration-200 ${
+                              activeSection === child.id
+                                ? "bg-blue-100 text-blue-600"
+                                : "text-slate-400"
+                            }`}
+                          >
+                            {child.icon}
+                          </div>
+                          <div>
+                            <div className="font-medium text-sm">{child.title}</div>
+                            <div className="text-xs text-slate-500 hidden lg:block">
+                              {child.description}
+                            </div>
+                          </div>
+                        </button>
                       </div>
-                      <div>
-                        <div className="font-medium text-sm">{child.title}</div>
-                        <div className="text-xs text-slate-500 hidden lg:block">
-                          {child.description}
-                        </div>
-                      </div>
-                    </button>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
