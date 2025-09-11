@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -35,6 +36,7 @@ export default function PaymentConfirmationModal({
   tryout,
   onConfirmPayment,
 }: PaymentConfirmationModalProps) {
+  const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleConfirm = async () => {
@@ -45,8 +47,11 @@ export default function PaymentConfirmationModal({
 
     setIsProcessing(true);
     try {
-      await onConfirmPayment(tryout.id, tryout.title, "default_payment");
-      toast.success("Pembayaran berhasil diproses!");
+      // Simulasi delay loading
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Redirect ke halaman pembayaran
+      router.push(`/payment/${tryout.id}`);
       onClose();
     } catch (error) {
       console.error("Payment error:", error);
@@ -140,7 +145,7 @@ export default function PaymentConfirmationModal({
               {isProcessing ? (
                 <div className="flex items-center justify-center gap-2">
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Memproses...</span>
+                  <span>Mengalihkan...</span>
                 </div>
               ) : (
                 "💳 Lanjutkan Pembayaran"
