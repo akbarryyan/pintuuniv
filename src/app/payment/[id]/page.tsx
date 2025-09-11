@@ -265,8 +265,15 @@ export default function PaymentPage() {
                       <div key={method.id}>
                         <button
                           onClick={() => {
-                            setSelectedMethod(method.id);
-                            setSelectedDetail("");
+                            if (selectedMethod === method.id) {
+                              // Jika method yang sama diklik, tutup dropdown
+                              setSelectedMethod("");
+                              setSelectedDetail("");
+                            } else {
+                              // Jika method berbeda diklik, buka dropdown
+                              setSelectedMethod(method.id);
+                              setSelectedDetail("");
+                            }
                           }}
                           className={`w-full p-4 border-4 border-slate-800 rounded-lg text-left transition-all duration-300 ease-in-out transform ${
                             isSelected
