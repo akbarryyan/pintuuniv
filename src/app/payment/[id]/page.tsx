@@ -27,25 +27,35 @@ export default function PaymentPage() {
   const [tryout, setTryout] = useState<Tryout | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState<string>("");
+  const [selectedDetail, setSelectedDetail] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [step, setStep] = useState<"method" | "processing" | "success">("method");
 
   const paymentMethods = [
     {
-      id: "credit_card",
-      name: "Kartu Kredit",
-      icon: CreditCard,
-      description: "Visa, Mastercard, JCB",
-      color: "bg-blue-500",
+      id: "qris",
+      name: "QRIS",
+      icon: Smartphone,
+      description: "Scan QR Code untuk pembayaran",
+      color: "bg-green-500",
       popular: true,
+      qrCode: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2ZmZmZmZiIvPgogIDxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIGZpbGw9IiMwMDAwMDAiLz4KICA8cmVjdCB4PSIyMCIgeT0iMjAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iI2ZmZmZmZiIvPgogIDxyZWN0IHg9IjE0MCIgeT0iMjAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iI2ZmZmZmZiIvPgogIDxyZWN0IHg9IjIwIiB5PSIxNDAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iI2ZmZmZmZiIvPgogIDxyZWN0IHg9IjE0MCIgeT0iMTQwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIxMDAiIHk9IjExMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjMDAwMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5RUklTPC90ZXh0Pgo8L3N2Zz4K",
+      bankDetails: null
     },
     {
       id: "e_wallet",
       name: "E-Wallet",
       icon: Smartphone,
       description: "GoPay, OVO, DANA, ShopeePay",
-      color: "bg-green-500",
+      color: "bg-blue-500",
       popular: false,
+      qrCode: null,
+      bankDetails: [
+        { name: "GoPay", account: "08123456789", nameAccount: "PintuUniv" },
+        { name: "OVO", account: "08123456789", nameAccount: "PintuUniv" },
+        { name: "DANA", account: "08123456789", nameAccount: "PintuUniv" },
+        { name: "ShopeePay", account: "08123456789", nameAccount: "PintuUniv" }
+      ]
     },
     {
       id: "bank_transfer",
@@ -54,6 +64,13 @@ export default function PaymentPage() {
       description: "BCA, Mandiri, BRI, BNI",
       color: "bg-purple-500",
       popular: false,
+      qrCode: null,
+      bankDetails: [
+        { name: "BCA", account: "1234567890", nameAccount: "PintuUniv" },
+        { name: "Mandiri", account: "1234567890", nameAccount: "PintuUniv" },
+        { name: "BRI", account: "1234567890", nameAccount: "PintuUniv" },
+        { name: "BNI", account: "1234567890", nameAccount: "PintuUniv" }
+      ]
     },
   ];
 
@@ -88,6 +105,12 @@ export default function PaymentPage() {
   const handlePayment = async () => {
     if (!selectedMethod) {
       toast.error("Pilih metode pembayaran terlebih dahulu");
+      return;
+    }
+
+    const method = paymentMethods.find(m => m.id === selectedMethod);
+    if (method && method.bankDetails && !selectedDetail) {
+      toast.error("Pilih tujuan transfer terlebih dahulu");
       return;
     }
 
@@ -236,38 +259,101 @@ export default function PaymentPage() {
                 <div className="space-y-4">
                   {paymentMethods.map((method) => {
                     const IconComponent = method.icon;
+                    const isSelected = selectedMethod === method.id;
+                    
                     return (
-                      <button
-                        key={method.id}
-                        onClick={() => setSelectedMethod(method.id)}
-                        className={`w-full p-4 border-4 border-slate-800 rounded-lg text-left transition-all ${
-                          selectedMethod === method.id
-                            ? "bg-slate-900 text-white"
-                            : "bg-white hover:bg-slate-50"
-                        }`}
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className={`w-12 h-12 ${method.color} border-2 border-slate-800 rounded-lg flex items-center justify-center`}>
-                            <IconComponent className="w-6 h-6 text-white" />
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <span className="font-black text-lg">{method.name}</span>
-                              {method.popular && (
-                                <span className="bg-orange-500 text-white px-2 py-1 text-xs font-black border border-slate-800">
-                                  POPULER
-                                </span>
+                      <div key={method.id}>
+                        <button
+                          onClick={() => {
+                            setSelectedMethod(method.id);
+                            setSelectedDetail("");
+                          }}
+                          className={`w-full p-4 border-4 border-slate-800 rounded-lg text-left transition-all ${
+                            isSelected
+                              ? "bg-slate-900 text-white"
+                              : "bg-white hover:bg-slate-50"
+                          }`}
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className={`w-12 h-12 ${method.color} border-2 border-slate-800 rounded-lg flex items-center justify-center`}>
+                              <IconComponent className="w-6 h-6 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <span className="font-black text-lg">{method.name}</span>
+                                {method.popular && (
+                                  <span className="bg-orange-500 text-white px-2 py-1 text-xs font-black border border-slate-800">
+                                    POPULER
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-sm text-slate-600">{method.description}</p>
+                            </div>
+                            <div className="w-6 h-6 border-2 border-slate-800 rounded-full flex items-center justify-center">
+                              {isSelected && (
+                                <div className="w-3 h-3 bg-white rounded-full"></div>
                               )}
                             </div>
-                            <p className="text-sm text-slate-600">{method.description}</p>
                           </div>
-                          <div className="w-6 h-6 border-2 border-slate-800 rounded-full flex items-center justify-center">
-                            {selectedMethod === method.id && (
-                              <div className="w-3 h-3 bg-white rounded-full"></div>
-                            )}
+                        </button>
+
+                        {/* Dropdown untuk detail pembayaran */}
+                        {isSelected && (
+                          <div className="mt-4 p-4 bg-slate-50 border-2 border-slate-200 rounded-lg">
+                            {method.qrCode ? (
+                              /* QRIS - Tampilkan QR Code */
+                              <div className="text-center">
+                                <h4 className="font-black text-lg text-slate-900 mb-4">Scan QR Code untuk Pembayaran</h4>
+                                <div className="bg-white p-4 border-2 border-slate-800 rounded-lg inline-block">
+                                  <img 
+                                    src={method.qrCode} 
+                                    alt="QRIS Code" 
+                                    className="w-48 h-48 mx-auto"
+                                  />
+                                </div>
+                                <p className="text-sm text-slate-600 mt-2 font-bold">
+                                  Gunakan aplikasi e-wallet atau mobile banking untuk scan QR code
+                                </p>
+                              </div>
+                            ) : method.bankDetails ? (
+                              /* E-Wallet atau Bank Transfer - Tampilkan dropdown */
+                              <div>
+                                <h4 className="font-black text-lg text-slate-900 mb-4">Pilih Tujuan Transfer:</h4>
+                                <div className="space-y-2">
+                                  {method.bankDetails.map((detail, index) => (
+                                    <button
+                                      key={index}
+                                      onClick={() => setSelectedDetail(`${method.name}-${detail.name}`)}
+                                      className={`w-full p-3 border-2 border-slate-800 rounded-lg text-left transition-all ${
+                                        selectedDetail === `${method.name}-${detail.name}`
+                                          ? "bg-slate-900 text-white"
+                                          : "bg-white hover:bg-slate-100"
+                                      }`}
+                                    >
+                                      <div className="flex justify-between items-center">
+                                        <div>
+                                          <div className="font-black text-base">{detail.name}</div>
+                                          <div className="text-sm text-slate-600">
+                                            {method.id === "e_wallet" ? "Nomor:" : "Rekening:"} {detail.account}
+                                          </div>
+                                          <div className="text-sm text-slate-600">
+                                            A.n: {detail.nameAccount}
+                                          </div>
+                                        </div>
+                                        <div className="w-5 h-5 border-2 border-slate-800 rounded-full flex items-center justify-center">
+                                          {selectedDetail === `${method.name}-${detail.name}` && (
+                                            <div className="w-2 h-2 bg-white rounded-full"></div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            ) : null}
                           </div>
-                        </div>
-                      </button>
+                        )}
+                      </div>
                     );
                   })}
                 </div>
@@ -286,7 +372,11 @@ export default function PaymentPage() {
                 {/* Payment Button */}
                 <button
                   onClick={handlePayment}
-                  disabled={!selectedMethod || isProcessing}
+                  disabled={(() => {
+                    if (!selectedMethod || isProcessing) return true;
+                    const method = paymentMethods.find(m => m.id === selectedMethod);
+                    return method?.bankDetails ? !selectedDetail : false;
+                  })()}
                   className="w-full mt-6 bg-orange-500 text-white px-6 py-4 font-black text-lg border-4 border-slate-800 hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   💳 Bayar Sekarang - Rp {Math.round(tryout.price).toLocaleString('id-ID')}
