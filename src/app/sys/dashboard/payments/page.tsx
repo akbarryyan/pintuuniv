@@ -264,10 +264,12 @@ export default function PaymentsPage() {
 
           {/* Loading State */}
           {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-              <span className="ml-3 text-gray-600 font-medium">Memuat data...</span>
+            <div className="bg-gray-50 flex items-center justify-center">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Memuat data...</p>
             </div>
+          </div>
           ) : (
             /* Payment Methods Grid */
             <div className="grid gap-6">
