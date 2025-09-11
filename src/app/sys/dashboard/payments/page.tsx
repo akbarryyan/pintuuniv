@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, CreditCard, Smartphone, Building2, QrCode } from "lucide-react";
 import { Sidebar, TopHeader } from "@/components/sys";
+import { useAuth } from "@/contexts/AuthContext";
 import { usePageTransition } from "@/lib/hooks";
 import { toast } from "sonner";
 
@@ -27,6 +28,8 @@ interface PaymentAccount {
 }
 
 export default function PaymentsPage() {
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isLoading: pageTransitionLoading } = usePageTransition();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeItem, setActiveItem] = useState("payments");
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,9 +41,6 @@ export default function PaymentsPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [methodToDelete, setMethodToDelete] = useState<string | null>(null);
   const [isAddingMethod, setIsAddingMethod] = useState(false);
-
-  // Use page transition hook
-  usePageTransition();
 
   // Mock data untuk payment methods
   const mockPaymentMethods: PaymentMethod[] = [
@@ -87,16 +87,18 @@ export default function PaymentsPage() {
     }
   ];
 
+  // Load data when authenticated
   useEffect(() => {
-    // Simulasi loading data
-    const loadData = async () => {
-      setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setPaymentMethods(mockPaymentMethods);
-      setLoading(false);
-    };
-    loadData();
-  }, []);
+    if (isAuthenticated) {
+      const loadData = async () => {
+        setLoading(true);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setPaymentMethods(mockPaymentMethods);
+        setLoading(false);
+      };
+      loadData();
+    }
+  }, [isAuthenticated]);
 
   const filteredMethods = paymentMethods.filter((method) => {
     const matchesSearch = method.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -165,6 +167,21 @@ export default function PaymentsPage() {
     ));
     toast.success("Status akun berhasil diubah");
   };
+
+  if (authLoading || pageTransitionLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Memuat halaman payments...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
