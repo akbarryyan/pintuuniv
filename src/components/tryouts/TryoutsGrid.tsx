@@ -118,14 +118,8 @@ export default function TryoutsGrid({ tryouts, onRegisterTryout, userData }: Try
 
   const handleConfirmPayment = async (tryoutId: number, tryoutTitle: string, paymentMethod: string) => {
     try {
-      // TODO: Implementasi logika pembayaran
-      console.log(`Processing payment for tryout ${tryoutId} (${tryoutTitle}) with method: ${paymentMethod}`);
-      
-      // Simulasi delay pembayaran
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Setelah pembayaran berhasil, daftarkan user ke tryout
-      await onRegisterTryout(tryoutId, tryoutTitle);
+      // Logika pembayaran akan dihandle di halaman pembayaran
+      console.log(`Redirecting to payment for tryout ${tryoutId} (${tryoutTitle})`);
     } catch (error) {
       console.error("Error in payment:", error);
       throw error; // Re-throw agar modal tidak tertutup jika ada error

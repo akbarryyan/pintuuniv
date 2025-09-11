@@ -58,31 +58,19 @@ export default function PaymentPage() {
   ];
 
   useEffect(() => {
-    // Simulasi fetch data tryout
+    // Fetch data tryout dari API
     const fetchTryout = async () => {
       try {
         setLoading(true);
-        // Simulasi delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Mock data tryout
-        const mockTryout: Tryout = {
-          id: parseInt(params.id as string),
-          title: "Tryout UTBK 2024 - Paket Lengkap",
-          price: 150000,
-          originalPrice: 200000,
-          type: "paid",
-          difficulty: "hard",
-          participants: 1250,
-          discount: 25,
-          startDate: "2024-01-15",
-          endDate: "2024-01-20",
-          status: "active",
-          createdAt: "2024-01-01",
-          updatedAt: "2024-01-01",
-        };
+        const response = await fetch(`/api/tryouts/${params.id}`);
+        const data = await response.json();
         
-        setTryout(mockTryout);
+        if (data.success && data.tryout) {
+          setTryout(data.tryout);
+        } else {
+          throw new Error(data.error || "Tryout tidak ditemukan");
+        }
       } catch (error) {
         console.error("Error fetching tryout:", error);
         toast.error("Gagal memuat data tryout");
@@ -110,8 +98,26 @@ export default function PaymentPage() {
       // Simulasi delay pembayaran
       await new Promise(resolve => setTimeout(resolve, 3000));
       
+      // Daftarkan user ke tryout setelah pembayaran berhasil
+      const registerResponse = await fetch('/api/user/registrations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+          tryoutId: tryout?.id,
+          paymentMethod: selectedMethod,
+          paymentStatus: 'paid'
+        })
+      });
+
+      if (!registerResponse.ok) {
+        throw new Error('Gagal mendaftarkan ke tryout');
+      }
+      
       setStep("success");
-      toast.success("Pembayaran berhasil!");
+      toast.success("Pembayaran berhasil! Anda telah terdaftar ke tryout.");
       
       // Redirect ke dashboard setelah 2 detik
       setTimeout(() => {
@@ -191,7 +197,7 @@ export default function PaymentPage() {
                       <p className="font-black text-lg text-slate-900">
                         Rp {Math.round(tryout.price).toLocaleString('id-ID')}
                       </p>
-                      {tryout.discount > 0 && (
+                      {tryout.discount > 0 && tryout.originalPrice && (
                         <p className="text-sm text-slate-500 line-through">
                           Rp {Math.round(tryout.originalPrice).toLocaleString('id-ID')}
                         </p>
@@ -199,7 +205,7 @@ export default function PaymentPage() {
                     </div>
                   </div>
 
-                  {tryout.discount > 0 && (
+                  {tryout.discount > 0 && tryout.originalPrice && (
                     <div className="bg-green-100 border-2 border-green-400 p-3 rounded-lg">
                       <div className="flex items-center gap-2">
                         <CheckCircle className="w-5 h-5 text-green-600" />

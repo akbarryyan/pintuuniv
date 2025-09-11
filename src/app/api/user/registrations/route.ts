@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query } from "@/lib/db";
+import jwt from "jsonwebtoken";
 
 export async function GET(request: NextRequest) {
   try {
@@ -80,6 +81,76 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching user registrations:", error);
     return NextResponse.json(
       { error: "Failed to fetch user registrations" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { tryoutId, paymentMethod, paymentStatus } = body;
+
+    if (!tryoutId) {
+      return NextResponse.json(
+        { success: false, error: "Tryout ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Verifikasi JWT token
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { success: false, error: "Authorization token required" },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.substring(7);
+    let userId: number;
+
+    try {
+      const decoded = jwt.verify(token, "fallback-secret-key") as any;
+      userId = decoded.userId;
+    } catch (jwtError) {
+      return NextResponse.json(
+        { success: false, error: "Invalid token" },
+        { status: 401 }
+      );
+    }
+
+    // Cek apakah user sudah terdaftar ke tryout ini
+    const existingRegistration = await query(
+      "SELECT id FROM user_tryout_registrations WHERE user_id = ? AND tryout_id = ?",
+      [userId, tryoutId]
+    );
+
+    if (existingRegistration.length > 0) {
+      return NextResponse.json(
+        { success: false, error: "User sudah terdaftar ke tryout ini" },
+        { status: 400 }
+      );
+    }
+
+    // Daftarkan user ke tryout
+    const registrationResult = await query(
+      `INSERT INTO user_tryout_registrations 
+       (user_id, tryout_id, registration_date, status, payment_status, payment_method, payment_date) 
+       VALUES (?, ?, NOW(), 'approved', ?, ?, NOW())`,
+      [userId, tryoutId, paymentStatus || 'paid', paymentMethod || 'default']
+    );
+
+    return NextResponse.json({
+      success: true,
+      message: "Berhasil terdaftar ke tryout",
+      registrationId: registrationResult.insertId
+    });
+
+  } catch (error) {
+    console.error("Error registering user to tryout:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to register to tryout" },
       { status: 500 }
     );
   }
