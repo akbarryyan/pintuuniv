@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import RegisterConfirmationModal from "./RegisterConfirmationModal";
+import PaymentConfirmationModal from "./PaymentConfirmationModal";
 
 interface Tryout {
   id: number;
@@ -36,6 +37,7 @@ interface TryoutsGridProps {
 
 export default function TryoutsGrid({ tryouts, onRegisterTryout, userData }: TryoutsGridProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedTryout, setSelectedTryout] = useState<Tryout | null>(null);
   const [loadingTryoutId, setLoadingTryoutId] = useState<number | null>(null);
   const getDifficultyColor = (level: string) => {
@@ -85,9 +87,13 @@ export default function TryoutsGrid({ tryouts, onRegisterTryout, userData }: Try
     // Simulasi loading delay untuk UX yang lebih baik
     await new Promise(resolve => setTimeout(resolve, 800));
     
-    // Buka modal konfirmasi
+    // Buka modal sesuai jenis tryout
     setSelectedTryout(tryout);
-    setIsModalOpen(true);
+    if (tryout.type === "free") {
+      setIsModalOpen(true);
+    } else {
+      setIsPaymentModalOpen(true);
+    }
     setLoadingTryoutId(null);
   };
 
@@ -96,11 +102,32 @@ export default function TryoutsGrid({ tryouts, onRegisterTryout, userData }: Try
     setSelectedTryout(null);
   };
 
+  const handlePaymentModalClose = () => {
+    setIsPaymentModalOpen(false);
+    setSelectedTryout(null);
+  };
+
   const handleConfirmRegistration = async (tryoutId: number, tryoutTitle: string) => {
     try {
       await onRegisterTryout(tryoutId, tryoutTitle);
     } catch (error) {
       console.error("Error in registration:", error);
+      throw error; // Re-throw agar modal tidak tertutup jika ada error
+    }
+  };
+
+  const handleConfirmPayment = async (tryoutId: number, tryoutTitle: string, paymentMethod: string) => {
+    try {
+      // TODO: Implementasi logika pembayaran
+      console.log(`Processing payment for tryout ${tryoutId} (${tryoutTitle}) with method: ${paymentMethod}`);
+      
+      // Simulasi delay pembayaran
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Setelah pembayaran berhasil, daftarkan user ke tryout
+      await onRegisterTryout(tryoutId, tryoutTitle);
+    } catch (error) {
+      console.error("Error in payment:", error);
       throw error; // Re-throw agar modal tidak tertutup jika ada error
     }
   };
@@ -241,6 +268,14 @@ export default function TryoutsGrid({ tryouts, onRegisterTryout, userData }: Try
         onClose={handleModalClose}
         tryout={selectedTryout}
         onConfirm={handleConfirmRegistration}
+      />
+
+      {/* Modal Konfirmasi Pembayaran */}
+      <PaymentConfirmationModal
+        isOpen={isPaymentModalOpen}
+        onClose={handlePaymentModalClose}
+        tryout={selectedTryout}
+        onConfirmPayment={handleConfirmPayment}
       />
     </>
   );
