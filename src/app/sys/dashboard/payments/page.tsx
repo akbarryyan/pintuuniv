@@ -37,6 +37,7 @@ export default function PaymentsPage() {
   const [editingMethod, setEditingMethod] = useState<PaymentMethod | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [methodToDelete, setMethodToDelete] = useState<string | null>(null);
+  const [isAddingMethod, setIsAddingMethod] = useState(false);
 
   // Use page transition hook
   usePageTransition();
@@ -112,9 +113,15 @@ export default function PaymentsPage() {
     }
   };
 
-  const handleAddMethod = () => {
+  const handleAddMethod = async () => {
+    setIsAddingMethod(true);
+    
+    // Simulasi delay loading
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
     setEditingMethod(null);
     setShowModal(true);
+    setIsAddingMethod(false);
   };
 
   const handleEditMethod = (method: PaymentMethod) => {
@@ -221,10 +228,20 @@ export default function PaymentsPage() {
             {/* Add Button */}
             <button
               onClick={handleAddMethod}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 font-medium"
+              disabled={isAddingMethod}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Plus className="w-4 h-4" />
-              Tambah Metode
+              {isAddingMethod ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Memuat...</span>
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4" />
+                  Tambah Metode
+                </>
+              )}
             </button>
           </div>
 
@@ -356,40 +373,141 @@ export default function PaymentsPage() {
             </div>
           )}
 
-          {/* Delete Confirmation Modal */}
-          {showDeleteModal && (
-            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-              <div className="bg-white rounded-lg p-6 shadow-xl max-w-md w-full border border-gray-200">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-red-100 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl">
-                    ⚠️
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Hapus Metode Pembayaran?
-                  </h3>
-                  <p className="text-gray-600 mb-6">
-                    Apakah Anda yakin ingin menghapus metode pembayaran ini? Tindakan ini tidak dapat dibatalkan.
-                  </p>
-                  <div className="flex gap-3 justify-center">
-                    <button
-                      onClick={() => setShowDeleteModal(false)}
-                      className="px-6 py-3 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                    >
-                      Batal
-                    </button>
-                    <button
-                      onClick={confirmDelete}
-                      className="px-6 py-3 text-sm font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                    >
-                      Hapus
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </main>
       </div>
+
+      {/* Add/Edit Method Modal */}
+      {showModal && (
+        <div className="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-xl border border-gray-200">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-semibold text-gray-900">
+                {editingMethod ? 'Edit Metode Pembayaran' : 'Tambah Metode Pembayaran'}
+              </h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <form className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nama Metode
+                </label>
+                <input
+                  type="text"
+                  placeholder="Masukkan nama metode"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  defaultValue={editingMethod?.name || ''}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tipe Metode
+                </label>
+                <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                  <option value="qris">QRIS</option>
+                  <option value="e_wallet">E-Wallet</option>
+                  <option value="bank_transfer">Bank Transfer</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Warna
+                </label>
+                <div className="flex gap-2">
+                  {['bg-green-500', 'bg-blue-500', 'bg-purple-500', 'bg-orange-500', 'bg-red-500'].map((color) => (
+                    <button
+                      key={color}
+                      type="button"
+                      className={`w-8 h-8 ${color} rounded-lg border-2 border-gray-300 hover:border-gray-400 transition-colors`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="isPopular"
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label htmlFor="isPopular" className="text-sm font-medium text-gray-700">
+                  Tandai sebagai populer
+                </label>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="isActive"
+                  defaultChecked
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
+                  Aktifkan metode ini
+                </label>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="flex-1 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  {editingMethod ? 'Update' : 'Simpan'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl border border-gray-200">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl">
+                ⚠️
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Hapus Metode Pembayaran?
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Apakah Anda yakin ingin menghapus metode pembayaran ini? Tindakan ini tidak dapat dibatalkan.
+              </p>
+              <div className="flex gap-3 justify-center">
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="px-6 py-3 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  className="px-6 py-3 text-sm font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Hapus
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
