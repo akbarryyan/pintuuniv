@@ -1,171 +1,166 @@
 "use client";
 
-import { useState } from "react";
-import { DollarSign, TrendingUp, CheckCircle, Clock } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Plus, Edit, Trash2, CreditCard, Smartphone, Building2, QrCode } from "lucide-react";
 import { Sidebar, TopHeader } from "@/components/sys";
-import {
-  StatsCards,
-  Filters,
-  PaymentsTable,
-  Payment,
-  PaymentStats,
-} from "@/components/sys/payments";
 import { usePageTransition } from "@/lib/hooks";
+import { toast } from "sonner";
+
+interface PaymentMethod {
+  id: string;
+  name: string;
+  type: 'qris' | 'e_wallet' | 'bank_transfer';
+  icon: string;
+  color: string;
+  isActive: boolean;
+  isPopular: boolean;
+  qrCode?: string;
+  accounts: PaymentAccount[];
+}
+
+interface PaymentAccount {
+  id: string;
+  name: string;
+  account: string;
+  accountName: string;
+  isActive: boolean;
+}
 
 export default function PaymentsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeItem, setActiveItem] = useState("payments");
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [methodFilter, setMethodFilter] = useState("all");
-  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [editingMethod, setEditingMethod] = useState<PaymentMethod | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [methodToDelete, setMethodToDelete] = useState<string | null>(null);
 
   // Use page transition hook
   usePageTransition();
 
-  const paymentStats: PaymentStats[] = [
+  // Mock data untuk payment methods
+  const mockPaymentMethods: PaymentMethod[] = [
     {
-      title: "Total Revenue",
-      value: "Rp 124.5M",
-      change: "+18.2%",
-      changeType: "increase",
-      icon: <DollarSign className="w-6 h-6" />,
+      id: "qris",
+      name: "QRIS",
+      type: "qris",
+      icon: "QrCode",
       color: "bg-green-500",
+      isActive: true,
+      isPopular: true,
+      qrCode: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2ZmZmZmZiIvPgogIDxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIGZpbGw9IiMwMDAwMDAiLz4KICA8cmVjdCB4PSIyMCIgeT0iMjAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iI2ZmZmZmZiIvPgogIDxyZWN0IHg9IjE0MCIgeT0iMjAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iI2ZmZmZmZiIvPgogIDxyZWN0IHg9IjIwIiB5PSIxNDAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iI2ZmZmZmZiIvPgogIDxyZWN0IHg9IjE0MCIgeT0iMTQwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIxMDAiIHk9IjExMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjMDAwMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5RUklTPC90ZXh0Pgo8L3N2Zz4K",
+      accounts: []
     },
     {
-      title: "Transaksi Berhasil",
-      value: "1,847",
-      change: "+12.5%",
-      changeType: "increase",
-      icon: <CheckCircle className="w-6 h-6" />,
+      id: "e_wallet",
+      name: "E-Wallet",
+      type: "e_wallet",
+      icon: "Smartphone",
       color: "bg-blue-500",
+      isActive: true,
+      isPopular: false,
+      accounts: [
+        { id: "1", name: "GoPay", account: "08123456789", accountName: "PintuUniv", isActive: true },
+        { id: "2", name: "OVO", account: "08123456789", accountName: "PintuUniv", isActive: true },
+        { id: "3", name: "DANA", account: "08123456789", accountName: "PintuUniv", isActive: true },
+        { id: "4", name: "ShopeePay", account: "08123456789", accountName: "PintuUniv", isActive: false }
+      ]
     },
     {
-      title: "Pending Payments",
-      value: "23",
-      change: "-8.1%",
-      changeType: "decrease",
-      icon: <Clock className="w-6 h-6" />,
-      color: "bg-yellow-500",
-    },
-    {
-      title: "Success Rate",
-      value: "96.8%",
-      change: "+2.3%",
-      changeType: "increase",
-      icon: <TrendingUp className="w-6 h-6" />,
-      color: "bg-emerald-500",
-    },
+      id: "bank_transfer",
+      name: "Transfer Bank",
+      type: "bank_transfer",
+      icon: "Building2",
+      color: "bg-purple-500",
+      isActive: true,
+      isPopular: false,
+      accounts: [
+        { id: "1", name: "BCA", account: "1234567890", accountName: "PintuUniv", isActive: true },
+        { id: "2", name: "Mandiri", account: "1234567890", accountName: "PintuUniv", isActive: true },
+        { id: "3", name: "BRI", account: "1234567890", accountName: "PintuUniv", isActive: true },
+        { id: "4", name: "BNI", account: "1234567890", accountName: "PintuUniv", isActive: false }
+      ]
+    }
   ];
 
-  const paymentsData: Payment[] = [
-    {
-      id: "PAY001",
-      userId: "USR123",
-      userName: "Ahmad Rizki",
-      userEmail: "ahmad.rizki@email.com",
-      amount: 299000,
-      method: "credit_card",
-      status: "completed",
-      description: "Premium Subscription - Tryout SBMPTN",
-      createdAt: "2025-08-18T10:30:00Z",
-      updatedAt: "2025-08-18T10:32:00Z",
-      transactionId: "TXN_001847293",
-      gateway: "Midtrans",
-    },
-    {
-      id: "PAY002",
-      userId: "USR124",
-      userName: "Siti Nurhaliza",
-      userEmail: "siti.nurhaliza@email.com",
-      amount: 150000,
-      method: "e_wallet",
-      status: "completed",
-      description: "Basic Subscription - Tryout UTBK",
-      createdAt: "2025-08-18T09:15:00Z",
-      updatedAt: "2025-08-18T09:16:00Z",
-      transactionId: "TXN_001847284",
-      gateway: "GoPay",
-    },
-    {
-      id: "PAY003",
-      userId: "USR125",
-      userName: "Budi Santoso",
-      userEmail: "budi.santoso@email.com",
-      amount: 199000,
-      method: "bank_transfer",
-      status: "pending",
-      description: "Standard Subscription - Tryout Mandiri",
-      createdAt: "2025-08-18T08:45:00Z",
-      updatedAt: "2025-08-18T08:45:00Z",
-      transactionId: "TXN_001847275",
-      gateway: "Bank BCA",
-    },
-    {
-      id: "PAY004",
-      userId: "USR126",
-      userName: "Maya Putri",
-      userEmail: "maya.putri@email.com",
-      amount: 299000,
-      method: "credit_card",
-      status: "failed",
-      description: "Premium Subscription - Tryout SBMPTN",
-      createdAt: "2025-08-18T07:20:00Z",
-      updatedAt: "2025-08-18T07:22:00Z",
-      transactionId: "TXN_001847266",
-      gateway: "Midtrans",
-    },
-    {
-      id: "PAY005",
-      userId: "USR127",
-      userName: "Doni Prasetyo",
-      userEmail: "doni.prasetyo@email.com",
-      amount: 399000,
-      method: "e_wallet",
-      status: "completed",
-      description: "Premium Plus Subscription - All Tryouts",
-      createdAt: "2025-08-17T16:30:00Z",
-      updatedAt: "2025-08-17T16:31:00Z",
-      transactionId: "TXN_001847257",
-      gateway: "OVO",
-    },
-  ];
+  useEffect(() => {
+    // Simulasi loading data
+    const loadData = async () => {
+      setLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setPaymentMethods(mockPaymentMethods);
+      setLoading(false);
+    };
+    loadData();
+  }, []);
 
-  const filteredPayments = paymentsData.filter((payment) => {
-    const matchesSearch =
-      payment.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      payment.userEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      payment.transactionId.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus =
-      statusFilter === "all" || payment.status === statusFilter;
-    const matchesMethod =
-      methodFilter === "all" || payment.method === methodFilter;
-
-    return matchesSearch && matchesStatus && matchesMethod;
+  const filteredMethods = paymentMethods.filter((method) => {
+    const matchesSearch = method.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesType = typeFilter === "all" || method.type === typeFilter;
+    return matchesSearch && matchesType;
   });
 
-  const handleRefresh = () => {
-    console.log("Refreshing payments data...");
+  const getIcon = (iconName: string) => {
+    switch (iconName) {
+      case "QrCode": return <QrCode className="w-5 h-5" />;
+      case "Smartphone": return <Smartphone className="w-5 h-5" />;
+      case "Building2": return <Building2 className="w-5 h-5" />;
+      default: return <CreditCard className="w-5 h-5" />;
+    }
   };
 
-  const handleExport = () => {
-    console.log("Exporting payments data...");
+  const handleAddMethod = () => {
+    setEditingMethod(null);
+    setShowModal(true);
   };
 
-  const handleViewPayment = (payment: Payment) => {
-    setSelectedPayment(payment);
+  const handleEditMethod = (method: PaymentMethod) => {
+    setEditingMethod(method);
+    setShowModal(true);
   };
 
-  const handleDownloadInvoice = (payment: Payment) => {
-    console.log("Downloading invoice for payment:", payment.id);
+  const handleDeleteMethod = (methodId: string) => {
+    setMethodToDelete(methodId);
+    setShowDeleteModal(true);
   };
 
-  const handleRetryPayment = (payment: Payment) => {
-    console.log("Retrying payment:", payment.id);
+  const confirmDelete = () => {
+    if (methodToDelete) {
+      setPaymentMethods(prev => prev.filter(m => m.id !== methodToDelete));
+      toast.success("Metode pembayaran berhasil dihapus");
+      setShowDeleteModal(false);
+      setMethodToDelete(null);
+    }
+  };
+
+  const toggleMethodStatus = (methodId: string) => {
+    setPaymentMethods(prev => prev.map(m => 
+      m.id === methodId ? { ...m, isActive: !m.isActive } : m
+    ));
+    toast.success("Status metode pembayaran berhasil diubah");
+  };
+
+  const toggleAccountStatus = (methodId: string, accountId: string) => {
+    setPaymentMethods(prev => prev.map(method => 
+      method.id === methodId 
+        ? {
+            ...method,
+            accounts: method.accounts.map(account =>
+              account.id === accountId 
+                ? { ...account, isActive: !account.isActive }
+                : account
+            )
+          }
+        : method
+    ));
+    toast.success("Status akun berhasil diubah");
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-gray-50 flex">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
@@ -187,34 +182,212 @@ export default function PaymentsPage() {
         <TopHeader
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
-          pageTitle="Pembayaran"
-          pageDescription="Kelola transaksi dan pembayaran pengguna"
+          pageTitle="Metode Pembayaran"
+          pageDescription="Kelola metode pembayaran dan tujuan transfer"
         />
 
         {/* Page Content */}
         <main className="flex-1 p-4 lg:p-8 overflow-auto" data-main-content>
-          {/* Stats Cards */}
-          <StatsCards stats={paymentStats} />
+          {/* Header Actions */}
+          <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+            <div className="flex flex-col sm:flex-row gap-4 flex-1">
+              {/* Search */}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Cari metode pembayaran..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-64"
+                />
+                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                  🔍
+                </div>
+              </div>
 
-          {/* Filters */}
-          <Filters
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
-            methodFilter={methodFilter}
-            setMethodFilter={setMethodFilter}
-            onRefresh={handleRefresh}
-            onExport={handleExport}
-          />
+              {/* Filter */}
+              <select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="all">Semua Tipe</option>
+                <option value="qris">QRIS</option>
+                <option value="e_wallet">E-Wallet</option>
+                <option value="bank_transfer">Bank Transfer</option>
+              </select>
+            </div>
 
-          {/* Payments Table */}
-          <PaymentsTable
-            payments={filteredPayments}
-            onViewPayment={handleViewPayment}
-            onDownloadInvoice={handleDownloadInvoice}
-            onRetryPayment={handleRetryPayment}
-          />
+            {/* Add Button */}
+            <button
+              onClick={handleAddMethod}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 font-medium"
+            >
+              <Plus className="w-4 h-4" />
+              Tambah Metode
+            </button>
+          </div>
+
+          {/* Loading State */}
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+              <span className="ml-3 text-gray-600 font-medium">Memuat data...</span>
+            </div>
+          ) : (
+            /* Payment Methods Grid */
+            <div className="grid gap-6">
+              {filteredMethods.map((method) => (
+                <div key={method.id} className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                  {/* Method Header */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 ${method.color} rounded-lg flex items-center justify-center text-white`}>
+                        {getIcon(method.icon)}
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-900">{method.name}</h3>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                            method.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                          }`}>
+                            {method.isActive ? 'Aktif' : 'Nonaktif'}
+                          </span>
+                          {method.isPopular && (
+                            <span className="px-2 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded-full">
+                              Populer
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => toggleMethodStatus(method.id)}
+                        className={`px-3 py-1 text-sm font-medium rounded-md ${
+                          method.isActive
+                            ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                            : 'bg-green-100 text-green-700 hover:bg-green-200'
+                        }`}
+                      >
+                        {method.isActive ? 'Nonaktifkan' : 'Aktifkan'}
+                      </button>
+                      <button
+                        onClick={() => handleEditMethod(method)}
+                        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteMethod(method.id)}
+                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* QR Code untuk QRIS */}
+                  {method.type === 'qris' && method.qrCode && (
+                    <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+                      <h4 className="font-medium text-gray-900 mb-2">QR Code:</h4>
+                      <div className="flex items-center gap-4">
+                        <img src={method.qrCode} alt="QR Code" className="w-24 h-24" />
+                        <div className="text-sm text-gray-600">
+                          <p>QR Code ini akan ditampilkan di halaman pembayaran user</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Accounts untuk E-Wallet dan Bank Transfer */}
+                  {method.accounts.length > 0 && (
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-3">Tujuan Transfer:</h4>
+                      <div className="grid gap-2">
+                        {method.accounts.map((account) => (
+                          <div key={account.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div className="flex-1">
+                              <div className="font-medium text-gray-900">{account.name}</div>
+                              <div className="text-sm text-gray-600">
+                                {method.type === 'e_wallet' ? 'Nomor:' : 'Rekening:'} {account.account}
+                              </div>
+                              <div className="text-sm text-gray-600">A.n: {account.accountName}</div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                account.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                              }`}>
+                                {account.isActive ? 'Aktif' : 'Nonaktif'}
+                              </span>
+                              <button
+                                onClick={() => toggleAccountStatus(method.id, account.id)}
+                                className={`px-2 py-1 text-xs font-medium rounded-md ${
+                                  account.isActive
+                                    ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                                    : 'bg-green-100 text-green-700 hover:bg-green-200'
+                                }`}
+                              >
+                                {account.isActive ? 'Nonaktifkan' : 'Aktifkan'}
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {filteredMethods.length === 0 && (
+                <div className="text-center py-12">
+                  <div className="text-6xl mb-4">💳</div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Tidak ada metode pembayaran</h3>
+                  <p className="text-gray-600 mb-4">Mulai dengan menambahkan metode pembayaran pertama</p>
+                  <button
+                    onClick={handleAddMethod}
+                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  >
+                    Tambah Metode Pembayaran
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Delete Confirmation Modal */}
+          {showDeleteModal && (
+            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-lg p-6 shadow-xl max-w-md w-full border border-gray-200">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-red-100 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl">
+                    ⚠️
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    Hapus Metode Pembayaran?
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    Apakah Anda yakin ingin menghapus metode pembayaran ini? Tindakan ini tidak dapat dibatalkan.
+                  </p>
+                  <div className="flex gap-3 justify-center">
+                    <button
+                      onClick={() => setShowDeleteModal(false)}
+                      className="px-6 py-3 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      onClick={confirmDelete}
+                      className="px-6 py-3 text-sm font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>
