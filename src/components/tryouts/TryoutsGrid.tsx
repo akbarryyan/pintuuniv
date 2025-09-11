@@ -221,7 +221,7 @@ export default function TryoutsGrid({ tryouts, onRegisterTryout, userData }: Try
                         <span>Loading...</span>
                       </div>
                     ) : (
-                      "📝 DAFTAR"
+                      tryout.type === "free" ? "📝 DAFTAR" : "🛒 BELI TRYOUT"
                     )}
                   </button>
                 )}
