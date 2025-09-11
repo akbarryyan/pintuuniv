@@ -268,10 +268,10 @@ export default function PaymentPage() {
                             setSelectedMethod(method.id);
                             setSelectedDetail("");
                           }}
-                          className={`w-full p-4 border-4 border-slate-800 rounded-lg text-left transition-all ${
+                          className={`w-full p-4 border-4 border-slate-800 rounded-lg text-left transition-all duration-300 ease-in-out transform ${
                             isSelected
-                              ? "bg-slate-900 text-white"
-                              : "bg-white hover:bg-slate-50"
+                              ? "bg-slate-900 text-white scale-105 shadow-lg"
+                              : "bg-white hover:bg-slate-50 hover:scale-105"
                           }`}
                         >
                           <div className="flex items-center gap-4">
@@ -298,37 +298,58 @@ export default function PaymentPage() {
                         </button>
 
                         {/* Dropdown untuk detail pembayaran */}
-                        {isSelected && (
-                          <div className="mt-4 p-4 bg-slate-50 border-2 border-slate-200 rounded-lg">
+                        <div className={`overflow-hidden transition-all duration-500 ease-in-out transform ${
+                          isSelected 
+                            ? 'max-h-96 opacity-100 mt-4 scale-100 translate-y-0' 
+                            : 'max-h-0 opacity-0 mt-0 scale-95 -translate-y-2'
+                        }`}>
+                          <div className="p-4 bg-slate-50 border-2 border-slate-200 rounded-lg transform transition-transform duration-300">
                             {method.qrCode ? (
                               /* QRIS - Tampilkan QR Code */
                               <div className="text-center">
-                                <h4 className="font-black text-lg text-slate-900 mb-4">Scan QR Code untuk Pembayaran</h4>
-                                <div className="bg-white p-4 border-2 border-slate-800 rounded-lg inline-block">
+                                <h4 className={`font-black text-lg text-slate-900 mb-4 transition-all duration-700 delay-100 ${
+                                  isSelected ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+                                }`}>
+                                  Scan QR Code untuk Pembayaran
+                                </h4>
+                                <div className={`bg-white p-4 border-2 border-slate-800 rounded-lg inline-block transition-all duration-700 delay-200 ${
+                                  isSelected ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                                }`}>
                                   <img 
                                     src={method.qrCode} 
                                     alt="QRIS Code" 
                                     className="w-48 h-48 mx-auto"
                                   />
                                 </div>
-                                <p className="text-sm text-slate-600 mt-2 font-bold">
+                                <p className={`text-sm text-slate-600 mt-2 font-bold transition-all duration-700 delay-300 ${
+                                  isSelected ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+                                }`}>
                                   Gunakan aplikasi e-wallet atau mobile banking untuk scan QR code
                                 </p>
                               </div>
                             ) : method.bankDetails ? (
                               /* E-Wallet atau Bank Transfer - Tampilkan dropdown */
                               <div>
-                                <h4 className="font-black text-lg text-slate-900 mb-4">Pilih Tujuan Transfer:</h4>
+                                <h4 className={`font-black text-lg text-slate-900 mb-4 transition-all duration-700 delay-100 ${
+                                  isSelected ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+                                }`}>
+                                  Pilih Tujuan Transfer:
+                                </h4>
                                 <div className="space-y-2">
                                   {method.bankDetails.map((detail, index) => (
                                     <button
                                       key={index}
                                       onClick={() => setSelectedDetail(`${method.name}-${detail.name}`)}
-                                      className={`w-full p-3 border-2 border-slate-800 rounded-lg text-left transition-all ${
+                                      className={`w-full p-3 border-2 border-slate-800 rounded-lg text-left transition-all duration-500 ${
                                         selectedDetail === `${method.name}-${detail.name}`
                                           ? "bg-slate-900 text-white"
                                           : "bg-white hover:bg-slate-100"
+                                      } ${
+                                        isSelected ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
                                       }`}
+                                      style={{
+                                        transitionDelay: isSelected ? `${200 + (index * 100)}ms` : '0ms'
+                                      }}
                                     >
                                       <div className="flex justify-between items-center">
                                         <div>
@@ -352,7 +373,7 @@ export default function PaymentPage() {
                               </div>
                             ) : null}
                           </div>
-                        )}
+                        </div>
                       </div>
                     );
                   })}
