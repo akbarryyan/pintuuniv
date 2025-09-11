@@ -9,7 +9,7 @@ import {
   PaymentsTable,
   Payment,
   PaymentStats,
-} from "@/components/payments";
+} from "@/components/sys/payments";
 import { usePageTransition } from "@/lib/hooks";
 
 export default function PaymentsPage() {
