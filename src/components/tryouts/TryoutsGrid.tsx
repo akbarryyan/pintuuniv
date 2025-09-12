@@ -247,12 +247,21 @@ export default function TryoutsGrid({
                     >
                       {getDifficultyLabel(tryout.difficulty)}
                     </div>
-                    {getRegistrationStatusBadge(
-                      tryout.isRegistered || false,
-                      tryout.registrationStatus,
-                      tryout.type
-                    )}
                   </div>
+                  {/* Registration Status Badge - Show below type and difficulty badges */}
+                  {getRegistrationStatusBadge(
+                    tryout.isRegistered || false,
+                    tryout.registrationStatus,
+                    tryout.type
+                  ) && (
+                    <div className="mb-2">
+                      {getRegistrationStatusBadge(
+                        tryout.isRegistered || false,
+                        tryout.registrationStatus,
+                        tryout.type
+                      )}
+                    </div>
+                  )}
                   <h3 className="font-black text-sm sm:text-base text-slate-900 mb-2 leading-tight">
                     {tryout.title}
                   </h3>
@@ -306,57 +315,71 @@ export default function TryoutsGrid({
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex gap-2 pt-2">
+                <div className="pt-2">
                   {canStartTryout(
                     tryout.isRegistered || false,
                     tryout.registrationStatus,
                     tryout.type
                   ) ? (
-                    <button
-                      onClick={() => handleStartClick(tryout)}
-                      className="flex-1 bg-emerald-500 text-white px-3 py-2 sm:px-4 sm:py-3 font-black text-xs sm:text-sm border-2 border-slate-800 hover:bg-emerald-600 transition-colors"
-                    >
-                      🚀 MULAI
-                    </button>
+                    // Can start - show buttons side by side
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleStartClick(tryout)}
+                        className="flex-1 bg-emerald-500 text-white px-3 py-2 sm:px-4 sm:py-3 font-black text-xs sm:text-sm border-2 border-slate-800 hover:bg-emerald-600 transition-colors"
+                      >
+                        🚀 MULAI
+                      </button>
+                      <button className="flex-1 bg-slate-100 text-slate-900 px-3 py-2 sm:px-4 sm:py-3 font-black text-xs sm:text-sm border-2 border-slate-800 hover:bg-slate-200 transition-colors">
+                        📋 DETAIL
+                      </button>
+                    </div>
                   ) : tryout.isRegistered ? (
-                    // User is registered but not approved yet (for paid tryouts) or other pending status
-                    <button
-                      disabled
-                      className="flex-1 bg-yellow-400 text-slate-900 px-3 py-2 sm:px-4 sm:py-3 font-black text-xs sm:text-sm border-2 border-slate-800 cursor-not-allowed opacity-75"
-                    >
-                      {tryout.type === "free"
-                        ? "⏳ MENUNGGU KONFIRMASI"
-                        : tryout.registrationStatus === "waiting_confirmation"
-                        ? "⏳ MENUNGGU KONFIRMASI PEMBAYARAN"
-                        : tryout.registrationStatus === "rejected"
-                        ? "❌ PEMBAYARAN DITOLAK"
-                        : "⏳ MENUNGGU PERSETUJUAN"}
-                    </button>
+                    // User is registered but pending - show buttons stacked vertically
+                    <div className="space-y-2">
+                      <button
+                        disabled
+                        className="w-full bg-yellow-400 text-slate-900 px-3 py-2 sm:px-4 sm:py-3 font-black text-xs sm:text-sm border-2 border-slate-800 cursor-not-allowed opacity-75"
+                      >
+                        {tryout.type === "free"
+                          ? "⏳ MENUNGGU KONFIRMASI"
+                          : tryout.registrationStatus === "waiting_confirmation"
+                          ? "⏳ MENUNGGU KONFIRMASI PEMBAYARAN"
+                          : tryout.registrationStatus === "rejected"
+                          ? "❌ PEMBAYARAN DITOLAK"
+                          : "⏳ MENUNGGU PERSETUJUAN"}
+                      </button>
+                      <button className="w-full bg-slate-100 text-slate-900 px-3 py-2 sm:px-4 sm:py-3 font-black text-xs sm:text-sm border-2 border-slate-800 hover:bg-slate-200 transition-colors">
+                        📋 DETAIL
+                      </button>
+                    </div>
                   ) : (
-                    <button
-                      onClick={() => handleRegisterClick(tryout)}
-                      disabled={loadingTryoutId === tryout.id}
-                      className={`flex-1 px-3 py-2 sm:px-4 sm:py-3 font-black text-xs sm:text-sm border-2 border-slate-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                        tryout.type === "free"
-                          ? "bg-blue-500 text-white hover:bg-blue-600"
-                          : "bg-orange-500 text-white hover:bg-orange-600"
-                      }`}
-                    >
-                      {loadingTryoutId === tryout.id ? (
-                        <div className="flex items-center justify-center gap-2">
-                          <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                          <span>Loading...</span>
-                        </div>
-                      ) : tryout.type === "free" ? (
-                        "📝 DAFTAR"
-                      ) : (
-                        "🛒 BELI TRYOUT"
-                      )}
-                    </button>
+                    // Not registered - show buttons side by side
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleRegisterClick(tryout)}
+                        disabled={loadingTryoutId === tryout.id}
+                        className={`flex-1 px-3 py-2 sm:px-4 sm:py-3 font-black text-xs sm:text-sm border-2 border-slate-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                          tryout.type === "free"
+                            ? "bg-blue-500 text-white hover:bg-blue-600"
+                            : "bg-orange-500 text-white hover:bg-orange-600"
+                        }`}
+                      >
+                        {loadingTryoutId === tryout.id ? (
+                          <div className="flex items-center justify-center gap-2">
+                            <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            <span>Loading...</span>
+                          </div>
+                        ) : tryout.type === "free" ? (
+                          "📝 DAFTAR"
+                        ) : (
+                          "🛒 BELI TRYOUT"
+                        )}
+                      </button>
+                      <button className="flex-1 bg-slate-100 text-slate-900 px-3 py-2 sm:px-4 sm:py-3 font-black text-xs sm:text-sm border-2 border-slate-800 hover:bg-slate-200 transition-colors">
+                        📋 DETAIL
+                      </button>
+                    </div>
                   )}
-                  <button className="flex-1 bg-slate-100 text-slate-900 px-3 py-2 sm:px-4 sm:py-3 font-black text-xs sm:text-sm border-2 border-slate-800 hover:bg-slate-200 transition-colors">
-                    📋 DETAIL
-                  </button>
                 </div>
               </div>
             </div>
