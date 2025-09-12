@@ -86,7 +86,7 @@ export default function TryoutsPage() {
         if (data.success) {
           setTryouts(data.tryouts);
           console.log("Tryouts loaded:", data.tryouts.length);
-          
+
           // Cek status registrasi untuk setiap tryout jika user sudah login
           if (userData.id) {
             checkRegistrationStatus(data.tryouts);
@@ -100,7 +100,10 @@ export default function TryoutsPage() {
         setError("Terjadi kesalahan saat memuat data");
         toast.error("Terjadi kesalahan saat memuat data");
       } finally {
-        setIsLoading(false);
+        // Add minimum delay to show skeleton (1 second)
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
       }
     };
 
@@ -118,7 +121,7 @@ export default function TryoutsPage() {
             `/api/tryouts/register?userId=${userData.id}&tryoutId=${tryout.id}`
           );
           const data = await response.json();
-          
+
           if (data.success) {
             return {
               ...tryout,
@@ -129,7 +132,7 @@ export default function TryoutsPage() {
           return tryout;
         })
       );
-      
+
       setTryouts(updatedTryouts);
     } catch (error) {
       console.error("Error checking registration status:", error);
@@ -137,7 +140,10 @@ export default function TryoutsPage() {
   };
 
   // Fungsi untuk mendaftar tryout
-  const handleRegisterTryout = async (tryoutId: number, tryoutTitle: string) => {
+  const handleRegisterTryout = async (
+    tryoutId: number,
+    tryoutTitle: string
+  ) => {
     if (!userData.id) {
       toast.error("Anda harus login terlebih dahulu");
       router.push("/login");
@@ -160,12 +166,16 @@ export default function TryoutsPage() {
 
       if (data.success) {
         toast.success(`Berhasil mendaftar tryout "${tryoutTitle}"!`);
-        
+
         // Update status registrasi di state
-        setTryouts(prevTryouts =>
-          prevTryouts.map(tryout =>
+        setTryouts((prevTryouts) =>
+          prevTryouts.map((tryout) =>
             tryout.id === tryoutId
-              ? { ...tryout, isRegistered: true, registrationStatus: "registered" }
+              ? {
+                  ...tryout,
+                  isRegistered: true,
+                  registrationStatus: "registered",
+                }
               : tryout
           )
         );
@@ -266,23 +276,64 @@ export default function TryoutsPage() {
           totalCount={totalTryouts}
         />
 
-        {/* Loading State */}
+        {/* Loading State - Skeleton */}
         {isLoading && (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div
+                key={i}
+                className="bg-gray-100 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] animate-pulse"
+              >
+                {/* Card Header Skeleton */}
+                <div className="p-4 sm:p-6 border-b-2 border-black bg-gray-200">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="h-6 bg-gray-300 border border-black rounded w-16"></div>
+                        <div className="h-6 bg-gray-300 border border-black rounded w-14"></div>
+                      </div>
+                      <div className="mb-2">
+                        <div className="h-6 bg-gray-300 border border-black rounded w-20"></div>
+                      </div>
+                      <div className="h-5 bg-gray-300 border border-black rounded w-3/4 mb-2"></div>
+                      <div className="h-4 bg-gray-300 border border-black rounded w-24"></div>
+                    </div>
+                    <div className="text-right ml-3">
+                      <div className="h-6 bg-gray-300 border border-black rounded w-16 mb-1"></div>
+                      <div className="h-4 bg-gray-300 border border-black rounded w-20"></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card Body Skeleton */}
+                <div className="p-4 sm:p-6">
+                  <div className="space-y-3">
+                    {/* Date Range Skeleton */}
+                    <div className="h-4 bg-gray-300 border border-black rounded w-3/4"></div>
+
+                    {/* Action Buttons Skeleton */}
+                    <div className="pt-2">
+                      <div className="flex gap-2">
+                        <div className="flex-1 h-10 bg-gray-300 border border-black rounded"></div>
+                        <div className="flex-1 h-10 bg-gray-300 border border-black rounded"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
         {/* Error State */}
         {error && !isLoading && (
-          <div className="text-center py-12">
-            <div className="text-red-600 mb-4">
-              <p className="text-lg font-semibold">Gagal memuat data</p>
-              <p className="text-sm">{error}</p>
-            </div>
+          <div className="bg-white border-2 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-center">
+            <div className="text-red-500 text-4xl mb-3">⚠️</div>
+            <p className="font-black text-slate-900 mb-2">Gagal Memuat Data</p>
+            <p className="text-slate-600 text-sm mb-4">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+              className="bg-blue-500 text-white px-4 py-2 font-black text-sm border-2 border-black hover:bg-blue-600 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
             >
               Coba Lagi
             </button>
@@ -291,8 +342,8 @@ export default function TryoutsPage() {
 
         {/* Tryouts Grid */}
         {!isLoading && !error && (
-          <TryoutsGrid 
-            tryouts={tryouts} 
+          <TryoutsGrid
+            tryouts={tryouts}
             onRegisterTryout={handleRegisterTryout}
             userData={userData}
           />
