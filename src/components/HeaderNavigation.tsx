@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import LogoutConfirmationModal from "./LogoutConfirmationModal";
 
 interface HeaderNavigationProps {
   currentPage?: string;
@@ -27,6 +28,7 @@ export default function HeaderNavigation({
 }: HeaderNavigationProps) {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -37,42 +39,7 @@ export default function HeaderNavigation({
   };
 
   const handleLogoutClick = () => {
-    toast("Yakin ingin logout?", {
-      description: "Anda akan keluar dari akun dan kembali ke halaman utama.",
-      action: {
-        label: "Logout",
-        onClick: async () => {
-          let serverOk = false;
-          try {
-            const res = await fetch("/api/auth/logout", { method: "POST" });
-            serverOk = res.ok;
-          } catch (_) {
-            serverOk = false;
-          } finally {
-            if (typeof window !== "undefined") {
-              try {
-                localStorage.removeItem("authToken");
-                localStorage.removeItem("userData");
-              } catch (_) {}
-              document.cookie =
-                "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            }
-            if (serverOk) {
-              toast.success("Logout berhasil! Sampai jumpa lagi! 👋");
-            } else {
-              toast.error(
-                "Logout gagal di server, namun sesi lokal dibersihkan."
-              );
-            }
-            router.push("/");
-          }
-        },
-      },
-      cancel: {
-        label: "Batal",
-        onClick: () => toast.dismiss(),
-      },
-    });
+    setIsLogoutModalOpen(true);
   };
   return (
     <>
@@ -340,6 +307,12 @@ export default function HeaderNavigation({
           </div>
         </>
       )}
+
+      {/* Logout Confirmation Modal */}
+      <LogoutConfirmationModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+      />
     </>
   );
 }
