@@ -217,8 +217,11 @@ export default function TryoutRegistrationsPage() {
 
   // Calculate statistics
   const totalRegistrations = pagination.total;
-  const pendingRegistrations = registrations.filter(
-    (r) => r.status === "registered" || r.status === "waiting_confirmation"
+  const registeredRegistrations = registrations.filter(
+    (r) => r.status === "registered"
+  ).length;
+  const waitingConfirmationRegistrations = registrations.filter(
+    (r) => r.status === "waiting_confirmation"
   ).length;
   const approvedRegistrations = registrations.filter(
     (r) => r.status === "approved"
@@ -277,7 +280,8 @@ export default function TryoutRegistrationsPage() {
           {/* Header Section */}
           <HeaderSection
             totalRegistrations={totalRegistrations}
-            pendingRegistrations={pendingRegistrations}
+            registeredRegistrations={registeredRegistrations}
+            waitingConfirmationRegistrations={waitingConfirmationRegistrations}
             approvedRegistrations={approvedRegistrations}
             rejectedRegistrations={rejectedRegistrations}
           />
