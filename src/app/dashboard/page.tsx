@@ -145,7 +145,6 @@ export default function DashboardPage() {
     },
   ]);
 
-
   // User's Tryout History
   const [userTryouts] = useState([
     {
@@ -192,33 +191,22 @@ export default function DashboardPage() {
     },
   ]);
 
-
   // Function to fetch user discussions count
-  const fetchDiscussionsCount = async (userId: number) => {
+  const fetchDashboardStats = async (userId: number) => {
     try {
-      const response = await fetch('/api/discussions/my');
+      const response = await fetch(`/api/dashboard/stats?userId=${userId}`);
       const data = await response.json();
-      
+
       if (data.success) {
-        const discussionsCount = data.data.discussions.length;
-        setStats(prevStats => ({
+        setStats((prevStats) => ({
           ...prevStats,
-          discussionsCreated: discussionsCount
+          ...data.stats,
         }));
       } else {
-        // If error, set to 0
-        setStats(prevStats => ({
-          ...prevStats,
-          discussionsCreated: 0
-        }));
+        console.error("Error fetching dashboard stats:", data.message);
       }
     } catch (error) {
-      console.error('Error fetching discussions count:', error);
-      // If error, set to 0
-      setStats(prevStats => ({
-        ...prevStats,
-        discussionsCreated: 0
-      }));
+      console.error("Error fetching dashboard stats:", error);
     }
   };
 
@@ -240,7 +228,7 @@ export default function DashboardPage() {
           if (storedUserData) {
             const parsedData = JSON.parse(storedUserData);
             console.log("Parsed user data:", parsedData);
-            
+
             // Set initial data from localStorage
             setUserData({
               id: parsedData.id || null,
@@ -254,9 +242,9 @@ export default function DashboardPage() {
               targetMajor: parsedData.targetMajor || "",
             });
 
-            // Fetch discussions count
+            // Fetch dashboard stats (includes discussions count)
             if (parsedData.id) {
-              fetchDiscussionsCount(parsedData.id);
+              fetchDashboardStats(parsedData.id);
             }
 
             // Fetch fresh data from server to ensure sync with database
@@ -269,18 +257,26 @@ export default function DashboardPage() {
                   if (resp?.success && resp.user) {
                     const server = resp.user;
                     console.log("Dashboard - server data:", server);
-                    console.log("Dashboard - server.targetUniversity:", server.targetUniversity);
-                    console.log("Dashboard - server.targetMajor:", server.targetMajor);
-                    
+                    console.log(
+                      "Dashboard - server.targetUniversity:",
+                      server.targetUniversity
+                    );
+                    console.log(
+                      "Dashboard - server.targetMajor:",
+                      server.targetMajor
+                    );
+
                     // Update localStorage with fresh data
                     const existing = JSON.parse(storedUserData);
                     const merged = {
                       ...existing,
                       ...server,
-                      grade: server.grade ? String(server.grade) : existing.grade,
+                      grade: server.grade
+                        ? String(server.grade)
+                        : existing.grade,
                     };
                     localStorage.setItem("userData", JSON.stringify(merged));
-                    
+
                     // Update state with fresh data
                     setUserData({
                       id: merged.id || null,
@@ -294,9 +290,9 @@ export default function DashboardPage() {
                       targetMajor: merged.targetMajor || "",
                     });
 
-                    // Fetch discussions count
+                    // Fetch dashboard stats (includes discussions count)
                     if (merged.id) {
-                      fetchDiscussionsCount(merged.id);
+                      fetchDashboardStats(merged.id);
                     }
                   }
                 })
