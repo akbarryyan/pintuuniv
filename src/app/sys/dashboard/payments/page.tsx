@@ -66,6 +66,7 @@ export default function PaymentsPage() {
   const [showAddAccountModal, setShowAddAccountModal] = useState(false);
   const [selectedMethodId, setSelectedMethodId] = useState<number | null>(null);
   const [isAddingMethod, setIsAddingMethod] = useState(false);
+  const [isAddingAccount, setIsAddingAccount] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -500,7 +501,12 @@ export default function PaymentsPage() {
       return;
     }
 
+    setIsAddingAccount(true);
+
     try {
+      // Simulasi delay loading
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       const response = await fetch("/api/sys/payment-accounts", {
         method: "POST",
         headers: {
@@ -540,6 +546,8 @@ export default function PaymentsPage() {
     } catch (error) {
       console.error("Error adding account:", error);
       toast.error("Terjadi kesalahan saat menambahkan akun");
+    } finally {
+      setIsAddingAccount(false);
     }
   };
 
@@ -1393,15 +1401,24 @@ export default function PaymentsPage() {
                     setShowAddAccountModal(false);
                     setSelectedMethodId(null);
                   }}
-                  className="flex-1 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  disabled={isAddingAccount}
+                  className="flex-1 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  disabled={isAddingAccount}
+                  className="flex-1 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  Tambah Akun
+                  {isAddingAccount ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Menambahkan...</span>
+                    </>
+                  ) : (
+                    "Tambah Akun"
+                  )}
                 </button>
               </div>
             </form>
