@@ -84,6 +84,9 @@ export default function FiltersAndSearch({
               >
                 <option value="all">Semua Status</option>
                 <option value="registered">Terdaftar</option>
+                <option value="waiting_confirmation">
+                  Menunggu Konfirmasi
+                </option>
                 <option value="approved">Disetujui</option>
                 <option value="rejected">Ditolak</option>
                 <option value="cancelled">Dibatalkan</option>
@@ -125,9 +128,13 @@ export default function FiltersAndSearch({
                   <option value="status">Status</option>
                 </select>
                 <button
-                  onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+                  onClick={() =>
+                    setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+                  }
                   className="px-4 py-2.5 border border-slate-300 rounded-lg hover:bg-slate-50 transition-all duration-200 text-slate-600 hover:text-slate-800"
-                  title={sortOrder === "asc" ? "Urutkan Menurun" : "Urutkan Menaik"}
+                  title={
+                    sortOrder === "asc" ? "Urutkan Menurun" : "Urutkan Menaik"
+                  }
                 >
                   <ArrowUpDown className="w-4 h-4" />
                 </button>
@@ -167,9 +174,16 @@ export default function FiltersAndSearch({
               )}
               {statusFilter !== "all" && (
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                  Status: {statusFilter === "registered" ? "Terdaftar" : 
-                           statusFilter === "approved" ? "Disetujui" :
-                           statusFilter === "rejected" ? "Ditolak" : "Dibatalkan"}
+                  Status:{" "}
+                  {statusFilter === "registered"
+                    ? "Terdaftar"
+                    : statusFilter === "waiting_confirmation"
+                    ? "Menunggu Konfirmasi"
+                    : statusFilter === "approved"
+                    ? "Disetujui"
+                    : statusFilter === "rejected"
+                    ? "Ditolak"
+                    : "Dibatalkan"}
                   <button
                     onClick={() => setStatusFilter("all")}
                     className="ml-2 hover:text-purple-600"
@@ -180,9 +194,14 @@ export default function FiltersAndSearch({
               )}
               {paymentStatusFilter !== "all" && (
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
-                  Pembayaran: {paymentStatusFilter === "pending" ? "Menunggu" :
-                               paymentStatusFilter === "paid" ? "Lunas" :
-                               paymentStatusFilter === "failed" ? "Gagal" : "Dikembalikan"}
+                  Pembayaran:{" "}
+                  {paymentStatusFilter === "pending"
+                    ? "Menunggu"
+                    : paymentStatusFilter === "paid"
+                    ? "Lunas"
+                    : paymentStatusFilter === "failed"
+                    ? "Gagal"
+                    : "Dikembalikan"}
                   <button
                     onClick={() => setPaymentStatusFilter("all")}
                     className="ml-2 hover:text-emerald-600"
@@ -193,8 +212,12 @@ export default function FiltersAndSearch({
               )}
               {sortBy !== "registration_date" && (
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                  Urutkan: {sortBy === "user_name" ? "Nama User" :
-                           sortBy === "tryout_title" ? "Nama Tryout" : "Status"}
+                  Urutkan:{" "}
+                  {sortBy === "user_name"
+                    ? "Nama User"
+                    : sortBy === "tryout_title"
+                    ? "Nama Tryout"
+                    : "Status"}
                   <button
                     onClick={() => setSortBy("registration_date")}
                     className="ml-2 hover:text-amber-600"

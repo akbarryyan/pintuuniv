@@ -4,8 +4,13 @@ export interface Registration {
   user_id: number;
   tryout_id: number;
   registration_date: string;
-  status: 'registered' | 'approved' | 'rejected' | 'cancelled';
-  payment_status: 'pending' | 'paid' | 'failed' | 'refunded';
+  status:
+    | "registered"
+    | "waiting_confirmation"
+    | "approved"
+    | "rejected"
+    | "cancelled";
+  payment_status: "pending" | "paid" | "failed" | "refunded";
   payment_method: string;
   payment_reference: string;
   payment_date: string;
@@ -25,7 +30,7 @@ export interface Registration {
   tryout_end_date: string;
   tryout_passing_score: number;
   tryout_total_questions: number;
-  tryout_type: 'free' | 'paid';
+  tryout_type: "free" | "paid";
   approved_by_name: string;
 }
 
@@ -38,8 +43,13 @@ export interface CreateRegistrationData {
 }
 
 export interface UpdateRegistrationData {
-  status?: 'registered' | 'approved' | 'rejected' | 'cancelled';
-  payment_status?: 'pending' | 'paid' | 'failed' | 'refunded';
+  status?:
+    | "registered"
+    | "waiting_confirmation"
+    | "approved"
+    | "rejected"
+    | "cancelled";
+  payment_status?: "pending" | "paid" | "failed" | "refunded";
   payment_method?: string;
   payment_reference?: string;
   payment_date?: string;
@@ -55,7 +65,7 @@ export interface RegistrationFilters {
   page?: number;
   limit?: number;
   sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
 }
 
 export interface RegistrationResponse {
@@ -78,113 +88,136 @@ export interface SingleRegistrationResponse {
 
 // Registration service functions
 export class RegistrationService {
-  private static baseUrl = '/api/sys/registrations';
+  private static baseUrl = "/api/sys/registrations";
 
   // Get all registrations with filters
-  static async getRegistrations(filters: RegistrationFilters = {}): Promise<RegistrationResponse> {
+  static async getRegistrations(
+    filters: RegistrationFilters = {}
+  ): Promise<RegistrationResponse> {
     const params = new URLSearchParams();
-    
-    if (filters.status) params.append('status', filters.status);
-    if (filters.payment_status) params.append('payment_status', filters.payment_status);
-    if (filters.search) params.append('search', filters.search);
-    if (filters.page) params.append('page', filters.page.toString());
-    if (filters.limit) params.append('limit', filters.limit.toString());
-    if (filters.sortBy) params.append('sortBy', filters.sortBy);
-    if (filters.sortOrder) params.append('sortOrder', filters.sortOrder);
+
+    if (filters.status) params.append("status", filters.status);
+    if (filters.payment_status)
+      params.append("payment_status", filters.payment_status);
+    if (filters.search) params.append("search", filters.search);
+    if (filters.page) params.append("page", filters.page.toString());
+    if (filters.limit) params.append("limit", filters.limit.toString());
+    if (filters.sortBy) params.append("sortBy", filters.sortBy);
+    if (filters.sortOrder) params.append("sortOrder", filters.sortOrder);
 
     const response = await fetch(`${this.baseUrl}?${params.toString()}`);
-    
+
     if (!response.ok) {
       throw new Error(`Failed to fetch registrations: ${response.statusText}`);
     }
-    
+
     return response.json();
   }
 
   // Get single registration by ID
-  static async getRegistration(id: number): Promise<SingleRegistrationResponse> {
+  static async getRegistration(
+    id: number
+  ): Promise<SingleRegistrationResponse> {
     const response = await fetch(`${this.baseUrl}/${id}`);
-    
+
     if (!response.ok) {
       throw new Error(`Failed to fetch registration: ${response.statusText}`);
     }
-    
+
     return response.json();
   }
 
   // Create new registration
-  static async createRegistration(data: CreateRegistrationData): Promise<SingleRegistrationResponse> {
+  static async createRegistration(
+    data: CreateRegistrationData
+  ): Promise<SingleRegistrationResponse> {
     const response = await fetch(this.baseUrl, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to create registration: ${response.statusText}`);
     }
-    
+
     return response.json();
   }
 
   // Update registration
-  static async updateRegistration(id: number, data: UpdateRegistrationData): Promise<SingleRegistrationResponse> {
+  static async updateRegistration(
+    id: number,
+    data: UpdateRegistrationData
+  ): Promise<SingleRegistrationResponse> {
     const response = await fetch(`${this.baseUrl}/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to update registration: ${response.statusText}`);
     }
-    
+
     return response.json();
   }
 
   // Delete registration
-  static async deleteRegistration(id: number): Promise<{ success: boolean; message: string }> {
+  static async deleteRegistration(
+    id: number
+  ): Promise<{ success: boolean; message: string }> {
     const response = await fetch(`${this.baseUrl}/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to delete registration: ${response.statusText}`);
     }
-    
+
     return response.json();
   }
 
   // Approve registration
-  static async approveRegistration(id: number, approvedBy: number, notes?: string): Promise<SingleRegistrationResponse> {
+  static async approveRegistration(
+    id: number,
+    approvedBy: number,
+    notes?: string
+  ): Promise<SingleRegistrationResponse> {
     return this.updateRegistration(id, {
-      status: 'approved',
-      payment_status: 'paid',
+      status: "approved",
+      payment_status: "paid",
       approved_by: approvedBy,
       approved_at: new Date().toISOString(),
-      notes: notes || 'Registration approved by admin'
+      notes: notes || "Registration approved by admin",
     });
   }
 
   // Reject registration
-  static async rejectRegistration(id: number, approvedBy: number, notes?: string): Promise<SingleRegistrationResponse> {
+  static async rejectRegistration(
+    id: number,
+    approvedBy: number,
+    notes?: string
+  ): Promise<SingleRegistrationResponse> {
     return this.updateRegistration(id, {
-      status: 'rejected',
+      status: "rejected",
       approved_by: approvedBy,
       approved_at: new Date().toISOString(),
-      notes: notes || 'Registration rejected by admin'
+      notes: notes || "Registration rejected by admin",
     });
   }
 
   // Cancel registration
-  static async cancelRegistration(id: number, notes?: string): Promise<SingleRegistrationResponse> {
+  static async cancelRegistration(
+    id: number,
+    notes?: string
+  ): Promise<SingleRegistrationResponse> {
     return this.updateRegistration(id, {
-      status: 'cancelled',
-      notes: notes || 'Registration cancelled'
+      status: "cancelled",
+      notes: notes || "Registration cancelled",
     });
   }
 }

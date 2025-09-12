@@ -127,7 +127,7 @@ user_tryout_registrations:
 - user_id (FK → users.id)
 - tryout_id (FK → tryouts.id)
 - registration_date (DATETIME)
-- status (ENUM: 'registered', 'approved', 'rejected', 'cancelled')
+- status (ENUM: 'registered', 'approved', 'rejected', 'cancelled', 'waiting_confirmation')
 - payment_status (ENUM: 'pending', 'paid', 'failed', 'refunded')
 - payment_method (VARCHAR)
 - payment_method_id (FK → payment_methods.id)

@@ -65,11 +65,23 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes);
     await writeFile(filePath, buffer);
 
+    // Check if tryout is paid or free to determine status
+    const tryoutQuery = `SELECT type_tryout FROM tryouts WHERE id = ?`;
+    const tryoutResult = await query(tryoutQuery, [parseInt(tryoutId)]);
+    const tryoutRows = Array.isArray(tryoutResult) ? tryoutResult : [];
+    const tryoutData = tryoutRows.length > 0 ? (tryoutRows[0] as any) : null;
+
+    // Determine status based on tryout type
+    const registrationStatus =
+      tryoutData?.type_tryout === "free"
+        ? "registered"
+        : "waiting_confirmation";
+
     // Save to database
     const insertQuery = `
       INSERT INTO user_tryout_registrations 
       (user_id, tryout_id, registration_date, status, payment_status, payment_method_id, payment_reference, payment_date, notes, created_at, updated_at)
-      VALUES (?, ?, NOW(), 'registered', 'pending', ?, ?, NOW(), ?, NOW(), NOW())
+      VALUES (?, ?, NOW(), ?, 'pending', ?, ?, NOW(), ?, NOW(), NOW())
     `;
 
     // Get user ID from auth token (you might need to implement JWT verification here)
@@ -84,6 +96,7 @@ export async function POST(request: NextRequest) {
     await query(insertQuery, [
       userId,
       parseInt(tryoutId),
+      registrationStatus,
       parseInt(paymentMethodId),
       proofUrl,
       notes,

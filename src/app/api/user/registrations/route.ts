@@ -42,9 +42,10 @@ export async function GET(request: NextRequest) {
     `;
 
     const registrations = await query(sqlQuery, [parseInt(userId)]);
+    const registrationRows = Array.isArray(registrations) ? registrations : [];
 
     // Format data untuk frontend
-    const formattedRegistrations = registrations.map((reg: any) => ({
+    const formattedRegistrations = registrationRows.map((reg: any) => ({
       id: reg.id,
       title: reg.title,
       description: reg.description,
@@ -68,15 +69,16 @@ export async function GET(request: NextRequest) {
       difficulty: "Sedang",
       participants: Math.floor(Math.random() * 1000) + 100,
       rating: 4.5,
-      deadline: reg.end_date ? new Date(reg.end_date).toLocaleDateString('id-ID') : "Tidak ada batas waktu"
+      deadline: reg.end_date
+        ? new Date(reg.end_date).toLocaleDateString("id-ID")
+        : "Tidak ada batas waktu",
     }));
 
     return NextResponse.json({
       success: true,
       data: formattedRegistrations,
-      total: formattedRegistrations.length
+      total: formattedRegistrations.length,
     });
-
   } catch (error) {
     console.error("Error fetching user registrations:", error);
     return NextResponse.json(
@@ -120,33 +122,77 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check tryout type to determine appropriate status
+    const tryoutQuery = `SELECT type_tryout FROM tryouts WHERE id = ?`;
+    const tryoutResult = await query(tryoutQuery, [tryoutId]);
+    const tryoutRows = Array.isArray(tryoutResult) ? tryoutResult : [];
+    const tryoutData = tryoutRows.length > 0 ? (tryoutRows[0] as any) : null;
+
+    if (!tryoutData) {
+      return NextResponse.json(
+        { success: false, error: "Tryout not found" },
+        { status: 404 }
+      );
+    }
+
     // Cek apakah user sudah terdaftar ke tryout ini
     const existingRegistration = await query(
       "SELECT id FROM user_tryout_registrations WHERE user_id = ? AND tryout_id = ?",
       [userId, tryoutId]
     );
+    const existingRows = Array.isArray(existingRegistration)
+      ? existingRegistration
+      : [];
 
-    if (existingRegistration.length > 0) {
+    if (existingRows.length > 0) {
       return NextResponse.json(
         { success: false, error: "User sudah terdaftar ke tryout ini" },
         { status: 400 }
       );
     }
 
+    // Determine status based on tryout type
+    let registrationStatus: string;
+    let finalPaymentStatus: string;
+
+    if (tryoutData.type_tryout === "free") {
+      // Free tryouts: immediately registered with paid status
+      registrationStatus = "registered";
+      finalPaymentStatus = "paid";
+    } else {
+      // Paid tryouts: waiting for confirmation
+      registrationStatus = "waiting_confirmation";
+      finalPaymentStatus = paymentStatus || "pending";
+    }
+
     // Daftarkan user ke tryout
     const registrationResult = await query(
       `INSERT INTO user_tryout_registrations 
-       (user_id, tryout_id, registration_date, status, payment_status, payment_method, payment_date) 
-       VALUES (?, ?, NOW(), 'approved', ?, ?, NOW())`,
-      [userId, tryoutId, paymentStatus || 'paid', paymentMethod || 'default']
+       (user_id, tryout_id, registration_date, status, payment_status, payment_method, payment_date, created_at, updated_at) 
+       VALUES (?, ?, NOW(), ?, ?, ?, NOW(), NOW(), NOW())`,
+      [
+        userId,
+        tryoutId,
+        registrationStatus,
+        finalPaymentStatus,
+        paymentMethod || "free",
+      ]
     );
+    const resultData = Array.isArray(registrationResult)
+      ? (registrationResult[0] as any)
+      : (registrationResult as any);
+
+    const message =
+      tryoutData.type_tryout === "free"
+        ? "Berhasil terdaftar ke tryout gratis"
+        : "Berhasil terdaftar ke tryout berbayar, menunggu konfirmasi pembayaran";
 
     return NextResponse.json({
       success: true,
-      message: "Berhasil terdaftar ke tryout",
-      registrationId: registrationResult.insertId
+      message,
+      registrationId: resultData.insertId || null,
+      status: registrationStatus,
     });
-
   } catch (error) {
     console.error("Error registering user to tryout:", error);
     return NextResponse.json(

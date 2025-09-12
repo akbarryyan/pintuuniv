@@ -14,7 +14,11 @@ import {
   DeleteModal,
 } from "@/components/sys/registrations";
 import { usePageTransition } from "@/lib/hooks";
-import { Registration, RegistrationService, RegistrationFilters } from "@/lib/services/registrationService";
+import {
+  Registration,
+  RegistrationService,
+  RegistrationFilters,
+} from "@/lib/services/registrationService";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface Pagination {
@@ -28,7 +32,7 @@ export default function TryoutRegistrationsPage() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeItem, setActiveItem] = useState("tryouts-registers");
-  
+
   // Use auth context
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -40,7 +44,7 @@ export default function TryoutRegistrationsPage() {
     page: 1,
     limit: 10,
     total: 0,
-    totalPages: 0
+    totalPages: 0,
   });
   const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +57,8 @@ export default function TryoutRegistrationsPage() {
   const [sortOrder, setSortOrder] = useState("desc");
 
   // Modal states
-  const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null);
+  const [selectedRegistration, setSelectedRegistration] =
+    useState<Registration | null>(null);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -73,10 +78,13 @@ export default function TryoutRegistrationsPage() {
       });
 
       if (statusFilter !== "all") params.append("status", statusFilter);
-      if (paymentStatusFilter !== "all") params.append("paymentStatus", paymentStatusFilter);
+      if (paymentStatusFilter !== "all")
+        params.append("paymentStatus", paymentStatusFilter);
       if (searchQuery) params.append("search", searchQuery);
 
-      const response = await fetch(`/api/sys/registrations?${params.toString()}`);
+      const response = await fetch(
+        `/api/sys/registrations?${params.toString()}`
+      );
       const data = await response.json();
 
       if (data.success) {
@@ -97,7 +105,14 @@ export default function TryoutRegistrationsPage() {
 
   useEffect(() => {
     fetchRegistrations();
-  }, [pagination.page, statusFilter, paymentStatusFilter, searchQuery, sortBy, sortOrder]);
+  }, [
+    pagination.page,
+    statusFilter,
+    paymentStatusFilter,
+    searchQuery,
+    sortBy,
+    sortOrder,
+  ]);
 
   // Handle approve registration
   const handleApprove = async (registrationId: number, notes: string) => {
@@ -187,7 +202,7 @@ export default function TryoutRegistrationsPage() {
 
   // Handle pagination
   const handlePageChange = (newPage: number) => {
-    setPagination(prev => ({ ...prev, page: newPage }));
+    setPagination((prev) => ({ ...prev, page: newPage }));
   };
 
   // Handle reset filters
@@ -197,14 +212,20 @@ export default function TryoutRegistrationsPage() {
     setSearchQuery("");
     setSortBy("registration_date");
     setSortOrder("desc");
-    setPagination(prev => ({ ...prev, page: 1 }));
+    setPagination((prev) => ({ ...prev, page: 1 }));
   };
 
   // Calculate statistics
   const totalRegistrations = pagination.total;
-  const pendingRegistrations = registrations.filter(r => r.status === 'registered').length;
-  const approvedRegistrations = registrations.filter(r => r.status === 'approved').length;
-  const rejectedRegistrations = registrations.filter(r => r.status === 'rejected').length;
+  const pendingRegistrations = registrations.filter(
+    (r) => r.status === "registered" || r.status === "waiting_confirmation"
+  ).length;
+  const approvedRegistrations = registrations.filter(
+    (r) => r.status === "approved"
+  ).length;
+  const rejectedRegistrations = registrations.filter(
+    (r) => r.status === "rejected"
+  ).length;
 
   // Show loading screen while checking authentication
   if (isLoading) {
@@ -281,7 +302,9 @@ export default function TryoutRegistrationsPage() {
             <div className="bg-white rounded-2xl shadow-lg border border-white/20 p-8">
               <div className="flex items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                <span className="ml-3 text-slate-600">Loading registrations...</span>
+                <span className="ml-3 text-slate-600">
+                  Loading registrations...
+                </span>
               </div>
             </div>
           )}

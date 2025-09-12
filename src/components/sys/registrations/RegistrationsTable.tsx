@@ -89,7 +89,11 @@ export default function RegistrationsTable({
       } else if (pagination.page >= pagination.totalPages - 2) {
         pages.push(1);
         pages.push("...");
-        for (let i = pagination.totalPages - 3; i <= pagination.totalPages; i++) {
+        for (
+          let i = pagination.totalPages - 3;
+          i <= pagination.totalPages;
+          i++
+        ) {
           pages.push(i);
         }
       } else {
@@ -110,6 +114,8 @@ export default function RegistrationsTable({
     switch (status) {
       case "registered":
         return "text-amber-700 bg-amber-50 border-amber-200";
+      case "waiting_confirmation":
+        return "text-orange-700 bg-orange-50 border-orange-200";
       case "approved":
         return "text-emerald-700 bg-emerald-50 border-emerald-200";
       case "rejected":
@@ -139,12 +145,12 @@ export default function RegistrationsTable({
   const formatDate = (dateString: string) => {
     if (!dateString) return "Belum ditentukan";
     const date = new Date(dateString);
-    return date.toLocaleDateString('id-ID', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return date.toLocaleDateString("id-ID", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -152,6 +158,8 @@ export default function RegistrationsTable({
     switch (status) {
       case "registered":
         return "Terdaftar";
+      case "waiting_confirmation":
+        return "Menunggu Konfirmasi";
       case "approved":
         return "Disetujui";
       case "rejected":
@@ -180,12 +188,16 @@ export default function RegistrationsTable({
 
   // Determine if tryout is free or paid
   const isTryoutFree = (registration: Registration) => {
-    return registration.tryout_type === 'free';
+    return registration.tryout_type === "free";
   };
 
   // Determine if registration needs admin approval
   const needsApproval = (registration: Registration) => {
-    return !isTryoutFree(registration) && registration.status === "registered";
+    return (
+      !isTryoutFree(registration) &&
+      (registration.status === "registered" ||
+        registration.status === "waiting_confirmation")
+    );
   };
 
   return (
@@ -224,8 +236,8 @@ export default function RegistrationsTable({
 
           <div className="flex items-center space-x-6">
             <div className="text-sm text-slate-600 bg-slate-100 px-3 py-2 rounded-lg">
-              <span className="font-medium">{registrations.length}</span> registrasi
-              ditampilkan
+              <span className="font-medium">{registrations.length}</span>{" "}
+              registrasi ditampilkan
             </div>
           </div>
         </div>
@@ -247,7 +259,9 @@ export default function RegistrationsTable({
                     <h3 className="font-semibold text-slate-900 text-lg leading-tight mb-1">
                       {registration.user_name}
                     </h3>
-                    <p className="text-sm text-slate-500">ID: {registration.id}</p>
+                    <p className="text-sm text-slate-500">
+                      ID: {registration.id}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-1 ml-3">
@@ -344,7 +358,8 @@ export default function RegistrationsTable({
                   {registration.tryout_title}
                 </p>
                 <p className="text-xs text-slate-500">
-                  {formatDate(registration.tryout_start_date)} - {formatDate(registration.tryout_end_date)}
+                  {formatDate(registration.tryout_start_date)} -{" "}
+                  {formatDate(registration.tryout_end_date)}
                 </p>
               </div>
 
@@ -380,7 +395,9 @@ export default function RegistrationsTable({
                     <h3 className="font-semibold text-slate-900 text-lg leading-tight mb-1">
                       {registration.user_name}
                     </h3>
-                    <p className="text-sm text-slate-500">ID: {registration.id}</p>
+                    <p className="text-sm text-slate-500">
+                      ID: {registration.id}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2 ml-3">
@@ -473,7 +490,8 @@ export default function RegistrationsTable({
                   {registration.tryout_title}
                 </p>
                 <p className="text-xs text-slate-500">
-                  {formatDate(registration.tryout_start_date)} - {formatDate(registration.tryout_end_date)}
+                  {formatDate(registration.tryout_start_date)} -{" "}
+                  {formatDate(registration.tryout_end_date)}
                 </p>
               </div>
 
@@ -501,7 +519,9 @@ export default function RegistrationsTable({
                 Tampilkan:
               </span>
               <span className="text-sm text-slate-600">
-                {((pagination.page - 1) * pagination.limit) + 1} - {Math.min(pagination.page * pagination.limit, pagination.total)} dari {pagination.total} registrasi
+                {(pagination.page - 1) * pagination.limit + 1} -{" "}
+                {Math.min(pagination.page * pagination.limit, pagination.total)}{" "}
+                dari {pagination.total} registrasi
               </span>
             </div>
 
@@ -551,7 +571,9 @@ export default function RegistrationsTable({
                 {/* Next button */}
                 <button
                   onClick={() => handlePageChange(pagination.page + 1)}
-                  disabled={pagination.page === pagination.totalPages || isLoading}
+                  disabled={
+                    pagination.page === pagination.totalPages || isLoading
+                  }
                   className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ChevronRight className="w-5 h-5" />
@@ -564,8 +586,8 @@ export default function RegistrationsTable({
           <div className="sm:hidden mt-4 pt-4 border-t border-slate-200">
             <div className="text-center text-sm text-slate-600">
               Menampilkan {(pagination.page - 1) * pagination.limit + 1} -{" "}
-              {Math.min(pagination.page * pagination.limit, pagination.total)} dari{" "}
-              {pagination.total} registrasi
+              {Math.min(pagination.page * pagination.limit, pagination.total)}{" "}
+              dari {pagination.total} registrasi
             </div>
           </div>
         </div>
