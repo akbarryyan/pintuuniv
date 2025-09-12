@@ -187,7 +187,7 @@ user_answers:
 - weight_earned (INT) # bobot yang didapatkan, default: 0
 - answered_at (DATETIME)
 
-discussion:
+discussions:
 
 - id (INT, PK, AUTO_INCREMENT)
 - user_id (FK → users.id)

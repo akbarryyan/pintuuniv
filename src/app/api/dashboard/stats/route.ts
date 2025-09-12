@@ -36,8 +36,8 @@ export async function GET(request: NextRequest) {
     // Get discussions created by user
     const discussionsResult = await query(
       `SELECT COUNT(*) as total 
-       FROM discussions 
-       WHERE user_id = ?`,
+       FROM discussions
+       WHERE user_id = ? AND is_deleted = 0`,
       [userId]
     );
     const discussionsCreated = (discussionsResult as any[])[0]?.total || 0;
