@@ -96,6 +96,31 @@ answers:
 - created_at (DATETIME)
 - updated_at (DATETIME)
 
+payment_methods:
+
+- id (INT, PK, AUTO_INCREMENT)
+- name (VARCHAR)
+- type (ENUM: 'qris', 'e_wallet', 'bank_transfer')
+- icon (VARCHAR)
+- color (VARCHAR)
+- qr_code (TEXT) ## untuk QRIS
+- logo (TEXT)
+- is_active (BOOLEAN)
+- is_popular (BOOLEAN)
+- created_at (DATETIME)
+- updated_at (DATETIME)
+
+payment_accounts:
+
+- id (INT, PK, AUTO_INCREMENT)
+- payment_method_id (FK → payment_methods.id)
+- name (VARCHAR)
+- account (VARCHAR)
+- account_name (VARCHAR)
+- is_active (BOOLEAN)
+- created_at (DATETIME)
+- updated_at (DATETIME)
+
 user_tryout_registrations:
 
 - id (INT, PK, AUTO_INCREMENT)
@@ -105,6 +130,7 @@ user_tryout_registrations:
 - status (ENUM: 'registered', 'approved', 'rejected', 'cancelled')
 - payment_status (ENUM: 'pending', 'paid', 'failed', 'refunded')
 - payment_method (VARCHAR)
+- payment_method_id (FK → payment_methods.id)
 - payment_reference (VARCHAR)
 - payment_date (DATETIME)
 - approved_by (INT, FK → admin_users.id)
