@@ -51,7 +51,10 @@ export default function WaitingConfirmation({
     } catch (error) {
       console.error("Error fetching waiting tryouts:", error);
     } finally {
-      setIsLoading(false);
+      // Add minimum delay to show skeleton (1 second)
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     }
   };
 

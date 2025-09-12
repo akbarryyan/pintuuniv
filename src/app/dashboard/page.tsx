@@ -34,6 +34,7 @@ export default function DashboardPage() {
     targetMajor: "", // Default target major
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [statsLoading, setStatsLoading] = useState(true);
 
   // Target Universities Data
   const targetUniversities = {
@@ -194,6 +195,7 @@ export default function DashboardPage() {
 
   // Function to fetch user discussions count
   const fetchDashboardStats = async (userId: number) => {
+    setStatsLoading(true);
     try {
       const response = await fetch(`/api/dashboard/stats?userId=${userId}`);
       const data = await response.json();
@@ -208,6 +210,11 @@ export default function DashboardPage() {
       }
     } catch (error) {
       console.error("Error fetching dashboard stats:", error);
+    } finally {
+      // Add minimum delay to show skeleton
+      setTimeout(() => {
+        setStatsLoading(false);
+      }, 800);
     }
   };
 
@@ -358,7 +365,7 @@ export default function DashboardPage() {
         <WelcomeSection userData={userData} />
 
         {/* Stats Grid */}
-        <StatsGrid stats={stats} />
+        <StatsGrid stats={stats} isLoading={statsLoading} />
 
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
