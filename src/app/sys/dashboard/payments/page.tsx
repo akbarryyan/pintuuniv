@@ -63,6 +63,8 @@ export default function PaymentsPage() {
     accountId: number;
   } | null>(null);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [showAddAccountModal, setShowAddAccountModal] = useState(false);
+  const [selectedMethodId, setSelectedMethodId] = useState<number | null>(null);
   const [isAddingMethod, setIsAddingMethod] = useState(false);
 
   // Form state
@@ -78,6 +80,14 @@ export default function PaymentsPage() {
     logo_preview: "",
     account_name: "",
     account_number: "",
+  });
+
+  // Form state untuk account
+  const [accountFormData, setAccountFormData] = useState({
+    name: "",
+    account: "",
+    account_name: "",
+    is_active: true,
   });
 
   // Load data when authenticated
@@ -456,6 +466,83 @@ export default function PaymentsPage() {
     }
   };
 
+  const handleAddAccount = (methodId: number) => {
+    setSelectedMethodId(methodId);
+    setAccountFormData({
+      name: "",
+      account: "",
+      account_name: "",
+      is_active: true,
+    });
+    setShowAddAccountModal(true);
+  };
+
+  const handleAccountFormChange = (field: string, value: any) => {
+    setAccountFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleSubmitAccount = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!accountFormData.name.trim()) {
+      toast.error("Nama harus diisi");
+      return;
+    }
+    if (!accountFormData.account.trim()) {
+      toast.error("Nomor rekening/e-wallet harus diisi");
+      return;
+    }
+    if (!accountFormData.account_name.trim()) {
+      toast.error("Atas nama rekening harus diisi");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/sys/payment-accounts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          payment_method_id: selectedMethodId,
+          name: accountFormData.name,
+          account: accountFormData.account,
+          account_name: accountFormData.account_name,
+          is_active: accountFormData.is_active,
+        }),
+      });
+
+      if (response.ok) {
+        const newAccount = await response.json();
+
+        // Update local state
+        setPaymentMethods((prev) =>
+          prev.map((method) =>
+            method.id === selectedMethodId
+              ? {
+                  ...method,
+                  accounts: [...method.accounts, newAccount],
+                }
+              : method
+          )
+        );
+
+        toast.success("Akun pembayaran berhasil ditambahkan");
+        setShowAddAccountModal(false);
+        setSelectedMethodId(null);
+      } else {
+        const error = await response.json();
+        toast.error(error.message || "Gagal menambahkan akun pembayaran");
+      }
+    } catch (error) {
+      console.error("Error adding account:", error);
+      toast.error("Terjadi kesalahan saat menambahkan akun");
+    }
+  };
+
   if (authLoading || pageTransitionLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -683,66 +770,90 @@ export default function PaymentsPage() {
                     )}
 
                   {/* Accounts untuk E-Wallet dan Bank Transfer */}
-                  {method.accounts.length > 0 && (
+                  {(method.type === "e_wallet" ||
+                    method.type === "bank_transfer") && (
                     <div>
-                      <h4 className="font-medium text-gray-900 mb-3">
-                        Tujuan Transfer:
-                      </h4>
-                      <div className="grid gap-2">
-                        {method.accounts.map((account) => (
-                          <div
-                            key={account.id}
-                            className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                          >
-                            <div className="flex-1">
-                              <div className="font-medium text-gray-900">
-                                {account.name}
-                              </div>
-                              <div className="text-sm text-gray-600">
-                                {method.type === "e_wallet"
-                                  ? "Nomor:"
-                                  : "Rekening:"}{" "}
-                                {account.account}
-                              </div>
-                              <div className="text-sm text-gray-600">
-                                A.n: {account.account_name}
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span
-                                className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                  account.is_active
-                                    ? "bg-green-100 text-green-800"
-                                    : "bg-red-100 text-red-800"
-                                }`}
-                              >
-                                {account.is_active ? "Aktif" : "Nonaktif"}
-                              </span>
-                              <button
-                                onClick={() =>
-                                  toggleAccountStatus(method.id, account.id)
-                                }
-                                className={`px-2 py-1 text-xs font-medium rounded-md ${
-                                  account.is_active
-                                    ? "bg-red-100 text-red-700 hover:bg-red-200"
-                                    : "bg-green-100 text-green-700 hover:bg-green-200"
-                                }`}
-                              >
-                                {account.is_active ? "Nonaktifkan" : "Aktifkan"}
-                              </button>
-                              <button
-                                onClick={() =>
-                                  handleDeleteAccount(method.id, account.id)
-                                }
-                                className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                                title="Hapus akun"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="font-medium text-gray-900">
+                          Tujuan Transfer:
+                        </h4>
+                        <button
+                          onClick={() => handleAddAccount(method.id)}
+                          className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
+                          Tambah Akun
+                        </button>
                       </div>
+
+                      {method.accounts.length > 0 ? (
+                        <div className="grid gap-2">
+                          {method.accounts.map((account) => (
+                            <div
+                              key={account.id}
+                              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                            >
+                              <div className="flex-1">
+                                <div className="font-medium text-gray-900">
+                                  {account.name}
+                                </div>
+                                <div className="text-sm text-gray-600">
+                                  {method.type === "e_wallet"
+                                    ? "Nomor:"
+                                    : "Rekening:"}{" "}
+                                  {account.account}
+                                </div>
+                                <div className="text-sm text-gray-600">
+                                  A.n: {account.account_name}
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                    account.is_active
+                                      ? "bg-green-100 text-green-800"
+                                      : "bg-red-100 text-red-800"
+                                  }`}
+                                >
+                                  {account.is_active ? "Aktif" : "Nonaktif"}
+                                </span>
+                                <button
+                                  onClick={() =>
+                                    toggleAccountStatus(method.id, account.id)
+                                  }
+                                  className={`px-2 py-1 text-xs font-medium rounded-md ${
+                                    account.is_active
+                                      ? "bg-red-100 text-red-700 hover:bg-red-200"
+                                      : "bg-green-100 text-green-700 hover:bg-green-200"
+                                  }`}
+                                >
+                                  {account.is_active
+                                    ? "Nonaktifkan"
+                                    : "Aktifkan"}
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    handleDeleteAccount(method.id, account.id)
+                                  }
+                                  className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                  title="Hapus akun"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8 bg-gray-50 rounded-lg">
+                          <div className="text-gray-400 mb-2">
+                            <CreditCard className="w-8 h-8 mx-auto" />
+                          </div>
+                          <p className="text-sm text-gray-600">
+                            Belum ada akun pembayaran untuk metode ini
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -1185,6 +1296,115 @@ export default function PaymentsPage() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Account Modal */}
+      {showAddAccountModal && selectedMethodId && (
+        <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl border border-gray-200">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-semibold text-gray-900">
+                Tambah Akun Pembayaran
+              </h3>
+              <button
+                onClick={() => {
+                  setShowAddAccountModal(false);
+                  setSelectedMethodId(null);
+                }}
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmitAccount} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Nama Akun
+                </label>
+                <input
+                  type="text"
+                  value={accountFormData.name}
+                  onChange={(e) =>
+                    handleAccountFormChange("name", e.target.value)
+                  }
+                  placeholder="Contoh: BCA Utama"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Nomor Rekening/E-Wallet
+                </label>
+                <input
+                  type="text"
+                  value={accountFormData.account}
+                  onChange={(e) =>
+                    handleAccountFormChange("account", e.target.value)
+                  }
+                  placeholder="Contoh: 1234567890"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Atas Nama Rekening
+                </label>
+                <input
+                  type="text"
+                  value={accountFormData.account_name}
+                  onChange={(e) =>
+                    handleAccountFormChange("account_name", e.target.value)
+                  }
+                  placeholder="Contoh: John Doe"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="account_is_active"
+                  checked={accountFormData.is_active}
+                  onChange={(e) =>
+                    handleAccountFormChange("is_active", e.target.checked)
+                  }
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label
+                  htmlFor="account_is_active"
+                  className="ml-2 text-sm text-gray-700"
+                >
+                  Aktifkan akun setelah dibuat
+                </label>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAddAccountModal(false);
+                    setSelectedMethodId(null);
+                  }}
+                  className="flex-1 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Tambah Akun
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
