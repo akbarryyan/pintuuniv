@@ -523,7 +523,7 @@ export default function PaymentsPage() {
                           >
                             {method.is_active ? "Aktif" : "Nonaktif"}
                           </span>
-                          {method.is_popular && (
+                          {Boolean(method.is_popular) && (
                             <span className="px-2 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded-full">
                               Populer
                             </span>
