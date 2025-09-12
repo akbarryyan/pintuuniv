@@ -16,24 +16,29 @@ import { usePageTransition } from "@/lib/hooks";
 import { toast } from "sonner";
 
 interface PaymentMethod {
-  id: string;
+  id: number;
   name: string;
   type: "qris" | "e_wallet" | "bank_transfer";
   icon: string;
   color: string;
-  isActive: boolean;
-  isPopular: boolean;
-  qrCode?: string;
+  qr_code?: string;
   logo?: string;
+  is_active: boolean;
+  is_popular: boolean;
+  created_at: string;
+  updated_at: string;
   accounts: PaymentAccount[];
 }
 
 interface PaymentAccount {
-  id: string;
+  id: number;
+  payment_method_id: number;
   name: string;
   account: string;
-  accountName: string;
-  isActive: boolean;
+  account_name: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export default function PaymentsPage() {
@@ -50,7 +55,7 @@ export default function PaymentsPage() {
     null
   );
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [methodToDelete, setMethodToDelete] = useState<string | null>(null);
+  const [methodToDelete, setMethodToDelete] = useState<number | null>(null);
   const [isAddingMethod, setIsAddingMethod] = useState(false);
 
   // Form state
@@ -58,118 +63,35 @@ export default function PaymentsPage() {
     name: "",
     type: "qris" as "qris" | "e_wallet" | "bank_transfer",
     color: "bg-green-500",
-    isPopular: false,
-    isActive: true,
-    qrCode: null as File | null,
-    qrCodePreview: "",
+    is_popular: false,
+    is_active: true,
+    qr_code: null as File | null,
+    qr_code_preview: "",
     logo: null as File | null,
-    logoPreview: "",
-    accountName: "",
-    transferNumber: "",
+    logo_preview: "",
+    account_name: "",
+    account_number: "",
   });
-
-  // Mock data untuk payment methods
-  const mockPaymentMethods: PaymentMethod[] = [
-    {
-      id: "qris",
-      name: "QRIS",
-      type: "qris",
-      icon: "QrCode",
-      color: "bg-green-500",
-      isActive: true,
-      isPopular: true,
-      qrCode:
-        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2ZmZmZmZiIvPgogIDxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIGZpbGw9IiMwMDAwMDAiLz4KICA8cmVjdCB4PSIyMCIgeT0iMjAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iI2ZmZmZmZiIvPgogIDxyZWN0IHg9IjE0MCIgeT0iMjAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iI2ZmZmZmZiIvPgogIDxyZWN0IHg9IjIwIiB5PSIxNDAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iI2ZmZmZmZiIvPgogIDxyZWN0IHg9IjE0MCIgeT0iMTQwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIxMDAiIHk9IjExMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjMDAwMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5RUklTPC90ZXh0Pgo8L3N2Zz4K",
-      accounts: [],
-    },
-    {
-      id: "e_wallet",
-      name: "E-Wallet",
-      type: "e_wallet",
-      icon: "Smartphone",
-      color: "bg-blue-500",
-      isActive: true,
-      isPopular: false,
-      accounts: [
-        {
-          id: "1",
-          name: "GoPay",
-          account: "08123456789",
-          accountName: "PintuUniv",
-          isActive: true,
-        },
-        {
-          id: "2",
-          name: "OVO",
-          account: "08123456789",
-          accountName: "PintuUniv",
-          isActive: true,
-        },
-        {
-          id: "3",
-          name: "DANA",
-          account: "08123456789",
-          accountName: "PintuUniv",
-          isActive: true,
-        },
-        {
-          id: "4",
-          name: "ShopeePay",
-          account: "08123456789",
-          accountName: "PintuUniv",
-          isActive: false,
-        },
-      ],
-    },
-    {
-      id: "bank_transfer",
-      name: "Transfer Bank",
-      type: "bank_transfer",
-      icon: "Building2",
-      color: "bg-purple-500",
-      isActive: true,
-      isPopular: false,
-      accounts: [
-        {
-          id: "1",
-          name: "BCA",
-          account: "1234567890",
-          accountName: "PintuUniv",
-          isActive: true,
-        },
-        {
-          id: "2",
-          name: "Mandiri",
-          account: "1234567890",
-          accountName: "PintuUniv",
-          isActive: true,
-        },
-        {
-          id: "3",
-          name: "BRI",
-          account: "1234567890",
-          accountName: "PintuUniv",
-          isActive: true,
-        },
-        {
-          id: "4",
-          name: "BNI",
-          account: "1234567890",
-          accountName: "PintuUniv",
-          isActive: false,
-        },
-      ],
-    },
-  ];
 
   // Load data when authenticated
   useEffect(() => {
     if (isAuthenticated) {
       const loadData = async () => {
         setLoading(true);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setPaymentMethods(mockPaymentMethods);
-        setLoading(false);
+        try {
+          const response = await fetch("/api/sys/payment-methods");
+          if (response.ok) {
+            const data = await response.json();
+            setPaymentMethods(data);
+          } else {
+            toast.error("Gagal memuat data metode pembayaran");
+          }
+        } catch (error) {
+          console.error("Error loading payment methods:", error);
+          toast.error("Terjadi kesalahan saat memuat data");
+        } finally {
+          setLoading(false);
+        }
       };
       loadData();
     }
@@ -207,14 +129,14 @@ export default function PaymentsPage() {
       name: "",
       type: "qris",
       color: "bg-green-500",
-      isPopular: false,
-      isActive: true,
-      qrCode: null,
-      qrCodePreview: "",
+      is_popular: false,
+      is_active: true,
+      qr_code: null,
+      qr_code_preview: "",
       logo: null,
-      logoPreview: "",
-      accountName: "",
-      transferNumber: "",
+      logo_preview: "",
+      account_name: "",
+      account_number: "",
     });
 
     setEditingMethod(null);
@@ -228,14 +150,14 @@ export default function PaymentsPage() {
       name: method.name,
       type: method.type,
       color: method.color,
-      isPopular: method.isPopular,
-      isActive: method.isActive,
-      qrCode: null,
-      qrCodePreview: method.qrCode || "",
+      is_popular: method.is_popular,
+      is_active: method.is_active,
+      qr_code: null,
+      qr_code_preview: method.qr_code || "",
       logo: null,
-      logoPreview: method.logo || "",
-      accountName: method.accounts[0]?.accountName || "",
-      transferNumber: method.accounts[0]?.account || "",
+      logo_preview: method.logo || "",
+      account_name: method.accounts[0]?.account_name || "",
+      account_number: method.accounts[0]?.account || "",
     });
     setShowModal(true);
   };
@@ -268,20 +190,20 @@ export default function PaymentsPage() {
       if (uploadType === "qrCode") {
         setFormData((prev) => ({
           ...prev,
-          qrCode: file,
-          qrCodePreview: URL.createObjectURL(file),
+          qr_code: file,
+          qr_code_preview: URL.createObjectURL(file),
         }));
       } else {
         setFormData((prev) => ({
           ...prev,
           logo: file,
-          logoPreview: URL.createObjectURL(file),
+          logo_preview: URL.createObjectURL(file),
         }));
       }
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.name.trim()) {
@@ -291,105 +213,169 @@ export default function PaymentsPage() {
 
     if (
       formData.type === "qris" &&
-      !formData.qrCode &&
-      !formData.qrCodePreview
+      !formData.qr_code &&
+      !formData.qr_code_preview
     ) {
       toast.error("Gambar QRIS harus diupload");
       return;
     }
 
     if (formData.type === "e_wallet" || formData.type === "bank_transfer") {
-      if (!formData.accountName.trim()) {
+      if (!formData.account_name.trim()) {
         toast.error("Atas nama rekening harus diisi");
         return;
       }
-      if (!formData.transferNumber.trim()) {
+      if (!formData.account_number.trim()) {
         toast.error("Nomor tujuan transfer harus diisi");
         return;
       }
     }
 
-    // Simulate save
-    const newMethod: PaymentMethod = {
-      id: editingMethod?.id || Date.now().toString(),
-      name: formData.name,
-      type: formData.type,
-      icon:
-        formData.type === "qris"
-          ? "QrCode"
-          : formData.type === "e_wallet"
-          ? "Smartphone"
-          : "Building2",
-      color: formData.color,
-      isActive: formData.isActive,
-      isPopular: formData.isPopular,
-      qrCode: formData.qrCodePreview,
-      logo: formData.logoPreview,
-      accounts:
-        formData.type === "qris"
-          ? []
-          : [
-              {
-                id: "1",
-                name: formData.name,
-                account: formData.transferNumber,
-                accountName: formData.accountName,
-                isActive: true,
-              },
-            ],
-    };
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("type", formData.type);
+      formDataToSend.append("color", formData.color);
+      formDataToSend.append("is_popular", formData.is_popular.toString());
+      formDataToSend.append("is_active", formData.is_active.toString());
 
-    if (editingMethod) {
-      setPaymentMethods((prev) =>
-        prev.map((m) => (m.id === editingMethod.id ? newMethod : m))
-      );
-      toast.success("Metode pembayaran berhasil diupdate");
-    } else {
-      setPaymentMethods((prev) => [...prev, newMethod]);
-      toast.success("Metode pembayaran berhasil ditambahkan");
+      if (formData.qr_code) {
+        formDataToSend.append("qr_code", formData.qr_code);
+      }
+      if (formData.logo) {
+        formDataToSend.append("logo", formData.logo);
+      }
+      if (formData.account_name) {
+        formDataToSend.append("account_name", formData.account_name);
+      }
+      if (formData.account_number) {
+        formDataToSend.append("account_number", formData.account_number);
+      }
+
+      const url = editingMethod
+        ? `/api/sys/payment-methods/${editingMethod.id}`
+        : "/api/sys/payment-methods";
+
+      const method = editingMethod ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
+        body: formDataToSend,
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+
+        if (editingMethod) {
+          setPaymentMethods((prev) =>
+            prev.map((m) => (m.id === editingMethod.id ? result : m))
+          );
+          toast.success("Metode pembayaran berhasil diupdate");
+        } else {
+          setPaymentMethods((prev) => [...prev, result]);
+          toast.success("Metode pembayaran berhasil ditambahkan");
+        }
+
+        setShowModal(false);
+        setEditingMethod(null);
+      } else {
+        const error = await response.json();
+        toast.error(error.message || "Gagal menyimpan metode pembayaran");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Terjadi kesalahan saat menyimpan data");
     }
-
-    setShowModal(false);
-    setEditingMethod(null);
   };
 
-  const handleDeleteMethod = (methodId: string) => {
+  const handleDeleteMethod = (methodId: number) => {
     setMethodToDelete(methodId);
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (methodToDelete) {
-      setPaymentMethods((prev) => prev.filter((m) => m.id !== methodToDelete));
-      toast.success("Metode pembayaran berhasil dihapus");
-      setShowDeleteModal(false);
-      setMethodToDelete(null);
+      try {
+        const response = await fetch(
+          `/api/sys/payment-methods/${methodToDelete}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (response.ok) {
+          setPaymentMethods((prev) =>
+            prev.filter((m) => m.id !== methodToDelete)
+          );
+          toast.success("Metode pembayaran berhasil dihapus");
+        } else {
+          toast.error("Gagal menghapus metode pembayaran");
+        }
+      } catch (error) {
+        console.error("Error deleting method:", error);
+        toast.error("Terjadi kesalahan saat menghapus data");
+      } finally {
+        setShowDeleteModal(false);
+        setMethodToDelete(null);
+      }
     }
   };
 
-  const toggleMethodStatus = (methodId: string) => {
-    setPaymentMethods((prev) =>
-      prev.map((m) => (m.id === methodId ? { ...m, isActive: !m.isActive } : m))
-    );
-    toast.success("Status metode pembayaran berhasil diubah");
+  const toggleMethodStatus = async (methodId: number) => {
+    try {
+      const response = await fetch(
+        `/api/sys/payment-methods/${methodId}/toggle-status`,
+        {
+          method: "PATCH",
+        }
+      );
+
+      if (response.ok) {
+        const updatedMethod = await response.json();
+        setPaymentMethods((prev) =>
+          prev.map((m) => (m.id === methodId ? updatedMethod : m))
+        );
+        toast.success("Status metode pembayaran berhasil diubah");
+      } else {
+        toast.error("Gagal mengubah status metode pembayaran");
+      }
+    } catch (error) {
+      console.error("Error toggling method status:", error);
+      toast.error("Terjadi kesalahan saat mengubah status");
+    }
   };
 
-  const toggleAccountStatus = (methodId: string, accountId: string) => {
-    setPaymentMethods((prev) =>
-      prev.map((method) =>
-        method.id === methodId
-          ? {
-              ...method,
-              accounts: method.accounts.map((account) =>
-                account.id === accountId
-                  ? { ...account, isActive: !account.isActive }
-                  : account
-              ),
-            }
-          : method
-      )
-    );
-    toast.success("Status akun berhasil diubah");
+  const toggleAccountStatus = async (methodId: number, accountId: number) => {
+    try {
+      const response = await fetch(
+        `/api/sys/payment-accounts/${accountId}/toggle-status`,
+        {
+          method: "PATCH",
+        }
+      );
+
+      if (response.ok) {
+        const updatedAccount = await response.json();
+        setPaymentMethods((prev) =>
+          prev.map((method) =>
+            method.id === methodId
+              ? {
+                  ...method,
+                  accounts: method.accounts.map((account) =>
+                    account.id === accountId ? updatedAccount : account
+                  ),
+                }
+              : method
+          )
+        );
+        toast.success("Status akun berhasil diubah");
+      } else {
+        toast.error("Gagal mengubah status akun");
+      }
+    } catch (error) {
+      console.error("Error toggling account status:", error);
+      toast.error("Terjadi kesalahan saat mengubah status akun");
+    }
   };
 
   if (authLoading || pageTransitionLoading) {
@@ -530,14 +516,14 @@ export default function PaymentsPage() {
                         <div className="flex items-center gap-2">
                           <span
                             className={`px-2 py-1 text-xs font-medium rounded-full ${
-                              method.isActive
+                              method.is_active
                                 ? "bg-green-100 text-green-800"
                                 : "bg-red-100 text-red-800"
                             }`}
                           >
-                            {method.isActive ? "Aktif" : "Nonaktif"}
+                            {method.is_active ? "Aktif" : "Nonaktif"}
                           </span>
-                          {method.isPopular && (
+                          {method.is_popular && (
                             <span className="px-2 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded-full">
                               Populer
                             </span>
@@ -550,12 +536,12 @@ export default function PaymentsPage() {
                       <button
                         onClick={() => toggleMethodStatus(method.id)}
                         className={`px-3 py-1 text-sm font-medium rounded-md ${
-                          method.isActive
+                          method.is_active
                             ? "bg-red-100 text-red-700 hover:bg-red-200"
                             : "bg-green-100 text-green-700 hover:bg-green-200"
                         }`}
                       >
-                        {method.isActive ? "Nonaktifkan" : "Aktifkan"}
+                        {method.is_active ? "Nonaktifkan" : "Aktifkan"}
                       </button>
                       <button
                         onClick={() => handleEditMethod(method)}
@@ -573,14 +559,14 @@ export default function PaymentsPage() {
                   </div>
 
                   {/* QR Code untuk QRIS */}
-                  {method.type === "qris" && method.qrCode && (
+                  {method.type === "qris" && method.qr_code && (
                     <div className="mb-4 p-4 bg-gray-50 rounded-lg">
                       <h4 className="font-medium text-gray-900 mb-2">
                         QR Code:
                       </h4>
                       <div className="flex items-center gap-4">
                         <img
-                          src={method.qrCode}
+                          src={method.qr_code}
                           alt="QR Code"
                           className="w-24 h-24"
                         />
@@ -641,30 +627,30 @@ export default function PaymentsPage() {
                                 {account.account}
                               </div>
                               <div className="text-sm text-gray-600">
-                                A.n: {account.accountName}
+                                A.n: {account.account_name}
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
                               <span
                                 className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                  account.isActive
+                                  account.is_active
                                     ? "bg-green-100 text-green-800"
                                     : "bg-red-100 text-red-800"
                                 }`}
                               >
-                                {account.isActive ? "Aktif" : "Nonaktif"}
+                                {account.is_active ? "Aktif" : "Nonaktif"}
                               </span>
                               <button
                                 onClick={() =>
                                   toggleAccountStatus(method.id, account.id)
                                 }
                                 className={`px-2 py-1 text-xs font-medium rounded-md ${
-                                  account.isActive
+                                  account.is_active
                                     ? "bg-red-100 text-red-700 hover:bg-red-200"
                                     : "bg-green-100 text-green-700 hover:bg-green-200"
                                 }`}
                               >
-                                {account.isActive ? "Nonaktifkan" : "Aktifkan"}
+                                {account.is_active ? "Nonaktifkan" : "Aktifkan"}
                               </button>
                             </div>
                           </div>
@@ -715,14 +701,14 @@ export default function PaymentsPage() {
                     name: "",
                     type: "qris",
                     color: "bg-green-500",
-                    isPopular: false,
-                    isActive: true,
-                    qrCode: null,
-                    qrCodePreview: "",
+                    is_popular: false,
+                    is_active: true,
+                    qr_code: null,
+                    qr_code_preview: "",
                     logo: null,
-                    logoPreview: "",
-                    accountName: "",
-                    transferNumber: "",
+                    logo_preview: "",
+                    account_name: "",
+                    account_number: "",
                   });
                 }}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -800,7 +786,7 @@ export default function PaymentsPage() {
                       >
                         <QrCode className="w-8 h-8 text-gray-400" />
                         <span className="text-sm text-gray-600">
-                          {formData.qrCode
+                          {formData.qr_code
                             ? "Ganti gambar QRIS"
                             : "Klik untuk upload gambar QRIS"}
                         </span>
@@ -811,14 +797,14 @@ export default function PaymentsPage() {
                     </div>
 
                     {/* Preview */}
-                    {formData.qrCodePreview && (
+                    {formData.qr_code_preview && (
                       <div className="mt-3">
                         <p className="text-sm font-medium text-gray-700 mb-2">
                           Preview:
                         </p>
                         <div className="border border-gray-200 rounded-lg p-2 max-w-xs mx-auto">
                           <img
-                            src={formData.qrCodePreview}
+                            src={formData.qr_code_preview}
                             alt="QRIS Preview"
                             className="w-full h-auto max-h-32 object-contain"
                           />
@@ -867,14 +853,14 @@ export default function PaymentsPage() {
                     </div>
 
                     {/* Preview */}
-                    {formData.logoPreview && (
+                    {formData.logo_preview && (
                       <div className="mt-3">
                         <p className="text-sm font-medium text-gray-700 mb-2">
                           Preview:
                         </p>
                         <div className="border border-gray-200 rounded-lg p-2 max-w-xs mx-auto">
                           <img
-                            src={formData.logoPreview}
+                            src={formData.logo_preview}
                             alt="Logo Preview"
                             className="w-full h-auto max-h-32 object-contain"
                           />
@@ -896,9 +882,9 @@ export default function PaymentsPage() {
                     <input
                       type="text"
                       placeholder="Masukkan nama pemilik rekening"
-                      value={formData.accountName}
+                      value={formData.account_name}
                       onChange={(e) =>
-                        handleFormChange("accountName", e.target.value)
+                        handleFormChange("account_name", e.target.value)
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       required
@@ -918,9 +904,9 @@ export default function PaymentsPage() {
                           ? "Masukkan nomor e-wallet"
                           : "Masukkan nomor rekening"
                       }
-                      value={formData.transferNumber}
+                      value={formData.account_number}
                       onChange={(e) =>
-                        handleFormChange("transferNumber", e.target.value)
+                        handleFormChange("account_number", e.target.value)
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       required
@@ -959,9 +945,9 @@ export default function PaymentsPage() {
                 <input
                   type="checkbox"
                   id="isPopular"
-                  checked={formData.isPopular}
+                  checked={formData.is_popular}
                   onChange={(e) =>
-                    handleFormChange("isPopular", e.target.checked)
+                    handleFormChange("is_popular", e.target.checked)
                   }
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
@@ -977,9 +963,9 @@ export default function PaymentsPage() {
                 <input
                   type="checkbox"
                   id="isActive"
-                  checked={formData.isActive}
+                  checked={formData.is_active}
                   onChange={(e) =>
-                    handleFormChange("isActive", e.target.checked)
+                    handleFormChange("is_active", e.target.checked)
                   }
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
@@ -1001,14 +987,14 @@ export default function PaymentsPage() {
                       name: "",
                       type: "qris",
                       color: "bg-green-500",
-                      isPopular: false,
-                      isActive: true,
-                      qrCode: null,
-                      qrCodePreview: "",
+                      is_popular: false,
+                      is_active: true,
+                      qr_code: null,
+                      qr_code_preview: "",
                       logo: null,
-                      logoPreview: "",
-                      accountName: "",
-                      transferNumber: "",
+                      logo_preview: "",
+                      account_name: "",
+                      account_number: "",
                     });
                   }}
                   className="flex-1 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
