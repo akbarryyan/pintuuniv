@@ -29,7 +29,7 @@ export default function AdminDashboard() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeItem, setActiveItem] = useState("dashboard");
-  
+
   // Use auth context
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -37,15 +37,35 @@ export default function AdminDashboard() {
   const { isLoading: pageTransitionLoading } = usePageTransition();
   const { isNavigating } = useSmoothNavigation();
   const [stats, setStats] = useState<AdminStats>({
-    totalUsers: 1247,
-    totalTryouts: 89,
-    totalRevenue: 15420000,
-    activeUsers: 892,
-    completedTryouts: 2341,
-    pendingApprovals: 12,
+    totalUsers: 0,
+    totalTryouts: 0,
+    totalRevenue: 0,
+    activeUsers: 0,
+    completedTryouts: 0,
+    pendingApprovals: 0,
   });
 
+  // Fetch admin stats from API
+  useEffect(() => {
+    const fetchAdminStats = async () => {
+      try {
+        const response = await fetch("/api/sys/dashboard/stats");
+        const data = await response.json();
 
+        if (data.success) {
+          setStats(data.stats);
+        } else {
+          console.error("Error fetching admin stats:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching admin stats:", error);
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchAdminStats();
+    }
+  }, [isAuthenticated]);
 
   const [recentActivities] = useState<
     Array<{
