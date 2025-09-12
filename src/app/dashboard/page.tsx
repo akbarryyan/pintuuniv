@@ -15,6 +15,7 @@ import ProgressTracking from "@/components/dashboard/ProgressTracking";
 import UpcomingEvents from "@/components/dashboard/UpcomingEvents";
 import TryoutsTerdaftar from "@/components/dashboard/TryoutsTerdaftar";
 import UpcomingTryouts from "@/components/dashboard/UpcomingTryouts";
+import WaitingConfirmation from "@/components/dashboard/WaitingConfirmation";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -367,6 +368,9 @@ export default function DashboardPage() {
 
             {/* Progress Tracking Chart */}
             <ProgressTracking />
+
+            {/* Waiting Confirmation Section */}
+            <WaitingConfirmation userId={userData.id} />
           </div>
 
           {/* Upcoming Events */}
