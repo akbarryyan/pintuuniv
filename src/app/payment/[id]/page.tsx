@@ -183,14 +183,27 @@ export default function PaymentPage() {
       return;
     }
 
-    // Redirect to confirmation page with payment details
-    const confirmationUrl = `/payment/${
-      params.id
-    }/confirmation?method=${selectedMethod}${
-      selectedDetail ? `&account=${encodeURIComponent(selectedDetail)}` : ""
-    }`;
+    // Show loading animation
+    setIsProcessing(true);
 
-    router.push(confirmationUrl);
+    try {
+      // Add delay for loading animation (2 seconds)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // Redirect to confirmation page with payment details
+      const confirmationUrl = `/payment/${
+        params.id
+      }/confirmation?method=${selectedMethod}${
+        selectedDetail ? `&account=${encodeURIComponent(selectedDetail)}` : ""
+      }`;
+
+      router.push(confirmationUrl);
+    } catch (error) {
+      console.error("Error processing payment:", error);
+      toast.error("Terjadi kesalahan, silakan coba lagi");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   if (loading) {
@@ -561,8 +574,17 @@ export default function PaymentPage() {
                   })()}
                   className="w-full mt-6 bg-orange-500 text-white px-6 py-4 font-black text-lg border-4 border-slate-800 hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  💳 Bayar Sekarang - Rp{" "}
-                  {Math.round(tryout.price).toLocaleString("id-ID")}
+                  {isProcessing ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Memproses...
+                    </div>
+                  ) : (
+                    <>
+                      💳 Bayar Sekarang - Rp{" "}
+                      {Math.round(tryout.price).toLocaleString("id-ID")}
+                    </>
+                  )}
                 </button>
               </div>
             </div>
