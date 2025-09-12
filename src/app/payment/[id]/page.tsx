@@ -183,45 +183,14 @@ export default function PaymentPage() {
       return;
     }
 
-    setIsProcessing(true);
-    setStep("processing");
+    // Redirect to confirmation page with payment details
+    const confirmationUrl = `/payment/${
+      params.id
+    }/confirmation?method=${selectedMethod}${
+      selectedDetail ? `&account=${encodeURIComponent(selectedDetail)}` : ""
+    }`;
 
-    try {
-      // Simulasi delay pembayaran
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      // Daftarkan user ke tryout setelah pembayaran berhasil
-      const registerResponse = await fetch("/api/user/registrations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-        body: JSON.stringify({
-          tryoutId: tryout?.id,
-          paymentMethod: selectedMethod,
-          paymentStatus: "paid",
-        }),
-      });
-
-      if (!registerResponse.ok) {
-        throw new Error("Gagal mendaftarkan ke tryout");
-      }
-
-      setStep("success");
-      toast.success("Pembayaran berhasil! Anda telah terdaftar ke tryout.");
-
-      // Redirect ke dashboard setelah 2 detik
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 2000);
-    } catch (error) {
-      console.error("Payment error:", error);
-      toast.error("Gagal memproses pembayaran");
-      setStep("method");
-    } finally {
-      setIsProcessing(false);
-    }
+    router.push(confirmationUrl);
   };
 
   if (loading) {
