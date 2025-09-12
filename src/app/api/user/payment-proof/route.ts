@@ -2,9 +2,31 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { query } from "@/lib/db";
+import { verifyToken } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
+    // Get auth token from Authorization header
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { success: false, error: "No valid authorization token provided" },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.split(" ")[1];
+    const payload = verifyToken(token);
+
+    if (!payload) {
+      return NextResponse.json(
+        { success: false, error: "Invalid or expired token" },
+        { status: 401 }
+      );
+    }
+
+    console.log("Payment proof - User payload:", payload); // Debug log
+    const userId = payload.userId;
     const formData = await request.formData();
     const proof = formData.get("proof") as File;
     const tryoutId = formData.get("tryoutId") as string;
@@ -71,7 +93,53 @@ export async function POST(request: NextRequest) {
     const tryoutRows = Array.isArray(tryoutResult) ? tryoutResult : [];
     const tryoutData = tryoutRows.length > 0 ? (tryoutRows[0] as any) : null;
 
-    // Determine status based on tryout type
+    // Check if user already has a registration for this tryout
+    const existingRegistrationQuery = `SELECT id, status FROM user_tryout_registrations WHERE user_id = ? AND tryout_id = ?`;
+    const existingRegistration = await query(existingRegistrationQuery, [
+      userId,
+      parseInt(tryoutId),
+    ]);
+    const existingRows = Array.isArray(existingRegistration)
+      ? existingRegistration
+      : [];
+
+    if (existingRows.length > 0) {
+      // Update existing registration with payment proof instead of creating new one
+      const registrationId = (existingRows[0] as any).id;
+
+      const updateQuery = `
+        UPDATE user_tryout_registrations 
+        SET payment_reference = ?, notes = ?, status = ?, updated_at = NOW()
+        WHERE id = ?
+      `;
+
+      const registrationStatus =
+        tryoutData?.type_tryout === "free"
+          ? "registered"
+          : "waiting_confirmation";
+      const proofUrl = `/uploads/payment-proofs/${fileName}`;
+      const notes = `Payment proof uploaded: ${fileName}${
+        accountId ? `, Account ID: ${accountId}` : ""
+      }`;
+
+      await query(updateQuery, [
+        proofUrl,
+        notes,
+        registrationStatus,
+        registrationId,
+      ]);
+
+      return NextResponse.json({
+        success: true,
+        message: "Payment proof uploaded and registration updated successfully",
+        data: {
+          proofUrl,
+          fileName,
+        },
+      });
+    }
+
+    // Determine status based on tryout type (for new registrations)
     const registrationStatus =
       tryoutData?.type_tryout === "free"
         ? "registered"
@@ -84,14 +152,17 @@ export async function POST(request: NextRequest) {
       VALUES (?, ?, NOW(), ?, 'pending', ?, ?, NOW(), ?, NOW(), NOW())
     `;
 
-    // Get user ID from auth token (you might need to implement JWT verification here)
-    // For now, using a placeholder - you should implement proper auth verification
-    const userId = 1; // This should come from JWT token verification
-
     const proofUrl = `/uploads/payment-proofs/${fileName}`;
     const notes = `Payment proof uploaded: ${fileName}${
       accountId ? `, Account ID: ${accountId}` : ""
     }`;
+
+    console.log(
+      "Inserting registration with userId:",
+      userId,
+      "tryoutId:",
+      parseInt(tryoutId)
+    ); // Debug log
 
     await query(insertQuery, [
       userId,

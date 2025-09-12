@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query } from "@/lib/db";
-import jwt from "jsonwebtoken";
+import { verifyToken } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
   try {
@@ -110,17 +110,16 @@ export async function POST(request: NextRequest) {
     }
 
     const token = authHeader.substring(7);
-    let userId: number;
+    const payload = verifyToken(token);
 
-    try {
-      const decoded = jwt.verify(token, "fallback-secret-key") as any;
-      userId = decoded.userId;
-    } catch (jwtError) {
+    if (!payload) {
       return NextResponse.json(
-        { success: false, error: "Invalid token" },
+        { success: false, error: "Invalid or expired token" },
         { status: 401 }
       );
     }
+
+    const userId = payload.userId;
 
     // Check tryout type to determine appropriate status
     const tryoutQuery = `SELECT type_tryout FROM tryouts WHERE id = ?`;
