@@ -386,6 +386,9 @@ export default function TryoutRegistrationsPage() {
           setSelectedRegistration(null);
         }}
         registration={selectedRegistration}
+        onApprove={() => {
+          fetchRegistrations();
+        }}
       />
 
       <DeleteModal

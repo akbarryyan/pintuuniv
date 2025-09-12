@@ -1,24 +1,74 @@
 "use client";
 
 import { Registration } from "@/lib/services/registrationService";
-import { ZoomIn } from "lucide-react";
+import { ZoomIn, CheckCircle, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface ViewModalProps {
   isOpen: boolean;
   onClose: () => void;
   registration: Registration | null;
+  onApprove?: (registration: Registration) => void;
 }
 
 export default function ViewModal({
   isOpen,
   onClose,
   registration,
+  onApprove,
 }: ViewModalProps) {
+  const [isApproving, setIsApproving] = useState(false);
+
   if (!isOpen || !registration) return null;
 
   const openImageInNewTab = () => {
     if (registration.payment_reference) {
       window.open(registration.payment_reference, "_blank");
+    }
+  };
+
+  const handleApprove = async () => {
+    if (!registration) return;
+
+    setIsApproving(true);
+
+    try {
+      // Delay for loading animation
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      const response = await fetch(
+        `/api/sys/registrations/${registration.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status: "approved",
+            payment_status: "paid",
+            notes: "Registrasi disetujui melalui ViewModal",
+            approved_by: 1, // TODO: Get from auth context
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success("Registrasi berhasil disetujui!");
+        if (onApprove) {
+          onApprove(registration);
+        }
+        onClose();
+      } else {
+        toast.error(data.message || "Gagal menyetujui registrasi");
+      }
+    } catch (error) {
+      console.error("Error approving registration:", error);
+      toast.error("Terjadi kesalahan saat menyetujui registrasi");
+    } finally {
+      setIsApproving(false);
     }
   };
   const getStatusColor = (status: string) => {
@@ -367,10 +417,33 @@ export default function ViewModal({
           )}
 
           {/* Action Button */}
-          <div className="mt-6 flex justify-end">
+          <div className="mt-6 flex justify-end gap-3">
+            {/* Approve Button - Only show for waiting_confirmation status */}
+            {registration.status === "waiting_confirmation" && (
+              <button
+                onClick={handleApprove}
+                disabled={isApproving}
+                className="bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white px-6 py-3 font-black text-sm border-3 border-slate-800 transition-colors flex items-center gap-2 disabled:cursor-not-allowed"
+              >
+                {isApproving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Memproses...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4" />
+                    Konfirmasi Pembelian
+                  </>
+                )}
+              </button>
+            )}
+
+            {/* Close Button */}
             <button
               onClick={onClose}
-              className="bg-slate-100 text-slate-900 px-6 py-3 font-black text-sm border-3 border-slate-800 hover:bg-slate-200 transition-colors"
+              disabled={isApproving}
+              className="bg-slate-100 text-slate-900 px-6 py-3 font-black text-sm border-3 border-slate-800 hover:bg-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Tutup
             </button>
