@@ -46,6 +46,9 @@ export default function TryoutPage() {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
+  const [startingCategoryId, setStartingCategoryId] = useState<number | null>(
+    null
+  );
   const [userData, setUserData] = useState({
     name: "User",
     avatar: "👨‍🎓",
@@ -161,11 +164,48 @@ export default function TryoutPage() {
     }
   }, [tryoutId]);
 
-  const handleStartCategory = (categoryId: number, categoryName: string) => {
+  const handleStartCategory = async (
+    categoryId: number,
+    categoryName: string
+  ) => {
     const category = tryoutData?.categories.find((c) => c.id === categoryId);
     if (category) {
-      setSelectedCategory(category);
-      setShowInstructions(true);
+      // Set loading state
+      setStartingCategoryId(categoryId);
+
+      // Show loading toast with category name
+      const loadingToast = toast.loading(
+        `🚀 Mempersiapkan kategori "${categoryName}"...`
+      );
+
+      try {
+        // Step 1: Preparing
+        await new Promise((resolve) => setTimeout(resolve, 700));
+        toast.loading("📚 Memuat soal-soal kategori...", { id: loadingToast });
+
+        // Step 2: Loading category
+        await new Promise((resolve) => setTimeout(resolve, 700));
+        toast.loading("⚙️ Menyiapkan lingkungan...", { id: loadingToast });
+
+        // Step 3: Final preparation
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        // Update toast
+        toast.success(`✅ Kategori "${categoryName}" siap dimulai!`, {
+          id: loadingToast,
+        });
+
+        // Small delay before showing modal
+        await new Promise((resolve) => setTimeout(resolve, 400));
+
+        setSelectedCategory(category);
+        setShowInstructions(true);
+      } catch (error) {
+        console.error("Error preparing category:", error);
+        toast.error("❌ Gagal mempersiapkan kategori", { id: loadingToast });
+      } finally {
+        setStartingCategoryId(null);
+      }
     }
   };
 
@@ -484,9 +524,29 @@ export default function TryoutPage() {
                         onClick={() =>
                           handleStartCategory(category.id, category.name)
                         }
-                        className="bg-gray-500 text-white px-6 py-3 font-black text-sm border-2 border-black hover:bg-gray-600 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] whitespace-nowrap"
+                        disabled={startingCategoryId === category.id}
+                        className={`px-6 py-3 font-black text-sm border-2 border-black transition-all duration-200 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] whitespace-nowrap relative overflow-hidden disabled:cursor-not-allowed ${
+                          startingCategoryId === category.id
+                            ? "bg-gray-400 scale-95 shadow-none animate-pulse"
+                            : "bg-gray-500 hover:bg-gray-600 hover:scale-105 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transform"
+                        } text-white`}
                       >
-                        🔄 ULANGI
+                        {startingCategoryId === category.id ? (
+                          <div className="flex items-center justify-center gap-2 relative z-10">
+                            <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            <span className="animate-pulse">
+                              Mempersiapkan...
+                            </span>
+                            {/* Shimmer effect */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-[shimmer_1.5s_ease-in-out_infinite] -z-10"></div>
+                          </div>
+                        ) : (
+                          <span className="relative z-10 flex items-center justify-center gap-1">
+                            <span className="animate-bounce">🔄</span>
+                            <span className="hidden sm:inline">ULANGI</span>
+                            <span className="sm:hidden">ULANG</span>
+                          </span>
+                        )}
                       </button>
                     </>
                   ) : (
@@ -494,9 +554,31 @@ export default function TryoutPage() {
                       onClick={() =>
                         handleStartCategory(category.id, category.name)
                       }
-                      className="bg-emerald-500 text-white px-6 py-3 font-black text-sm border-2 border-black hover:bg-emerald-600 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] whitespace-nowrap"
+                      disabled={startingCategoryId === category.id}
+                      className={`px-6 py-3 font-black text-sm border-2 border-black transition-all duration-200 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] whitespace-nowrap relative overflow-hidden disabled:cursor-not-allowed ${
+                        startingCategoryId === category.id
+                          ? "bg-emerald-400 scale-95 shadow-none animate-pulse"
+                          : "bg-emerald-500 hover:bg-emerald-600 hover:scale-105 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transform"
+                      } text-white`}
                     >
-                      🚀 MULAI KERJAKAN KATEGORI INI
+                      {startingCategoryId === category.id ? (
+                        <div className="flex items-center justify-center gap-2 relative z-10">
+                          <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          <span className="animate-pulse">
+                            Mempersiapkan...
+                          </span>
+                          {/* Shimmer effect */}
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-[shimmer_1.5s_ease-in-out_infinite] -z-10"></div>
+                        </div>
+                      ) : (
+                        <span className="relative z-10 flex items-center justify-center gap-1">
+                          <span className="animate-bounce">🚀</span>
+                          <span className="hidden sm:inline">
+                            MULAI KERJAKAN KATEGORI INI
+                          </span>
+                          <span className="sm:hidden">MULAI KATEGORI</span>
+                        </span>
+                      )}
                     </button>
                   )}
                 </div>
