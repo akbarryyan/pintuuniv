@@ -62,11 +62,11 @@ export default function WaitingConfirmation({
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "waiting_confirmation":
-        return <Clock className="h-4 w-4 text-yellow-500" />;
+        return <Clock className="h-5 w-5 text-black" />;
       case "rejected":
-        return <XCircle className="h-4 w-4 text-red-500" />;
+        return <XCircle className="h-5 w-5 text-black" />;
       default:
-        return <AlertCircle className="h-4 w-4 text-gray-500" />;
+        return <AlertCircle className="h-5 w-5 text-black" />;
     }
   };
 
@@ -78,17 +78,6 @@ export default function WaitingConfirmation({
         return "Ditolak";
       default:
         return status;
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "waiting_confirmation":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "rejected":
-        return "bg-red-100 text-red-800 border-red-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
@@ -112,29 +101,31 @@ export default function WaitingConfirmation({
 
   if (isLoading) {
     return (
-      <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border border-gray-100 p-6 mt-6">
+      <div className="bg-white rounded-lg border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 mt-6">
         <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl shadow-md animate-pulse">
-            <Clock className="h-6 w-6 text-white" />
+          <div className="p-3 bg-yellow-400 border-2 border-black rounded-lg shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] animate-pulse">
+            <Clock className="h-6 w-6 text-black" />
           </div>
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-1">
+            <h2 className="text-2xl font-black text-black mb-1 uppercase tracking-tight">
               Menunggu Konfirmasi Pembayaran
             </h2>
-            <p className="text-gray-600 text-sm">Memuat data...</p>
+            <p className="text-gray-700 font-bold text-sm uppercase">
+              Memuat data...
+            </p>
           </div>
         </div>
         <div className="animate-pulse space-y-4">
           {[1, 2].map((i) => (
             <div
               key={i}
-              className="bg-white rounded-xl p-6 border border-gray-200"
+              className="bg-gray-100 border-2 border-black rounded-lg p-6 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
             >
-              <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
+              <div className="h-6 bg-gray-300 border border-black rounded w-3/4 mb-4"></div>
               <div className="space-y-3">
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+                <div className="h-4 bg-gray-300 border border-black rounded w-1/2"></div>
+                <div className="h-4 bg-gray-300 border border-black rounded w-2/3"></div>
+                <div className="h-4 bg-gray-300 border border-black rounded w-1/3"></div>
               </div>
             </div>
           ))}
@@ -145,28 +136,28 @@ export default function WaitingConfirmation({
 
   if (waitingTryouts.length === 0) {
     return (
-      <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border border-gray-100 p-6 mt-6">
+      <div className="bg-white rounded-lg border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 mt-6">
         <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl shadow-md">
-            <Clock className="h-6 w-6 text-white" />
+          <div className="p-3 bg-yellow-400 border-2 border-black rounded-lg shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+            <Clock className="h-6 w-6 text-black" />
           </div>
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-1">
+            <h2 className="text-2xl font-black text-black mb-1 uppercase tracking-tight">
               Menunggu Konfirmasi Pembayaran
             </h2>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-700 font-bold text-sm uppercase">
               Pantau status pembayaran tryout Anda di sini
             </p>
           </div>
         </div>
         <div className="text-center py-12">
-          <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
-            <Clock className="h-10 w-10 text-gray-400" />
+          <div className="w-20 h-20 mx-auto mb-6 bg-gray-200 border-2 border-black rounded-lg shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center">
+            <Clock className="h-10 w-10 text-black" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg font-black text-black mb-2 uppercase">
             Belum Ada Pembayaran
           </h3>
-          <p className="text-gray-500 max-w-md mx-auto">
+          <p className="text-gray-700 font-bold max-w-md mx-auto">
             Tidak ada tryout yang sedang menunggu konfirmasi pembayaran. Semua
             pembayaran Anda sudah dikonfirmasi atau belum ada pembayaran yang
             dilakukan.
@@ -177,44 +168,46 @@ export default function WaitingConfirmation({
   }
 
   return (
-    <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border border-gray-100 p-6 mt-6">
+    <div className="bg-white rounded-lg border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 mt-6">
       <div className="flex items-center gap-4 mb-8">
-        <div className="p-3 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl shadow-md">
-          <Clock className="h-6 w-6 text-white" />
+        <div className="p-3 bg-yellow-400 border-2 border-black rounded-lg shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+          <Clock className="h-6 w-6 text-black" />
         </div>
         <div className="flex-1">
-          <h2 className="text-2xl font-bold text-gray-900 mb-1">
+          <h2 className="text-2xl font-black text-black mb-1 uppercase tracking-tight">
             Menunggu Konfirmasi Pembayaran
           </h2>
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-700 font-bold text-sm uppercase">
             Pantau status pembayaran tryout Anda di sini
           </p>
         </div>
         {waitingTryouts.length > 0 && (
-          <span className="bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-800 text-sm font-bold px-4 py-2 rounded-full border border-yellow-200">
+          <span className="bg-yellow-300 border-2 border-black text-black text-sm font-black px-4 py-2 rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] uppercase">
             {waitingTryouts.length} tryout
           </span>
         )}
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-6">
         {waitingTryouts
           .filter((tryout) => tryout.status !== "approved") // Extra safety filter
           .map((tryout) => (
             <div
               key={tryout.id}
-              className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl hover:border-gray-300 transition-all duration-300 transform hover:-translate-y-1"
+              className="bg-gray-50 border-2 border-black rounded-lg p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-200"
             >
-              <div className="flex items-start justify-between mb-4">
+              <div className="flex items-start justify-between mb-6">
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-3">
-                    <h3 className="text-xl font-bold text-gray-900 leading-tight">
+                  <div className="flex items-center gap-3 mb-4">
+                    <h3 className="text-xl font-black text-black leading-tight uppercase">
                       {tryout.tryout_title}
                     </h3>
                     <span
-                      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold border-2 ${getStatusColor(
-                        tryout.status
-                      )}`}
+                      className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] uppercase ${
+                        tryout.status === "waiting_confirmation"
+                          ? "bg-yellow-300 text-black"
+                          : "bg-red-300 text-black"
+                      }`}
                     >
                       {getStatusIcon(tryout.status)}
                       {getStatusText(tryout.status)}
@@ -222,55 +215,55 @@ export default function WaitingConfirmation({
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-sm">
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-gray-700 min-w-[100px]">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <span className="font-black text-black min-w-[100px] uppercase">
                           Tipe:
                         </span>
-                        <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium uppercase tracking-wide">
+                        <span className="px-3 py-1 bg-blue-300 border border-black text-black rounded-lg text-xs font-black uppercase tracking-wide shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
                           {tryout.tryout_type}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-gray-700 min-w-[100px]">
+                      <div className="flex items-center gap-3">
+                        <span className="font-black text-black min-w-[100px] uppercase">
                           Tanggal:
                         </span>
-                        <span className="text-gray-600">
+                        <span className="text-gray-800 font-bold">
                           {formatDate(tryout.registration_date)}
                         </span>
                       </div>
                     </div>
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-gray-700 min-w-[100px]">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <span className="font-black text-black min-w-[100px] uppercase">
                           Jumlah:
                         </span>
-                        <span className="text-lg font-bold text-green-600">
+                        <span className="text-lg font-black text-green-700 bg-green-200 px-3 py-1 border border-black rounded-lg shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
                           {formatCurrency(tryout.payment_amount)}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-gray-700 min-w-[100px]">
+                      <div className="flex items-center gap-3">
+                        <span className="font-black text-black min-w-[100px] uppercase">
                           Metode:
                         </span>
-                        <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">
+                        <span className="px-3 py-1 bg-gray-200 border border-black text-black rounded-lg text-xs font-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
                           {tryout.payment_method_name || tryout.payment_method}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-gray-700 min-w-[100px]">
+                      <div className="flex items-center gap-3">
+                        <span className="font-black text-black min-w-[100px] uppercase">
                           Status:
                         </span>
-                        <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium capitalize">
+                        <span className="px-3 py-1 bg-purple-200 border border-black text-black rounded-lg text-xs font-black capitalize shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
                           {tryout.payment_status}
                         </span>
                       </div>
                       {tryout.payment_date && (
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-gray-700 min-w-[100px]">
+                        <div className="flex items-center gap-3">
+                          <span className="font-black text-black min-w-[100px] uppercase">
                             Dibayar:
                           </span>
-                          <span className="text-gray-600">
+                          <span className="text-gray-800 font-bold">
                             {formatDate(tryout.payment_date)}
                           </span>
                         </div>
@@ -281,14 +274,14 @@ export default function WaitingConfirmation({
               </div>
 
               {tryout.status === "waiting_confirmation" && (
-                <div className="mt-5 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400 rounded-lg">
+                <div className="mt-6 p-4 bg-yellow-200 border-2 border-black rounded-lg shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
                   <div className="flex items-start gap-3">
-                    <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                    <AlertCircle className="h-6 w-6 text-black mt-1 flex-shrink-0" />
                     <div>
-                      <p className="text-sm font-medium text-yellow-800 mb-1">
+                      <p className="text-sm font-black text-black mb-2 uppercase">
                         Pembayaran Sedang Diverifikasi
                       </p>
-                      <p className="text-sm text-yellow-700">
+                      <p className="text-sm text-black font-bold">
                         Admin sedang memverifikasi pembayaran Anda. Proses ini
                         membutuhkan waktu maksimal 1×24 jam kerja.
                       </p>
@@ -298,14 +291,14 @@ export default function WaitingConfirmation({
               )}
 
               {tryout.status === "rejected" && (
-                <div className="mt-5 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-400 rounded-lg">
+                <div className="mt-6 p-4 bg-red-200 border-2 border-black rounded-lg shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
                   <div className="flex items-start gap-3">
-                    <XCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                    <XCircle className="h-6 w-6 text-black mt-1 flex-shrink-0" />
                     <div>
-                      <p className="text-sm font-medium text-red-800 mb-1">
+                      <p className="text-sm font-black text-black mb-2 uppercase">
                         Pembayaran Ditolak
                       </p>
-                      <p className="text-sm text-red-700">
+                      <p className="text-sm text-black font-bold">
                         Pembayaran Anda tidak dapat diverifikasi. Silakan
                         hubungi admin untuk informasi lebih lanjut atau lakukan
                         pembayaran ulang dengan data yang benar.
