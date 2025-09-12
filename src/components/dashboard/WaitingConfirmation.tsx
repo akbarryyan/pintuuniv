@@ -38,7 +38,13 @@ export default function WaitingConfirmation({
       const data = await response.json();
 
       if (data.success) {
-        setWaitingTryouts(data.tryouts);
+        // Filter out approved status on client side as extra safety
+        const filteredTryouts = data.tryouts.filter(
+          (tryout: WaitingTryout) =>
+            tryout.status === "waiting_confirmation" ||
+            tryout.status === "rejected"
+        );
+        setWaitingTryouts(filteredTryouts);
       } else {
         console.error("Error fetching waiting tryouts:", data.message);
       }
@@ -192,123 +198,124 @@ export default function WaitingConfirmation({
       </div>
 
       <div className="space-y-5">
-        {waitingTryouts.map((tryout) => (
-          <div
-            key={tryout.id}
-            className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl hover:border-gray-300 transition-all duration-300 transform hover:-translate-y-1"
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <h3 className="text-xl font-bold text-gray-900 leading-tight">
-                    {tryout.tryout_title}
-                  </h3>
-                  <span
-                    className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold border-2 ${getStatusColor(
-                      tryout.status
-                    )}`}
-                  >
-                    {getStatusIcon(tryout.status)}
-                    {getStatusText(tryout.status)}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-sm">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-700 min-w-[100px]">
-                        Tipe:
-                      </span>
-                      <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium uppercase tracking-wide">
-                        {tryout.tryout_type}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-700 min-w-[100px]">
-                        Tanggal:
-                      </span>
-                      <span className="text-gray-600">
-                        {formatDate(tryout.registration_date)}
-                      </span>
-                    </div>
+        {waitingTryouts
+          .filter((tryout) => tryout.status !== "approved") // Extra safety filter
+          .map((tryout) => (
+            <div
+              key={tryout.id}
+              className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl hover:border-gray-300 transition-all duration-300 transform hover:-translate-y-1"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-3">
+                    <h3 className="text-xl font-bold text-gray-900 leading-tight">
+                      {tryout.tryout_title}
+                    </h3>
+                    <span
+                      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold border-2 ${getStatusColor(
+                        tryout.status
+                      )}`}
+                    >
+                      {getStatusIcon(tryout.status)}
+                      {getStatusText(tryout.status)}
+                    </span>
                   </div>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-700 min-w-[100px]">
-                        Jumlah:
-                      </span>
-                      <span className="text-lg font-bold text-green-600">
-                        {formatCurrency(tryout.payment_amount)}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-700 min-w-[100px]">
-                        Metode:
-                      </span>
-                      <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">
-                        {tryout.payment_method_name || tryout.payment_method}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-700 min-w-[100px]">
-                        Status:
-                      </span>
-                      <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium capitalize">
-                        {tryout.payment_status}
-                      </span>
-                    </div>
-                    {tryout.payment_date && (
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-sm">
+                    <div className="space-y-3">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-gray-700 min-w-[100px]">
-                          Dibayar:
+                          Tipe:
                         </span>
-                        <span className="text-gray-600">
-                          {formatDate(tryout.payment_date)}
+                        <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium uppercase tracking-wide">
+                          {tryout.tryout_type}
                         </span>
                       </div>
-                    )}
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-gray-700 min-w-[100px]">
+                          Tanggal:
+                        </span>
+                        <span className="text-gray-600">
+                          {formatDate(tryout.registration_date)}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-gray-700 min-w-[100px]">
+                          Jumlah:
+                        </span>
+                        <span className="text-lg font-bold text-green-600">
+                          {formatCurrency(tryout.payment_amount)}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-gray-700 min-w-[100px]">
+                          Metode:
+                        </span>
+                        <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">
+                          {tryout.payment_method_name || tryout.payment_method}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-gray-700 min-w-[100px]">
+                          Status:
+                        </span>
+                        <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium capitalize">
+                          {tryout.payment_status}
+                        </span>
+                      </div>
+                      {tryout.payment_date && (
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-gray-700 min-w-[100px]">
+                            Dibayar:
+                          </span>
+                          <span className="text-gray-600">
+                            {formatDate(tryout.payment_date)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
+
+              {tryout.status === "waiting_confirmation" && (
+                <div className="mt-5 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-sm font-medium text-yellow-800 mb-1">
+                        Pembayaran Sedang Diverifikasi
+                      </p>
+                      <p className="text-sm text-yellow-700">
+                        Admin sedang memverifikasi pembayaran Anda. Proses ini
+                        membutuhkan waktu maksimal 1×24 jam kerja.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {tryout.status === "rejected" && (
+                <div className="mt-5 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-400 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <XCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-sm font-medium text-red-800 mb-1">
+                        Pembayaran Ditolak
+                      </p>
+                      <p className="text-sm text-red-700">
+                        Pembayaran Anda tidak dapat diverifikasi. Silakan
+                        hubungi admin untuk informasi lebih lanjut atau lakukan
+                        pembayaran ulang dengan data yang benar.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-
-            {tryout.status === "waiting_confirmation" && (
-              <div className="mt-5 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400 rounded-lg">
-                <div className="flex items-start gap-3">
-                  <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-yellow-800 mb-1">
-                      Pembayaran Sedang Diverifikasi
-                    </p>
-                    <p className="text-sm text-yellow-700">
-                      Admin sedang memverifikasi pembayaran Anda. Proses ini
-                      membutuhkan waktu maksimal 1×24 jam kerja. Anda akan
-                      mendapat notifikasi setelah pembayaran dikonfirmasi.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {tryout.status === "rejected" && (
-              <div className="mt-5 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-400 rounded-lg">
-                <div className="flex items-start gap-3">
-                  <XCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-red-800 mb-1">
-                      Pembayaran Ditolak
-                    </p>
-                    <p className="text-sm text-red-700">
-                      Pembayaran Anda tidak dapat diverifikasi. Silakan hubungi
-                      admin untuk informasi lebih lanjut atau lakukan pembayaran
-                      ulang dengan data yang benar.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );

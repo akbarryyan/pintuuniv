@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
       LEFT JOIN payment_methods pm ON utr.payment_method_id = pm.id
       WHERE utr.user_id = ? 
         AND utr.status IN ('waiting_confirmation', 'rejected')
+        AND utr.status != 'approved'
       ORDER BY utr.registration_date DESC
     `;
 
