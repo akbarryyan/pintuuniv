@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import RegisterConfirmationModal from "./RegisterConfirmationModal";
 import PaymentConfirmationModal from "./PaymentConfirmationModal";
@@ -40,6 +41,7 @@ export default function TryoutsGrid({
   onRegisterTryout,
   userData,
 }: TryoutsGridProps) {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedTryout, setSelectedTryout] = useState<Tryout | null>(null);
@@ -214,8 +216,8 @@ export default function TryoutsGrid({
       return;
     }
 
-    // TODO: Implementasi navigasi ke halaman tryout
-    toast.success(`Memulai tryout "${tryout.title}"!`);
+    // Navigasi ke halaman tryout
+    router.push(`/tryout/${tryout.id}`);
   };
 
   return (
