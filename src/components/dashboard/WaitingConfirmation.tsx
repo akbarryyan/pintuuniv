@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { Clock, XCircle, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
 interface WaitingTryout {
@@ -13,7 +13,6 @@ interface WaitingTryout {
   status: string;
   payment_status: string;
   payment_method: string;
-  payment_reference: string | null;
   payment_date: string | null;
   payment_amount: number;
   payment_method_name: string;
@@ -58,8 +57,6 @@ export default function WaitingConfirmation({
     switch (status) {
       case "waiting_confirmation":
         return <Clock className="h-4 w-4 text-yellow-500" />;
-      case "approved":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
       case "rejected":
         return <XCircle className="h-4 w-4 text-red-500" />;
       default:
@@ -71,8 +68,6 @@ export default function WaitingConfirmation({
     switch (status) {
       case "waiting_confirmation":
         return "Menunggu Konfirmasi";
-      case "approved":
-        return "Disetujui";
       case "rejected":
         return "Ditolak";
       default:
@@ -84,8 +79,6 @@ export default function WaitingConfirmation({
     switch (status) {
       case "waiting_confirmation":
         return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "approved":
-        return "bg-green-100 text-green-800 border-green-200";
       case "rejected":
         return "bg-red-100 text-red-800 border-red-200";
       default:
@@ -113,22 +106,32 @@ export default function WaitingConfirmation({
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-6">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-yellow-100 rounded-lg">
-            <Clock className="h-5 w-5 text-yellow-600" />
+      <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border border-gray-100 p-6 mt-6">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="p-3 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl shadow-md animate-pulse">
+            <Clock className="h-6 w-6 text-white" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-800">
-            Menunggu Konfirmasi Pembayaran
-          </h2>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold text-gray-900 mb-1">
+              Menunggu Konfirmasi Pembayaran
+            </h2>
+            <p className="text-gray-600 text-sm">Memuat data...</p>
+          </div>
         </div>
-        <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
-          <div className="space-y-3">
-            {[1, 2].map((i) => (
-              <div key={i} className="h-20 bg-gray-200 rounded"></div>
-            ))}
-          </div>
+        <div className="animate-pulse space-y-4">
+          {[1, 2].map((i) => (
+            <div
+              key={i}
+              className="bg-white rounded-xl p-6 border border-gray-200"
+            >
+              <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
+              <div className="space-y-3">
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -136,19 +139,31 @@ export default function WaitingConfirmation({
 
   if (waitingTryouts.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-6">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-yellow-100 rounded-lg">
-            <Clock className="h-5 w-5 text-yellow-600" />
+      <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border border-gray-100 p-6 mt-6">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="p-3 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl shadow-md">
+            <Clock className="h-6 w-6 text-white" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-800">
-            Menunggu Konfirmasi Pembayaran
-          </h2>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold text-gray-900 mb-1">
+              Menunggu Konfirmasi Pembayaran
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Pantau status pembayaran tryout Anda di sini
+            </p>
+          </div>
         </div>
-        <div className="text-center py-8">
-          <Clock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-500">
-            Tidak ada tryout yang menunggu konfirmasi
+        <div className="text-center py-12">
+          <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+            <Clock className="h-10 w-10 text-gray-400" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Belum Ada Pembayaran
+          </h3>
+          <p className="text-gray-500 max-w-md mx-auto">
+            Tidak ada tryout yang sedang menunggu konfirmasi pembayaran. Semua
+            pembayaran Anda sudah dikonfirmasi atau belum ada pembayaran yang
+            dilakukan.
           </p>
         </div>
       </div>
@@ -156,33 +171,40 @@ export default function WaitingConfirmation({
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-yellow-100 rounded-lg">
-          <Clock className="h-5 w-5 text-yellow-600" />
+    <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border border-gray-100 p-6 mt-6">
+      <div className="flex items-center gap-4 mb-8">
+        <div className="p-3 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl shadow-md">
+          <Clock className="h-6 w-6 text-white" />
         </div>
-        <h2 className="text-xl font-semibold text-gray-800">
-          Menunggu Konfirmasi Pembayaran
-        </h2>
-        <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-          {waitingTryouts.length} tryout
-        </span>
+        <div className="flex-1">
+          <h2 className="text-2xl font-bold text-gray-900 mb-1">
+            Menunggu Konfirmasi Pembayaran
+          </h2>
+          <p className="text-gray-600 text-sm">
+            Pantau status pembayaran tryout Anda di sini
+          </p>
+        </div>
+        {waitingTryouts.length > 0 && (
+          <span className="bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-800 text-sm font-bold px-4 py-2 rounded-full border border-yellow-200">
+            {waitingTryouts.length} tryout
+          </span>
+        )}
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-5">
         {waitingTryouts.map((tryout) => (
           <div
             key={tryout.id}
-            className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+            className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl hover:border-gray-300 transition-all duration-300 transform hover:-translate-y-1"
           >
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="font-medium text-gray-900">
+                <div className="flex items-center gap-3 mb-3">
+                  <h3 className="text-xl font-bold text-gray-900 leading-tight">
                     {tryout.tryout_title}
                   </h3>
                   <span
-                    className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(
+                    className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold border-2 ${getStatusColor(
                       tryout.status
                     )}`}
                   >
@@ -191,41 +213,59 @@ export default function WaitingConfirmation({
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-600">
-                  <div>
-                    <p>
-                      <span className="font-medium">Tipe:</span>{" "}
-                      {tryout.tryout_type}
-                    </p>
-                    <p>
-                      <span className="font-medium">Tanggal Daftar:</span>{" "}
-                      {formatDate(tryout.registration_date)}
-                    </p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-sm">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-700 min-w-[100px]">
+                        Tipe:
+                      </span>
+                      <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium uppercase tracking-wide">
+                        {tryout.tryout_type}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-700 min-w-[100px]">
+                        Tanggal:
+                      </span>
+                      <span className="text-gray-600">
+                        {formatDate(tryout.registration_date)}
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <p>
-                      <span className="font-medium">Jumlah:</span>{" "}
-                      {formatCurrency(tryout.payment_amount)}
-                    </p>
-                    <p>
-                      <span className="font-medium">Metode:</span>{" "}
-                      {tryout.payment_method_name || tryout.payment_method}
-                    </p>
-                    <p>
-                      <span className="font-medium">Status Bayar:</span>{" "}
-                      {tryout.payment_status}
-                    </p>
-                    {tryout.payment_reference && (
-                      <p>
-                        <span className="font-medium">Referensi:</span>{" "}
-                        {tryout.payment_reference}
-                      </p>
-                    )}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-700 min-w-[100px]">
+                        Jumlah:
+                      </span>
+                      <span className="text-lg font-bold text-green-600">
+                        {formatCurrency(tryout.payment_amount)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-700 min-w-[100px]">
+                        Metode:
+                      </span>
+                      <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">
+                        {tryout.payment_method_name || tryout.payment_method}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-700 min-w-[100px]">
+                        Status:
+                      </span>
+                      <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium capitalize">
+                        {tryout.payment_status}
+                      </span>
+                    </div>
                     {tryout.payment_date && (
-                      <p>
-                        <span className="font-medium">Tanggal Bayar:</span>{" "}
-                        {formatDate(tryout.payment_date)}
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-gray-700 min-w-[100px]">
+                          Dibayar:
+                        </span>
+                        <span className="text-gray-600">
+                          {formatDate(tryout.payment_date)}
+                        </span>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -233,37 +273,37 @@ export default function WaitingConfirmation({
             </div>
 
             {tryout.status === "waiting_confirmation" && (
-              <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <AlertCircle className="h-4 w-4 text-yellow-600" />
-                  <p className="text-sm text-yellow-700">
-                    Pembayaran Anda sedang diverifikasi oleh admin. Proses ini
-                    membutuhkan waktu 1x24 jam.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {tryout.status === "approved" && (
-              <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <p className="text-sm text-green-700">
-                    Pembayaran disetujui! Anda sekarang dapat mengikuti tryout
-                    ini.
-                  </p>
+              <div className="mt-5 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium text-yellow-800 mb-1">
+                      Pembayaran Sedang Diverifikasi
+                    </p>
+                    <p className="text-sm text-yellow-700">
+                      Admin sedang memverifikasi pembayaran Anda. Proses ini
+                      membutuhkan waktu maksimal 1×24 jam kerja. Anda akan
+                      mendapat notifikasi setelah pembayaran dikonfirmasi.
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
 
             {tryout.status === "rejected" && (
-              <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <XCircle className="h-4 w-4 text-red-600" />
-                  <p className="text-sm text-red-700">
-                    Pembayaran ditolak. Silakan hubungi admin untuk informasi
-                    lebih lanjut.
-                  </p>
+              <div className="mt-5 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-400 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <XCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium text-red-800 mb-1">
+                      Pembayaran Ditolak
+                    </p>
+                    <p className="text-sm text-red-700">
+                      Pembayaran Anda tidak dapat diverifikasi. Silakan hubungi
+                      admin untuk informasi lebih lanjut atau lakukan pembayaran
+                      ulang dengan data yang benar.
+                    </p>
+                  </div>
                 </div>
               </div>
             )}

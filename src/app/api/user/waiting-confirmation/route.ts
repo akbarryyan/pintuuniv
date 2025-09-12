@@ -24,7 +24,6 @@ export async function GET(request: NextRequest) {
         utr.status,
         utr.payment_status,
         utr.payment_method,
-        utr.payment_reference,
         utr.payment_date,
         t.price as payment_amount,
         pm.name as payment_method_name
@@ -32,7 +31,7 @@ export async function GET(request: NextRequest) {
       JOIN tryouts t ON utr.tryout_id = t.id
       LEFT JOIN payment_methods pm ON utr.payment_method_id = pm.id
       WHERE utr.user_id = ? 
-        AND utr.status IN ('waiting_confirmation', 'approved', 'rejected')
+        AND utr.status IN ('waiting_confirmation', 'rejected')
       ORDER BY utr.registration_date DESC
     `;
 
