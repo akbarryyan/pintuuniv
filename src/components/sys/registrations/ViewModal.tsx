@@ -19,6 +19,8 @@ export default function ViewModal({
     switch (status) {
       case "registered":
         return "bg-orange-100 text-orange-800 border-orange-400";
+      case "waiting_confirmation":
+        return "bg-yellow-100 text-yellow-800 border-yellow-400";
       case "approved":
         return "bg-emerald-100 text-emerald-800 border-emerald-400";
       case "rejected":
@@ -49,6 +51,8 @@ export default function ViewModal({
     switch (status) {
       case "registered":
         return "Terdaftar";
+      case "waiting_confirmation":
+        return "Menunggu Konfirmasi";
       case "approved":
         return "Disetujui";
       case "rejected":
@@ -78,12 +82,12 @@ export default function ViewModal({
   const formatDate = (dateString: string) => {
     if (!dateString) return "Belum ditentukan";
     const date = new Date(dateString);
-    return date.toLocaleDateString('id-ID', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return date.toLocaleDateString("id-ID", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -124,23 +128,33 @@ export default function ViewModal({
               <div className="space-y-2 text-sm">
                 <div>
                   <span className="font-bold text-slate-600">Nama:</span>
-                  <span className="ml-2 text-slate-900">{registration.user_name}</span>
+                  <span className="ml-2 text-slate-900">
+                    {registration.user_name}
+                  </span>
                 </div>
                 <div>
                   <span className="font-bold text-slate-600">Email:</span>
-                  <span className="ml-2 text-slate-900">{registration.user_email}</span>
+                  <span className="ml-2 text-slate-900">
+                    {registration.user_email}
+                  </span>
                 </div>
                 <div>
                   <span className="font-bold text-slate-600">Telepon:</span>
-                  <span className="ml-2 text-slate-900">{registration.user_phone || "Belum diisi"}</span>
+                  <span className="ml-2 text-slate-900">
+                    {registration.user_phone || "Belum diisi"}
+                  </span>
                 </div>
                 <div>
                   <span className="font-bold text-slate-600">Sekolah:</span>
-                  <span className="ml-2 text-slate-900">{registration.user_school || "Belum diisi"}</span>
+                  <span className="ml-2 text-slate-900">
+                    {registration.user_school || "Belum diisi"}
+                  </span>
                 </div>
                 <div>
                   <span className="font-bold text-slate-600">Kelas:</span>
-                  <span className="ml-2 text-slate-900">{registration.user_grade || "Belum diisi"}</span>
+                  <span className="ml-2 text-slate-900">
+                    {registration.user_grade || "Belum diisi"}
+                  </span>
                 </div>
               </div>
             </div>
@@ -158,17 +172,22 @@ export default function ViewModal({
               <div className="space-y-2 text-sm">
                 <div>
                   <span className="font-bold text-slate-600">Judul:</span>
-                  <span className="ml-2 text-slate-900">{registration.tryout_title}</span>
+                  <span className="ml-2 text-slate-900">
+                    {registration.tryout_title}
+                  </span>
                 </div>
                 <div>
                   <span className="font-bold text-slate-600">Periode:</span>
                   <span className="ml-2 text-slate-900">
-                    {formatDate(registration.tryout_start_date)} - {formatDate(registration.tryout_end_date)}
+                    {formatDate(registration.tryout_start_date)} -{" "}
+                    {formatDate(registration.tryout_end_date)}
                   </span>
                 </div>
                 <div>
                   <span className="font-bold text-slate-600">Deskripsi:</span>
-                  <span className="ml-2 text-slate-900">{registration.tryout_description || "Tidak ada deskripsi"}</span>
+                  <span className="ml-2 text-slate-900">
+                    {registration.tryout_description || "Tidak ada deskripsi"}
+                  </span>
                 </div>
               </div>
             </div>
@@ -186,66 +205,137 @@ export default function ViewModal({
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="font-bold text-slate-600">Tanggal Daftar:</span>
-                <span className="ml-2 text-slate-900">{formatDate(registration.registration_date)}</span>
+                <span className="font-bold text-slate-600">
+                  Tanggal Daftar:
+                </span>
+                <span className="ml-2 text-slate-900">
+                  {formatDate(registration.registration_date)}
+                </span>
               </div>
               <div>
                 <span className="font-bold text-slate-600">Status:</span>
-                <span className={`ml-2 inline-block px-2 py-1 border-2 border-slate-800 font-bold text-xs ${getStatusColor(registration.status)}`}>
+                <span
+                  className={`ml-2 inline-block px-2 py-1 border-2 border-slate-800 font-bold text-xs ${getStatusColor(
+                    registration.status
+                  )}`}
+                >
                   {getStatusLabel(registration.status)}
                 </span>
               </div>
               <div>
-                <span className="font-bold text-slate-600">Status Pembayaran:</span>
-                <span className={`ml-2 inline-block px-2 py-1 border-2 border-slate-800 font-bold text-xs ${getPaymentStatusColor(registration.payment_status)}`}>
+                <span className="font-bold text-slate-600">
+                  Status Pembayaran:
+                </span>
+                <span
+                  className={`ml-2 inline-block px-2 py-1 border-2 border-slate-800 font-bold text-xs ${getPaymentStatusColor(
+                    registration.payment_status
+                  )}`}
+                >
                   {getPaymentStatusLabel(registration.payment_status)}
                 </span>
               </div>
               <div>
-                <span className="font-bold text-slate-600">Metode Pembayaran:</span>
-                <span className="ml-2 text-slate-900">{registration.payment_method || "Belum ditentukan"}</span>
+                <span className="font-bold text-slate-600">
+                  Metode Pembayaran:
+                </span>
+                <span className="ml-2 text-slate-900">
+                  {registration.payment_method || "Belum ditentukan"}
+                </span>
               </div>
               {registration.payment_reference && (
                 <div>
-                  <span className="font-bold text-slate-600">Referensi Pembayaran:</span>
-                  <span className="ml-2 text-slate-900">{registration.payment_reference}</span>
+                  <span className="font-bold text-slate-600">
+                    Referensi Pembayaran:
+                  </span>
+                  <span className="ml-2 text-slate-900">
+                    {registration.payment_reference}
+                  </span>
                 </div>
               )}
               {registration.payment_date && (
                 <div>
-                  <span className="font-bold text-slate-600">Tanggal Pembayaran:</span>
-                  <span className="ml-2 text-slate-900">{formatDate(registration.payment_date)}</span>
+                  <span className="font-bold text-slate-600">
+                    Tanggal Pembayaran:
+                  </span>
+                  <span className="ml-2 text-slate-900">
+                    {formatDate(registration.payment_date)}
+                  </span>
                 </div>
               )}
               {registration.approved_by_name && (
                 <div>
-                  <span className="font-bold text-slate-600">Disetujui oleh:</span>
-                  <span className="ml-2 text-slate-900">{registration.approved_by_name}</span>
+                  <span className="font-bold text-slate-600">
+                    Disetujui oleh:
+                  </span>
+                  <span className="ml-2 text-slate-900">
+                    {registration.approved_by_name}
+                  </span>
                 </div>
               )}
               {registration.approved_at && (
                 <div>
-                  <span className="font-bold text-slate-600">Tanggal Persetujuan:</span>
-                  <span className="ml-2 text-slate-900">{formatDate(registration.approved_at)}</span>
+                  <span className="font-bold text-slate-600">
+                    Tanggal Persetujuan:
+                  </span>
+                  <span className="ml-2 text-slate-900">
+                    {formatDate(registration.approved_at)}
+                  </span>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Notes */}
+          {/* Notes / Payment Proof */}
           {registration.notes && (
             <div className="mt-6 bg-blue-50 border-3 border-blue-400 p-4">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-8 h-8 bg-blue-400 border-2 border-slate-800 flex items-center justify-center font-black text-sm">
-                  📝
+                  {registration.tryout_type === "paid" ? "🖼️" : "📝"}
                 </div>
                 <h4 className="font-black text-slate-900 text-sm sm:text-base uppercase">
-                  Catatan
+                  {registration.tryout_type === "paid"
+                    ? "Bukti Pembayaran"
+                    : "Catatan"}
                 </h4>
               </div>
-              <p className="text-slate-700 text-sm font-bold leading-relaxed">
-                {registration.notes}
-              </p>
+
+              {registration.tryout_type === "paid" &&
+              registration.payment_reference &&
+              registration.payment_reference.includes(
+                "/uploads/payment-proofs/"
+              ) ? (
+                <div className="space-y-3">
+                  <div className="bg-white border-2 border-slate-800 p-3 rounded">
+                    <img
+                      src={registration.payment_reference}
+                      alt="Bukti Pembayaran"
+                      className="max-w-full h-auto rounded border-2 border-slate-300"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = "none";
+                        const fallback =
+                          target.nextElementSibling as HTMLElement;
+                        if (fallback) fallback.style.display = "block";
+                      }}
+                    />
+                    <div className="hidden bg-slate-100 border-2 border-slate-300 p-4 rounded text-center">
+                      <p className="text-slate-600 font-bold">
+                        ❌ Gambar tidak dapat dimuat
+                      </p>
+                      <p className="text-xs text-slate-500 mt-1">
+                        Path: {registration.payment_reference}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-slate-700 text-sm font-bold leading-relaxed">
+                    {registration.notes}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-slate-700 text-sm font-bold leading-relaxed">
+                  {registration.notes}
+                </p>
+              )}
             </div>
           )}
 
