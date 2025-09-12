@@ -170,38 +170,38 @@ export default function TryoutsGrid({
       case "registered":
         if (tryoutType === "free") {
           return (
-            <div className="px-2 py-1 border-2 border-slate-800 font-black text-xs bg-green-400 text-slate-900">
+            <div className="px-2 py-1 border-2 border-slate-800 font-black text-xs bg-green-400 text-slate-900 inline-block">
               ✅ TERDAFTAR
             </div>
           );
         } else {
           return (
-            <div className="px-2 py-1 border-2 border-slate-800 font-black text-xs bg-yellow-400 text-slate-900">
+            <div className="px-2 py-1 border-2 border-slate-800 font-black text-xs bg-yellow-400 text-slate-900 inline-block">
               ⏳ PENDING
             </div>
           );
         }
       case "approved":
         return (
-          <div className="px-2 py-1 border-2 border-slate-800 font-black text-xs bg-green-400 text-slate-900">
+          <div className="px-2 py-1 border-2 border-slate-800 font-black text-xs bg-green-400 text-slate-900 inline-block">
             ✅ DISETUJUI
           </div>
         );
       case "waiting_confirmation":
         return (
-          <div className="px-2 py-1 border-2 border-slate-800 font-black text-xs bg-yellow-400 text-slate-900">
-            ⏳ KONFIRMASI
+          <div className="px-2 py-1 border-2 border-slate-800 font-black text-xs bg-yellow-400 text-slate-900 inline-block">
+            ⏳ VERIFIKASI
           </div>
         );
       case "rejected":
         return (
-          <div className="px-2 py-1 border-2 border-slate-800 font-black text-xs bg-red-400 text-slate-900">
+          <div className="px-2 py-1 border-2 border-slate-800 font-black text-xs bg-red-400 text-slate-900 inline-block">
             ❌ DITOLAK
           </div>
         );
       default:
         return (
-          <div className="px-2 py-1 border-2 border-slate-800 font-black text-xs bg-gray-400 text-slate-900">
+          <div className="px-2 py-1 border-2 border-slate-800 font-black text-xs bg-gray-400 text-slate-900 inline-block">
             ❓ UNKNOWN
           </div>
         );
@@ -254,7 +254,7 @@ export default function TryoutsGrid({
                     tryout.registrationStatus,
                     tryout.type
                   ) && (
-                    <div className="mb-2">
+                    <div className="mb-2 max-w-fit">
                       {getRegistrationStatusBadge(
                         tryout.isRegistered || false,
                         tryout.registrationStatus,
