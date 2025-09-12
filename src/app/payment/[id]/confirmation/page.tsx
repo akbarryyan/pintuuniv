@@ -67,7 +67,8 @@ export default function PaymentConfirmationPage() {
     null
   );
   const [loading, setLoading] = useState(true);
-  const [timeLeft, setTimeLeft] = useState(24 * 60 * 60); // 24 hours in seconds
+  const [timeLeft, setTimeLeft] = useState(45 * 60); // 45 minutes in seconds
+  const [paymentStartTime, setPaymentStartTime] = useState<number | null>(null);
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -118,6 +119,28 @@ export default function PaymentConfirmationPage() {
             setSelectedAccount(account || null);
           }
         }
+
+        // Initialize or retrieve payment start time
+        const storageKey = `payment_start_${params.id}_${methodId}`;
+        const storedStartTime = localStorage.getItem(storageKey);
+
+        if (storedStartTime) {
+          // Use existing start time
+          const startTime = parseInt(storedStartTime);
+          setPaymentStartTime(startTime);
+
+          // Calculate remaining time
+          const currentTime = Date.now();
+          const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
+          const remainingTime = Math.max(0, 45 * 60 - elapsedSeconds);
+          setTimeLeft(remainingTime);
+        } else {
+          // Set new start time
+          const startTime = Date.now();
+          localStorage.setItem(storageKey, startTime.toString());
+          setPaymentStartTime(startTime);
+          setTimeLeft(45 * 60); // 45 minutes
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Gagal memuat data pembayaran");
@@ -136,11 +159,19 @@ export default function PaymentConfirmationPage() {
 
   // Timer countdown effect
   useEffect(() => {
+    // Only start timer if we have a valid start time and time left
+    if (paymentStartTime === null || timeLeft <= 0) return;
+
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
           toast.error("Waktu pembayaran telah habis");
+
+          // Clear the stored start time when expired
+          const storageKey = `payment_start_${params.id}_${methodId}`;
+          localStorage.removeItem(storageKey);
+
           return 0;
         }
         return prev - 1;
@@ -148,7 +179,7 @@ export default function PaymentConfirmationPage() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [paymentStartTime, params.id, methodId]);
 
   // Format time display
   const formatTime = (seconds: number) => {
@@ -225,6 +256,11 @@ export default function PaymentConfirmationPage() {
 
       if (response.ok) {
         toast.success("Bukti pembayaran berhasil dikirim!");
+
+        // Clear the stored start time after successful submission
+        const storageKey = `payment_start_${params.id}_${methodId}`;
+        localStorage.removeItem(storageKey);
+
         setTimeout(() => {
           router.push("/dashboard");
         }, 2000);
