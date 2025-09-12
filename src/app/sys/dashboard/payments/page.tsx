@@ -56,6 +56,11 @@ export default function PaymentsPage() {
   );
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [methodToDelete, setMethodToDelete] = useState<number | null>(null);
+  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
+  const [accountToDelete, setAccountToDelete] = useState<{
+    methodId: number;
+    accountId: number;
+  } | null>(null);
   const [isAddingMethod, setIsAddingMethod] = useState(false);
 
   // Form state
@@ -347,22 +352,39 @@ export default function PaymentsPage() {
 
   const toggleAccountStatus = async (methodId: number, accountId: number) => {
     try {
+      // Find current account to get its current status
+      const method = paymentMethods.find((m) => m.id === methodId);
+      const account = method?.accounts.find((a) => a.id === accountId);
+
+      if (!account) {
+        toast.error("Akun tidak ditemukan");
+        return;
+      }
+
       const response = await fetch(
-        `/api/sys/payment-accounts/${accountId}/toggle-status`,
+        `/api/sys/payment-accounts/${accountId}/toggle`,
         {
           method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            is_active: !account.is_active,
+          }),
         }
       );
 
       if (response.ok) {
-        const updatedAccount = await response.json();
+        // Update local state
         setPaymentMethods((prev) =>
           prev.map((method) =>
             method.id === methodId
               ? {
                   ...method,
-                  accounts: method.accounts.map((account) =>
-                    account.id === accountId ? updatedAccount : account
+                  accounts: method.accounts.map((acc) =>
+                    acc.id === accountId
+                      ? { ...acc, is_active: !acc.is_active }
+                      : acc
                   ),
                 }
               : method
@@ -375,6 +397,48 @@ export default function PaymentsPage() {
     } catch (error) {
       console.error("Error toggling account status:", error);
       toast.error("Terjadi kesalahan saat mengubah status akun");
+    }
+  };
+
+  const handleDeleteAccount = (methodId: number, accountId: number) => {
+    setAccountToDelete({ methodId, accountId });
+    setShowDeleteAccountModal(true);
+  };
+
+  const confirmDeleteAccount = async () => {
+    if (accountToDelete) {
+      try {
+        const response = await fetch(
+          `/api/sys/payment-accounts/${accountToDelete.accountId}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (response.ok) {
+          setPaymentMethods((prev) =>
+            prev.map((method) =>
+              method.id === accountToDelete.methodId
+                ? {
+                    ...method,
+                    accounts: method.accounts.filter(
+                      (account) => account.id !== accountToDelete.accountId
+                    ),
+                  }
+                : method
+            )
+          );
+          toast.success("Akun pembayaran berhasil dihapus");
+        } else {
+          toast.error("Gagal menghapus akun pembayaran");
+        }
+      } catch (error) {
+        console.error("Error deleting account:", error);
+        toast.error("Terjadi kesalahan saat menghapus akun");
+      } finally {
+        setShowDeleteAccountModal(false);
+        setAccountToDelete(null);
+      }
     }
   };
 
@@ -651,6 +715,15 @@ export default function PaymentsPage() {
                                 }`}
                               >
                                 {account.is_active ? "Nonaktifkan" : "Aktifkan"}
+                              </button>
+                              <button
+                                onClick={() =>
+                                  handleDeleteAccount(method.id, account.id)
+                                }
+                                className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                title="Hapus akun"
+                              >
+                                <Trash2 className="w-4 h-4" />
                               </button>
                             </div>
                           </div>
@@ -1037,6 +1110,43 @@ export default function PaymentsPage() {
                 </button>
                 <button
                   onClick={confirmDelete}
+                  className="px-6 py-3 text-sm font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Hapus
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Account Confirmation Modal */}
+      {showDeleteAccountModal && (
+        <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl border border-gray-200">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl">
+                ⚠️
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Hapus Akun Pembayaran?
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Apakah Anda yakin ingin menghapus akun pembayaran ini? Tindakan
+                ini tidak dapat dibatalkan.
+              </p>
+              <div className="flex gap-3 justify-center">
+                <button
+                  onClick={() => {
+                    setShowDeleteAccountModal(false);
+                    setAccountToDelete(null);
+                  }}
+                  className="px-6 py-3 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={confirmDeleteAccount}
                   className="px-6 py-3 text-sm font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                 >
                   Hapus
