@@ -97,7 +97,7 @@ export default function ViewModal({
 
   return (
     <div className="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50 p-4">
-      <div className="bg-white border-4 border-slate-800 shadow-brutal max-w-2xl w-full transform hover:rotate-1 transition-all duration-200 max-h-[90vh] overflow-y-auto">
+      <div className="bg-white border-4 border-slate-800 shadow-brutal max-w-4xl w-full transform hover:rotate-1 transition-all duration-200 max-h-[90vh] overflow-y-auto">
         {/* Modal Header */}
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 sm:p-6 border-b-4 border-slate-800">
           <div className="flex items-center gap-3">
@@ -313,7 +313,7 @@ export default function ViewModal({
                     <img
                       src={registration.payment_reference}
                       alt="Bukti Pembayaran"
-                      className="max-w-full h-auto rounded border-2 border-slate-300 cursor-pointer hover:opacity-90 transition-opacity"
+                      className="w-full h-auto max-h-96 object-contain rounded border-2 border-slate-300 cursor-pointer hover:opacity-90 transition-opacity"
                       onClick={() => setIsImageModalOpen(true)}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
