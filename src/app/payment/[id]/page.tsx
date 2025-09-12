@@ -389,7 +389,13 @@ export default function PaymentPage() {
                                   </span>
                                 )}
                               </div>
-                              <p className="text-sm text-slate-600">
+                              <p
+                                className={`text-sm ${
+                                  isSelected
+                                    ? "text-slate-300"
+                                    : "text-slate-600"
+                                }`}
+                              >
                                 {method.type === "qris" &&
                                   "Scan QR Code untuk pembayaran"}
                                 {method.type === "e_wallet" &&
@@ -499,16 +505,37 @@ export default function PaymentPage() {
                                     >
                                       <div className="flex justify-between items-center">
                                         <div>
-                                          <div className="font-black text-base">
+                                          <div
+                                            className={`font-black text-base ${
+                                              selectedDetail ===
+                                              `${method.name}-${account.name}`
+                                                ? "text-white"
+                                                : "text-slate-900"
+                                            }`}
+                                          >
                                             {account.name}
                                           </div>
-                                          <div className="text-sm text-slate-600">
+                                          <div
+                                            className={`text-sm ${
+                                              selectedDetail ===
+                                              `${method.name}-${account.name}`
+                                                ? "text-slate-300"
+                                                : "text-slate-600"
+                                            }`}
+                                          >
                                             {method.type === "e_wallet"
                                               ? "Nomor:"
                                               : "Rekening:"}{" "}
                                             {account.account}
                                           </div>
-                                          <div className="text-sm text-slate-600">
+                                          <div
+                                            className={`text-sm ${
+                                              selectedDetail ===
+                                              `${method.name}-${account.name}`
+                                                ? "text-slate-300"
+                                                : "text-slate-600"
+                                            }`}
+                                          >
                                             A.n: {account.account_name}
                                           </div>
                                         </div>
