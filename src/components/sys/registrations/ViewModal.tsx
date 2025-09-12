@@ -1,8 +1,7 @@
 "use client";
 
 import { Registration } from "@/lib/services/registrationService";
-import { useState } from "react";
-import { X, ZoomIn } from "lucide-react";
+import { ZoomIn } from "lucide-react";
 
 interface ViewModalProps {
   isOpen: boolean;
@@ -15,10 +14,13 @@ export default function ViewModal({
   onClose,
   registration,
 }: ViewModalProps) {
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-
   if (!isOpen || !registration) return null;
 
+  const openImageInNewTab = () => {
+    if (registration.payment_reference) {
+      window.open(registration.payment_reference, "_blank");
+    }
+  };
   const getStatusColor = (status: string) => {
     switch (status) {
       case "registered":
@@ -314,7 +316,7 @@ export default function ViewModal({
                       src={registration.payment_reference}
                       alt="Bukti Pembayaran"
                       className="w-full h-auto max-h-96 object-contain rounded border-2 border-slate-300 cursor-pointer hover:opacity-90 transition-opacity"
-                      onClick={() => setIsImageModalOpen(true)}
+                      onClick={openImageInNewTab}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.style.display = "none";
@@ -326,9 +328,9 @@ export default function ViewModal({
 
                     {/* Zoom Button Overlay */}
                     <button
-                      onClick={() => setIsImageModalOpen(true)}
+                      onClick={openImageInNewTab}
                       className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-200 opacity-0 group-hover:opacity-100"
-                      title="Lihat gambar lebih besar"
+                      title="Lihat gambar di tab baru"
                     >
                       <ZoomIn className="w-4 h-4" />
                     </button>
@@ -345,11 +347,11 @@ export default function ViewModal({
 
                   {/* View Larger Button */}
                   <button
-                    onClick={() => setIsImageModalOpen(true)}
+                    onClick={openImageInNewTab}
                     className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded border-2 border-slate-800 font-bold text-sm transition-colors flex items-center justify-center gap-2"
                   >
                     <ZoomIn className="w-4 h-4" />
-                    Lihat Gambar Lebih Jelas
+                    Lihat Gambar di Tab Baru
                   </button>
 
                   <p className="text-slate-700 text-sm font-bold leading-relaxed">
@@ -375,46 +377,6 @@ export default function ViewModal({
           </div>
         </div>
       </div>
-
-      {/* Image Modal for Larger View */}
-      {isImageModalOpen && registration.payment_reference && (
-        <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[60] p-4"
-          onClick={() => setIsImageModalOpen(false)}
-        >
-          <div className="relative max-w-4xl max-h-[90vh] w-full h-full flex items-center justify-center">
-            {/* Close Button */}
-            <button
-              onClick={() => setIsImageModalOpen(false)}
-              className="absolute top-4 right-4 bg-white/90 hover:bg-white text-slate-900 p-2 rounded-full shadow-lg z-10 transition-all duration-200"
-              title="Tutup"
-            >
-              <X className="w-6 h-6" />
-            </button>
-
-            {/* Large Image */}
-            <img
-              src={registration.payment_reference}
-              alt="Bukti Pembayaran - Tampilan Besar"
-              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl border-4 border-white"
-              onClick={(e) => e.stopPropagation()}
-            />
-
-            {/* Image Info */}
-            <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
-              <h4 className="font-bold text-slate-900 text-sm mb-1">
-                Bukti Pembayaran - {registration.user_name}
-              </h4>
-              <p className="text-xs text-slate-600">
-                Tryout: {registration.tryout_title}
-              </p>
-              <p className="text-xs text-slate-500 mt-1">
-                Klik di luar gambar atau tombol X untuk menutup
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
