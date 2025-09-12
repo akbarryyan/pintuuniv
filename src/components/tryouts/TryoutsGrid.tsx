@@ -46,6 +46,7 @@ export default function TryoutsGrid({
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedTryout, setSelectedTryout] = useState<Tryout | null>(null);
   const [loadingTryoutId, setLoadingTryoutId] = useState<number | null>(null);
+  const [startingTryoutId, setStartingTryoutId] = useState<number | null>(null);
   const getDifficultyColor = (level: string) => {
     switch (level) {
       case "easy":
@@ -210,14 +211,44 @@ export default function TryoutsGrid({
     }
   };
 
-  const handleStartClick = (tryout: Tryout) => {
+  const handleStartClick = async (tryout: Tryout) => {
     if (!userData.id) {
       toast.error("Anda harus login terlebih dahulu");
       return;
     }
 
-    // Navigasi ke halaman tryout
-    router.push(`/tryout/${tryout.id}`);
+    // Set loading state
+    setStartingTryoutId(tryout.id);
+
+    // Show loading toast
+    const loadingToast = toast.loading("🚀 Mempersiapkan tryout...");
+
+    try {
+      // Step 1: Preparing
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      toast.loading("📝 Memuat soal-soal...", { id: loadingToast });
+
+      // Step 2: Loading questions
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      toast.loading("⚡ Hampir siap...", { id: loadingToast });
+
+      // Step 3: Final preparation
+      await new Promise((resolve) => setTimeout(resolve, 400));
+
+      // Update toast
+      toast.success("✅ Tryout siap dimulai!", { id: loadingToast });
+
+      // Small delay before navigation
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // Navigasi ke halaman tryout
+      router.push(`/tryout/${tryout.id}`);
+    } catch (error) {
+      console.error("Error starting tryout:", error);
+      toast.error("❌ Gagal memulai tryout", { id: loadingToast });
+    } finally {
+      setStartingTryoutId(null);
+    }
   };
 
   return (
@@ -327,9 +358,26 @@ export default function TryoutsGrid({
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleStartClick(tryout)}
-                        className="flex-1 bg-emerald-500 text-white px-3 py-2 sm:px-4 sm:py-3 font-black text-xs sm:text-sm border-2 border-slate-800 hover:bg-emerald-600 transition-colors"
+                        disabled={startingTryoutId === tryout.id}
+                        className={`flex-1 px-3 py-2 sm:px-4 sm:py-3 font-black text-xs sm:text-sm border-2 border-slate-800 transition-all duration-200 disabled:cursor-not-allowed relative overflow-hidden ${
+                          startingTryoutId === tryout.id
+                            ? "bg-emerald-400 scale-95 shadow-none animate-pulse"
+                            : "bg-emerald-500 hover:bg-emerald-600 hover:scale-105 hover:shadow-lg transform"
+                        } text-white`}
                       >
-                        🚀 MULAI
+                        {startingTryoutId === tryout.id ? (
+                          <div className="flex items-center justify-center gap-2 relative z-10">
+                            <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            <span className="animate-pulse">Memulai...</span>
+                            {/* Shimmer effect */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-[shimmer_1.5s_ease-in-out_infinite] -z-10"></div>
+                          </div>
+                        ) : (
+                          <span className="relative z-10 flex items-center justify-center gap-1">
+                            <span className="animate-bounce">🚀</span>
+                            <span>MULAI</span>
+                          </span>
+                        )}
                       </button>
                       <button className="flex-1 bg-slate-100 text-slate-900 px-3 py-2 sm:px-4 sm:py-3 font-black text-xs sm:text-sm border-2 border-slate-800 hover:bg-slate-200 transition-colors">
                         📋 DETAIL
