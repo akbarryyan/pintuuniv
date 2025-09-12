@@ -62,11 +62,18 @@ export default function TryoutsTerdaftar({ userId }: TryoutsTerdaftarProps) {
       console.error("Error fetching user registrations:", err);
       setError("Gagal memuat data tryout");
     } finally {
-      setLoading(false);
+      // Add minimum delay to show skeleton (1 second)
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
     }
   };
 
-  const getStatusBadge = (registrationStatus: string, paymentStatus: string, typeTryout: string) => {
+  const getStatusBadge = (
+    registrationStatus: string,
+    paymentStatus: string,
+    typeTryout: string
+  ) => {
     if (typeTryout === "free") {
       return (
         <div className="px-2 py-1 border-2 border-slate-800 font-black text-xs bg-emerald-400 text-slate-900">
@@ -106,9 +113,15 @@ export default function TryoutsTerdaftar({ userId }: TryoutsTerdaftarProps) {
     );
   };
 
-  const canStartTryout = (registrationStatus: string, paymentStatus: string, typeTryout: string) => {
+  const canStartTryout = (
+    registrationStatus: string,
+    paymentStatus: string,
+    typeTryout: string
+  ) => {
     if (typeTryout === "free") {
-      return registrationStatus === "registered" || registrationStatus === "approved";
+      return (
+        registrationStatus === "registered" || registrationStatus === "approved"
+      );
     }
     return registrationStatus === "approved" && paymentStatus === "paid";
   };
@@ -116,10 +129,46 @@ export default function TryoutsTerdaftar({ userId }: TryoutsTerdaftarProps) {
   if (loading) {
     return (
       <div className="mt-6 sm:mt-8">
-        <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 shadow-brutal">
-          <div className="flex items-center justify-center py-8">
-            <div className="w-8 h-8 border-4 border-slate-800 border-t-transparent rounded-full animate-spin"></div>
-            <span className="ml-3 font-black text-slate-900">Memuat tryout terdaftar...</span>
+        <div className="bg-white border-2 border-black p-4 sm:p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+            <div className="h-8 bg-gray-300 border border-black rounded w-48 animate-pulse"></div>
+            <div className="h-8 bg-gray-300 border border-black rounded w-24 animate-pulse"></div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="bg-gray-100 border-2 border-black p-3 sm:p-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] animate-pulse"
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <div className="h-6 bg-gray-300 border border-black rounded w-20"></div>
+                  <div className="text-right">
+                    <div className="h-4 bg-gray-300 border border-black rounded w-12 mb-1"></div>
+                    <div className="h-3 bg-gray-300 border border-black rounded w-16"></div>
+                  </div>
+                </div>
+
+                <div className="h-6 bg-gray-300 border border-black rounded w-3/4 mb-2"></div>
+
+                <div className="space-y-2 mb-3">
+                  <div className="h-4 bg-gray-300 border border-black rounded w-1/2"></div>
+                  <div className="grid grid-cols-2 gap-1">
+                    <div className="h-4 bg-gray-300 border border-black rounded w-full"></div>
+                    <div className="h-4 bg-gray-300 border border-black rounded w-full"></div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div className="h-4 bg-gray-300 border border-black rounded w-24"></div>
+                    <div className="h-6 bg-gray-300 border border-black rounded w-16"></div>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <div className="h-5 bg-gray-300 border border-black rounded w-16"></div>
+                  <div className="h-8 bg-gray-300 border border-black rounded w-20"></div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -129,14 +178,14 @@ export default function TryoutsTerdaftar({ userId }: TryoutsTerdaftarProps) {
   if (error) {
     return (
       <div className="mt-6 sm:mt-8">
-        <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 shadow-brutal">
+        <div className="bg-white border-2 border-black p-4 sm:p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
           <div className="text-center py-8">
             <div className="text-red-500 text-4xl mb-3">⚠️</div>
             <p className="font-black text-slate-900 mb-2">Gagal Memuat Data</p>
             <p className="text-slate-600 text-sm">{error}</p>
             <button
               onClick={fetchUserRegistrations}
-              className="mt-4 bg-orange-500 text-white px-4 py-2 font-black text-sm border-2 border-slate-800 hover:bg-orange-600 transition-colors"
+              className="mt-4 bg-orange-500 text-white px-4 py-2 font-black text-sm border-2 border-black hover:bg-orange-600 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
             >
               Coba Lagi
             </button>
@@ -149,16 +198,18 @@ export default function TryoutsTerdaftar({ userId }: TryoutsTerdaftarProps) {
   if (tryouts.length === 0) {
     return (
       <div className="mt-6 sm:mt-8">
-        <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 shadow-brutal">
+        <div className="bg-white border-2 border-black p-4 sm:p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
           <div className="text-center py-8">
             <div className="text-slate-400 text-4xl mb-3">📝</div>
-            <p className="font-black text-slate-900 mb-2">Belum Ada Tryout Terdaftar</p>
+            <p className="font-black text-slate-900 mb-2">
+              Belum Ada Tryout Terdaftar
+            </p>
             <p className="text-slate-600 text-sm mb-4">
               Daftarkan diri Anda untuk tryout yang tersedia
             </p>
             <Link
               href="/tryouts"
-              className="bg-orange-500 text-white px-4 py-2 font-black text-sm border-2 border-slate-800 hover:bg-orange-600 transition-colors inline-block"
+              className="bg-orange-500 text-white px-4 py-2 font-black text-sm border-2 border-black hover:bg-orange-600 transition-colors inline-block shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
             >
               Lihat Tryout Tersedia
             </Link>
@@ -170,14 +221,14 @@ export default function TryoutsTerdaftar({ userId }: TryoutsTerdaftarProps) {
 
   return (
     <div className="mt-6 sm:mt-8">
-      <div className="bg-white border-3 sm:border-4 border-slate-800 p-4 sm:p-6 shadow-brutal">
+      <div className="bg-white border-2 border-black p-4 sm:p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase">
             📝 Tryout Terdaftar
           </h2>
           <Link
             href="/tryouts"
-            className="bg-orange-500 text-white px-3 sm:px-4 py-2 sm:py-2 font-black text-xs sm:text-sm border-2 sm:border-3 border-slate-800 hover:bg-orange-600 transition-colors text-center sm:text-left"
+            className="bg-orange-500 text-white px-3 sm:px-4 py-2 sm:py-2 font-black text-xs sm:text-sm border-2 border-black hover:bg-orange-600 transition-colors text-center sm:text-left shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
           >
             Lihat Semua
           </Link>
@@ -190,7 +241,11 @@ export default function TryoutsTerdaftar({ userId }: TryoutsTerdaftarProps) {
               className="border-2 border-slate-800 p-3 sm:p-4 bg-gradient-to-br from-white to-gray-50 hover:from-gray-50 hover:to-gray-100 transition-all duration-200 group"
             >
               <div className="flex justify-between items-start mb-3">
-                {getStatusBadge(tryout.registration_status, tryout.payment_status, tryout.type_tryout)}
+                {getStatusBadge(
+                  tryout.registration_status,
+                  tryout.payment_status,
+                  tryout.type_tryout
+                )}
                 <div className="text-right">
                   <div className="flex items-center space-x-1 mb-1">
                     <span className="text-yellow-500 text-sm">⭐</span>
@@ -238,7 +293,7 @@ export default function TryoutsTerdaftar({ userId }: TryoutsTerdaftarProps) {
                 <div className="text-left">
                   {tryout.price > 0 ? (
                     <p className="font-black text-sm text-orange-600">
-                      Rp {Math.round(tryout.price).toLocaleString('id-ID')}
+                      Rp {Math.round(tryout.price).toLocaleString("id-ID")}
                     </p>
                   ) : (
                     <p className="font-black text-sm text-emerald-600">
@@ -248,16 +303,29 @@ export default function TryoutsTerdaftar({ userId }: TryoutsTerdaftarProps) {
                 </div>
                 <button
                   className={`px-3 py-2 font-black text-xs border-2 border-slate-800 transition-colors ${
-                    canStartTryout(tryout.registration_status, tryout.payment_status, tryout.type_tryout)
+                    canStartTryout(
+                      tryout.registration_status,
+                      tryout.payment_status,
+                      tryout.type_tryout
+                    )
                       ? "bg-emerald-500 text-white hover:bg-emerald-600"
                       : "bg-gray-400 text-slate-900 cursor-not-allowed"
                   }`}
-                  disabled={!canStartTryout(tryout.registration_status, tryout.payment_status, tryout.type_tryout)}
-                >
-                  {canStartTryout(tryout.registration_status, tryout.payment_status, tryout.type_tryout)
-                    ? "🚀 MULAI"
-                    : "⏳ TUNGGU"
+                  disabled={
+                    !canStartTryout(
+                      tryout.registration_status,
+                      tryout.payment_status,
+                      tryout.type_tryout
+                    )
                   }
+                >
+                  {canStartTryout(
+                    tryout.registration_status,
+                    tryout.payment_status,
+                    tryout.type_tryout
+                  )
+                    ? "🚀 MULAI"
+                    : "⏳ TUNGGU"}
                 </button>
               </div>
             </div>
