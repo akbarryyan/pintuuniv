@@ -6,7 +6,7 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const id = params.id;
+    const { id } = await params;
     const body = await request.json();
     const { is_active } = body;
 

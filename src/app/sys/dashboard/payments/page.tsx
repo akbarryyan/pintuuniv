@@ -56,11 +56,13 @@ export default function PaymentsPage() {
   );
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [methodToDelete, setMethodToDelete] = useState<number | null>(null);
+  const [isDeletingMethod, setIsDeletingMethod] = useState(false);
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState<{
     methodId: number;
     accountId: number;
   } | null>(null);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [isAddingMethod, setIsAddingMethod] = useState(false);
 
   // Form state
@@ -300,7 +302,12 @@ export default function PaymentsPage() {
 
   const confirmDelete = async () => {
     if (methodToDelete) {
+      setIsDeletingMethod(true);
+
       try {
+        // Simulasi delay loading
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+
         const response = await fetch(
           `/api/sys/payment-methods/${methodToDelete}`,
           {
@@ -320,6 +327,7 @@ export default function PaymentsPage() {
         console.error("Error deleting method:", error);
         toast.error("Terjadi kesalahan saat menghapus data");
       } finally {
+        setIsDeletingMethod(false);
         setShowDeleteModal(false);
         setMethodToDelete(null);
       }
@@ -407,7 +415,12 @@ export default function PaymentsPage() {
 
   const confirmDeleteAccount = async () => {
     if (accountToDelete) {
+      setIsDeletingAccount(true);
+
       try {
+        // Simulasi delay loading
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+
         const response = await fetch(
           `/api/sys/payment-accounts/${accountToDelete.accountId}`,
           {
@@ -436,6 +449,7 @@ export default function PaymentsPage() {
         console.error("Error deleting account:", error);
         toast.error("Terjadi kesalahan saat menghapus akun");
       } finally {
+        setIsDeletingAccount(false);
         setShowDeleteAccountModal(false);
         setAccountToDelete(null);
       }
@@ -1104,15 +1118,24 @@ export default function PaymentsPage() {
               <div className="flex gap-3 justify-center">
                 <button
                   onClick={() => setShowDeleteModal(false)}
-                  className="px-6 py-3 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  disabled={isDeletingMethod}
+                  className="px-6 py-3 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Batal
                 </button>
                 <button
                   onClick={confirmDelete}
-                  className="px-6 py-3 text-sm font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  disabled={isDeletingMethod}
+                  className="px-6 py-3 text-sm font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  Hapus
+                  {isDeletingMethod ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Menghapus...</span>
+                    </>
+                  ) : (
+                    "Hapus"
+                  )}
                 </button>
               </div>
             </div>
@@ -1141,15 +1164,24 @@ export default function PaymentsPage() {
                     setShowDeleteAccountModal(false);
                     setAccountToDelete(null);
                   }}
-                  className="px-6 py-3 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  disabled={isDeletingAccount}
+                  className="px-6 py-3 text-sm font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Batal
                 </button>
                 <button
                   onClick={confirmDeleteAccount}
-                  className="px-6 py-3 text-sm font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  disabled={isDeletingAccount}
+                  className="px-6 py-3 text-sm font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  Hapus
+                  {isDeletingAccount ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Menghapus...</span>
+                    </>
+                  ) : (
+                    "Hapus"
+                  )}
                 </button>
               </div>
             </div>

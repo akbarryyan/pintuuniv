@@ -6,7 +6,7 @@ export async function DELETE(
   { params }: { params: { accountId: string } }
 ) {
   try {
-    const accountId = params.accountId;
+    const { accountId } = await params;
 
     // Check if account exists
     const account = (await query(

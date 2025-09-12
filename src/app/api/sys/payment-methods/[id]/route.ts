@@ -11,7 +11,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const id = params.id;
+    const { id } = await params;
     const formData = await request.formData();
 
     const name = formData.get("name") as string;
@@ -227,7 +227,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const id = params.id;
+    const { id } = await params;
 
     // Get payment method to check for files to delete
     const paymentMethod = (await query(
